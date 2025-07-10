@@ -1,0 +1,465 @@
+[
+    {"pertanyaan": "Di mana letak Makam Pangeran Antasari?",
+    "pilihan": [
+        {"id": 1, "teks": "Jakarta", "benar_salah": false}, 
+        {"id": 2, "teks": "Banjarmasin", "benar_salah": true}, 
+        {"id": 3, "teks": "Samarinda", "benar_salah": false}, 
+        {"id": 4, "teks": "Surabaya", "benar_salah": false},
+        {"id": 5, "teks": "Bandung", "benar_salah": false}]}, 
+    {"pertanyaan": "Pangeran Antasari dikenal sebagai pahlawan dari suku?",
+    "pilihan": [
+        {"id": 1, "teks": "Jawa", "benar_salah": false}, 
+        {"id": 2, "teks": "Minang", "benar_salah": false}, 
+        {"id": 3, "teks": "Bugis", "benar_salah": false}, 
+        {"id": 4, "teks": "Dayak", "benar_salah": false},
+        {"id": 5, "teks": "Banjar", "benar_salah": true}]}, 
+    {"pertanyaan": "Makam Pangeran Antasari terletak di dalam kompleks pemakaman apa?",
+    "pilihan": [
+        {"id": 1, "teks": "Pemakaman Muslim Al-Kahfi", "benar_salah": false}, 
+        {"id": 2, "teks": "Pemakaman Sultan Suriansyah", "benar_salah": false}, 
+        {"id": 3, "teks": "Kompleks Pemakaman Perang Banjar", "benar_salah": true}, 
+        {"id": 4, "teks": "Pemakaman Umum Banjarbaru", "benar_salah": false},
+        {"id": 5, "teks": "Kompleks Makam Keluarga Antasari", "benar_salah": false}]}, 
+    {"pertanyaan": "Siapa yang memimpin perjuangan Pangeran Antasari melawan kolonial Belanda?",
+    "pilihan": [
+        {"id": 1, "teks": "Sultan Adam", "benar_salah": false}, 
+        {"id": 2, "teks": "Pangeran Hidayatullah", "benar_salah": true}, 
+        {"id": 3, "teks": "Sultan Tahmidullah", "benar_salah": false}, 
+        {"id": 4, "teks": "Pangeran Samudera", "benar_salah": false},
+        {"id": 5, "teks": "Pangeran Suryansyah", "benar_salah": false}]}, 
+    {"pertanyaan": "Museum Wasaka terletak di kota mana?",
+    "pilihan": [
+        {"id": 1, "teks": "Balikpapan", "benar_salah": false}, 
+        {"id": 2, "teks": "Samarinda", "benar_salah": false}, 
+        {"id": 3, "teks": "Banjarmasin", "benar_salah": true}, 
+        {"id": 4, "teks": "Pontianak", "benar_salah": false},
+        {"id": 5, "teks": "Palangka Raya", "benar_salah": false}]}, 
+    {"pertanyaan": "Apa kepanjangan dari nama Museum Wasaka?",
+    "pilihan": [
+        {"id": 1, "teks": "Wawasan Satu Kalimantan", "benar_salah": false}, 
+        {"id": 2, "teks": "Waja Sampai Ka Puting", "benar_salah": true}, 
+        {"id": 3, "teks": "Warga Sadar Kalimantan", "benar_salah": false}, 
+        {"id": 4, "teks": "Warisan Sejarah Kalimantan", "benar_salah": false},
+        {"id": 5, "teks": "Wira Samudra Kalimantan", "benar_salah": false}]}, 
+    {"pertanyaan": "Museum Wasaka merupakan museum yang mengabadikan perjuangan rakyat Kalimantan Selatan melawan penjajah pada periode?",
+    "pilihan": [
+        {"id": 1, "teks": "Perang Dunia I", "benar_salah": false}, 
+        {"id": 2, "teks": "Perang Revolusi Indonesia", "benar_salah": true}, 
+        {"id": 3, "teks": "Perang Diponegoro", "benar_salah": false}, 
+        {"id": 4, "teks": "Perang Dunia II", "benar_salah": false},
+        {"id": 5, "teks": "Perang Paderi", "benar_salah": false}]}, 
+    {"pertanyaan": "Arti dari “Waja Sampai Ka Puting” dalam Bahasa Banjar adalah?",
+    "pilihan": [
+        {"id": 1, "teks": "Teguh sampai akhir", "benar_salah": false}, 
+        {"id": 2, "teks": "Sejarah sampai selamanya", "benar_salah": false}, 
+        {"id": 3, "teks": "Bersatu menuju kemenangan", "benar_salah": false}, 
+        {"id": 4, "teks": "Setia sampai mati", "benar_salah": false},
+        {"id": 5, "teks": "Berjuang tanpa henti", "benar_salah": false}]}, 
+    {"pertanyaan": "Tugu 9 November Banjarmasin didirikan untuk memperingati peristiwa apa?",
+    "pilihan": [
+        {"id": 1, "teks": "Hari Kemerdekaan Indonesia", "benar_salah": false}, 
+        {"id": 2, "teks": "Pertempuran 10 November", "benar_salah": false}, 
+        {"id": 3, "teks": "Pertempuran Banjar 9 November", "benar_salah": true}, 
+        {"id": 4, "teks": "Proklamasi 17 Agustus", "benar_salah": false},
+        {"id": 5, "teks": "Serangan Umum 1 Maret", "benar_salah": false}]}, 
+    {"pertanyaan": "Dimanakah lokasi Tugu 9 November Banjarmasin berada",
+    "pilihan": [
+        {"id": 1, "teks": "Lapangan Merdeka", "benar_salah": false}, 
+        {"id": 2, "teks": "Jalan Ahmad Yani", "benar_salah": false}, 
+        {"id": 3, "teks": "Taman Kamboja", "benar_salah": false}, 
+        {"id": 4, "teks": "Bundaran Kayutangi", "benar_salah": true},
+        {"id": 5, "teks": "Kawasan Siring Sungai Martapura", "benar_salah": false}]}, 
+    {"pertanyaan": "Tugu 9 November didirikan untuk mengenang perjuangan rakyat Banjarmasin melawan penjajah pada tahun berapa?",
+    "pilihan": [
+        {"id": 1, "teks": "1945", "benar_salah": false}, 
+        {"id": 2, "teks": "1946", "benar_salah": true}, 
+        {"id": 3, "teks": "1947", "benar_salah": false}, 
+        {"id": 4, "teks": "1948", "benar_salah": false},
+        {"id": 5, "teks": "1949", "benar_salah": false}]}, 
+    {"pertanyaan": "Tugu 9 November Banjarmasin memiliki bentuk seperti apa?",
+    "pilihan": [
+        {"id": 1, "teks": "Pahlawan sedang memegang bendera", "benar_salah": false}, 
+        {"id": 2, "teks": "Pahlawan dengan pedang terhunus", "benar_salah": false}, 
+        {"id": 3, "teks": "Menara yang menjulang tinggi", "benar_salah": true}, 
+        {"id": 4, "teks": "Monumen berbentuk lingkaran", "benar_salah": false},
+        {"id": 5, "teks": "Patung sepasang pejuang dengan senjata", "benar_salah": false}]}, 
+    {"pertanyaan": "Di mana lokasi Makam Surgi Mufti?",
+    "pilihan": [
+        {"id": 1, "teks": "Samarinda", "benar_salah": false}, 
+        {"id": 2, "teks": "Banjarmasin", "benar_salah": true}, 
+        {"id": 3, "teks": "Balikpapan", "benar_salah": false}, 
+        {"id": 4, "teks": "Pontianak", "benar_salah": false},
+        {"id": 5, "teks": "Palangkaraya", "benar_salah": false}]}, 
+    {"pertanyaan": "Siapakah yang dimakamkan di Makam Surgi Mufti?",
+    "pilihan": [
+        {"id": 1, "teks": "Pangeran Antasari", "benar_salah": false}, 
+        {"id": 2, "teks": "Sultan Suriansyah", "benar_salah": false}, 
+        {"id": 3, "teks": "Surgi Mufti", "benar_salah": true}, 
+        {"id": 4, "teks": "Pangeran Samudera", "benar_salah": false},
+        {"id": 5, "teks": "Raja Banjar", "benar_salah": false}]}, 
+    {"pertanyaan": "Makam Surgi Mufti terkenal sebagai tempat ziarah bagi umat Islam karena alasan apa?",
+    "pilihan": [
+        {"id": 1, "teks": "Makam seorang ulama besar", "benar_salah": true}, 
+        {"id": 2, "teks": "Lokasi bersejarah pada masa penjajahan", "benar_salah": false}, 
+        {"id": 3, "teks": "Tempat meditasi spiritual", "benar_salah": false}, 
+        {"id": 4, "teks": "Pusat perdagangan tradisional", "benar_salah": false},
+        {"id": 5, "teks": "Tempat lahirnya agama Islam di Kalimantan", "benar_salah": false}]}, 
+    {"pertanyaan": "Di kawasan mana Makam Surgi Mufti ini berada?",
+    "pilihan": [
+        {"id": 1, "teks": "Sungai Andai", "benar_salah": false}, 
+        {"id": 2, "teks": "Kelayan", "benar_salah": false}, 
+        {"id": 3, "teks": "Antasan Kecil Timur", "benar_salah": false}, 
+        {"id": 4, "teks": "Kampung Melayu", "benar_salah": false},
+        {"id": 5, "teks": "Kuin Utara", "benar_salah": true}]}, 
+    {"pertanyaan": "Di mana lokasi Masjid Jami Sungai Jingah?",
+    "pilihan": [
+        {"id": 1, "teks": "Banjarmasin", "benar_salah": true},
+        {"id": 2, "teks": "Martapura", "benar_salah": false},
+        {"id": 3, "teks": "Banjarbaru", "benar_salah": false},
+        {"id": 4, "teks": "Samarinda", "benar_salah": false},
+        {"id": 5, "teks": "Balikpapan", "benar_salah": false}
+    ]},
+    {
+        "pertanyaan": "Apa nama lain dari Masjid Jami Sungai Jingah?",
+        "pilihan": [
+            {"id": 1, "teks": "Masjid Sultan", "benar_salah": false},
+            {"id": 2, "teks": "Masjid Raya", "benar_salah": false},
+            {"id": 3, "teks": "Masjid Nurul Hidayah", "benar_salah": false},
+            {"id": 4, "teks": "Masjid Sultan Suriansyah", "benar_salah": true},
+            {"id": 5, "teks": "Masjid Al-Falah", "benar_salah": false}
+        ]
+    },
+    {
+        "pertanyaan": "Masjid Jami Sungai Jingah terletak di tepi sungai apa?",
+        "pilihan": [
+            {"id": 1, "teks": "Sungai Barito", "benar_salah": false},
+            {"id": 2, "teks": "Sungai Martapura", "benar_salah": true},
+            {"id": 3, "teks": "Sungai Kapuas", "benar_salah": false},
+            {"id": 4, "teks": "Sungai Mahakam", "benar_salah": false},
+            {"id": 5, "teks": "Sungai Kuin", "benar_salah": false}
+        ]
+    },
+    {
+        "pertanyaan": "Kapan Masjid Jami Sungai Jingah pertama kali dibangun?",
+        "pilihan": [
+            {"id": 1, "teks": "Abad ke-16", "benar_salah": false},
+            {"id": 2, "teks": "Abad ke-17", "benar_salah": false},
+            {"id": 3, "teks": "Abad ke-18", "benar_salah": true},
+            {"id": 4, "teks": "Abad ke-19", "benar_salah": false},
+            {"id": 5, "teks": "Abad ke-20", "benar_salah": false}
+        ]
+    },    
+    {
+        "pertanyaan": "Siapa tokoh sejarah yang terkait dengan pendirian Masjid Jami Sungai Jingah?",
+        "pilihan": [
+            {"id": 1, "teks": "Sultan Suriansyah", "benar_salah": true},
+            {"id": 2, "teks": "Sultan Adam", "benar_salah": false},
+            {"id": 3, "teks": "Sultan Hasanuddin", "benar_salah": false},
+            {"id": 4, "teks": "Pangeran Antasari", "benar_salah": false},
+            {"id": 5, "teks": "Pangeran Diponegoro", "benar_salah": false}
+        ]
+    },    
+    {
+        "pertanyaan": "Masjid Jami Sungai Jingah merupakan salah satu masjid tertua di mana?",
+        "pilihan": [
+            {"id": 1, "teks": "Sumatra", "benar_salah": false}, 
+            {"id": 2, "teks": "Kalimantan Selatan", "benar_salah": true}, 
+            {"id": 3, "teks": "Sulawesi Selatan", "benar_salah": false}, 
+            {"id": 4, "teks": "Jawa Barat", "benar_salah": false}, 
+            {"id": 5, "teks": "Maluku", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Arsitektur Masjid Jami Sungai Jingah mengadopsi gaya apa?",
+        "pilihan": [
+            {"id": 1, "teks": "Modern minimalis", "benar_salah": false}, 
+            {"id": 2, "teks": "Timur Tengah", "benar_salah": false}, 
+            {"id": 3, "teks": "Tradisional Banjar", "benar_salah": true}, 
+            {"id": 4, "teks": "Kolonial Belanda", "benar_salah": false}, 
+            {"id": 5, "teks": "Jawa Kuno", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Bahan utama bangunan Masjid Jami Sungai Jingah terbuat dari apa?",
+        "pilihan": [
+            {"id": 1, "teks": "Batu bata", "benar_salah": false}, 
+            {"id": 2, "teks": "Beton", "benar_salah": false}, 
+            {"id": 3, "teks": "Kayu ulin", "benar_salah": true}, 
+            {"id": 4, "teks": "Bambu", "benar_salah": false}, 
+            {"id": 5, "teks": "Batu alam", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Masjid Jami Sungai Jingah berfungsi sebagai pusat kegiatan apa pada masa lalu?",
+        "pilihan": [
+            {"id": 1, "teks": "Pendidikan agama dan tempat musyawarah", "benar_salah": true}, 
+            {"id": 2, "teks": "Pusat perdagangan", "benar_salah": false}, 
+            {"id": 3, "teks": "Balai pertemuan", "benar_salah": false}, 
+            {"id": 4, "teks": "Tempat penobatan raja", "benar_salah": false}, 
+            {"id": 5, "teks": "Gudang penyimpanan senjata", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Berapa kali renovasi besar telah dilakukan terhadap Masjid Jami Sungai Jingah?",
+        "pilihan": [
+            {"id": 1, "teks": "Satu kali", "benar_salah": false}, 
+            {"id": 2, "teks": "Dua kali", "benar_salah": true}, 
+            {"id": 3, "teks": "Tiga kali", "benar_salah": false}, 
+            {"id": 4, "teks": "Empat kali", "benar_salah": false}, 
+            {"id": 5, "teks": "Lima kali", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Di mana letak Masjid Sultan Suriansyah?",
+        "pilihan": [
+            {"id": 1, "teks": "Banjarmasin, Kalimantan Timur", "benar_salah": false}, 
+            {"id": 2, "teks": "Samarinda, Kalimantan Selatan", "benar_salah": false}, 
+            {"id": 3, "teks": "Banjarmasin, Kalimantan Selatan", "benar_salah": true}, 
+            {"id": 4, "teks": "Palangkaraya, Kalimantan Tengah", "benar_salah": false}, 
+            {"id": 5, "teks": "Pontianak, Kalimantan Barat", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Masjid Sultan Suriansyah merupakan masjid tertua di mana?",
+        "pilihan": [
+            {"id": 1, "teks": "Kalimantan", "benar_salah": true}, 
+            {"id": 2, "teks": "Sumatra", "benar_salah": false}, 
+            {"id": 3, "teks": "Jawa", "benar_salah": false}, 
+            {"id": 4, "teks": "Sulawesi", "benar_salah": false}, 
+            {"id": 5, "teks": "Bali", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Siapakah yang mendirikan Masjid Sultan Suriansyah?",
+        "pilihan": [
+            {"id": 1, "teks": "Sultan Hasanuddin", "benar_salah": false}, 
+            {"id": 2, "teks": "Sultan Suriansyah", "benar_salah": true}, 
+            {"id": 3, "teks": "Sultan Adam", "benar_salah": false}, 
+            {"id": 4, "teks": "Sultan Agung", "benar_salah": false}, 
+            {"id": 5, "teks": "Sultan Mahmud", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Masjid Sultan Suriansyah memiliki gaya arsitektur yang dipengaruhi oleh?",
+        "pilihan": [
+            {"id": 1, "teks": "Gaya Jawa", "benar_salah": true}, 
+            {"id": 2, "teks": "Gaya Eropa", "benar_salah": false}, 
+            {"id": 3, "teks": "Gaya Arab", "benar_salah": false}, 
+            {"id": 4, "teks": "Gaya Persia", "benar_salah": false}, 
+            {"id": 5, "teks": "Gaya Melayu", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Makam Sultan Suriansyah merupakan makam dari raja pertama di Kesultanan Banjar yang memeluk agama?",
+        "pilihan": [
+            {"id": 1, "teks": "Buddha", "benar_salah": false}, 
+            {"id": 2, "teks": "Hindu", "benar_salah": false}, 
+            {"id": 3, "teks": "Islam", "benar_salah": true}, 
+            {"id": 4, "teks": "Kristen", "benar_salah": false}, 
+            {"id": 5, "teks": "Konghucu", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Apa nama lain dari Sultan Suriansyah sebelum ia memeluk Islam?",
+        "pilihan": [
+            {"id": 1, "teks": "Pangeran Antasari", "benar_salah": false}, 
+            {"id": 2, "teks": "Pangeran Samudera", "benar_salah": true}, 
+            {"id": 3, "teks": "Pangeran Diponegoro", "benar_salah": false}, 
+            {"id": 4, "teks": "Pangeran Cakra", "benar_salah": false}, 
+            {"id": 5, "teks": "Pangeran Wijaya", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Makam Sultan Suriansyah dibangun pada abad ke-?",
+        "pilihan": [
+            {"id": 1, "teks": "14", "benar_salah": false}, 
+            {"id": 2, "teks": "15", "benar_salah": false}, 
+            {"id": 3, "teks": "16", "benar_salah": true}, 
+            {"id": 4, "teks": "17", "benar_salah": false}, 
+            {"id": 5, "teks": "18", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Dimanakah lokasi Makam Habib Basirih berada?",
+        "pilihan": [
+            {"id": 1, "teks": "Banjarmasin, Kalimantan Timur", "benar_salah": false}, 
+            {"id": 2, "teks": "Banjarmasin, Kalimantan Selatan", "benar_salah": true}, 
+            {"id": 3, "teks": "Samarinda, Kalimantan Timur", "benar_salah": false}, 
+            {"id": 4, "teks": "Balikpapan, Kalimantan Selatan", "benar_salah": false}, 
+            {"id": 5, "teks": "Pontianak, Kalimantan Barat", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Siapakah Habib Basirih?",
+        "pilihan": [
+            {"id": 1, "teks": "Seorang pedagang dari Jawa", "benar_salah": false}, 
+            {"id": 2, "teks": "Seorang ulama keturunan Arab yang dihormati di Banjarmasin", "benar_salah": true}, 
+            {"id": 3, "teks": "Pejuang kemerdekaan Indonesia", "benar_salah": false}, 
+            {"id": 4, "teks": "Seorang arsitek yang terkenal di Kalimantan", "benar_salah": false}, 
+            {"id": 5, "teks": "Pahlawan nasional dari Kalimantan", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Makam Habib Basirih sering dikunjungi oleh masyarakat untuk tujuan apa?",
+        "pilihan": [
+            {"id": 1, "teks": "Wisata kuliner", "benar_salah": false}, 
+            {"id": 2, "teks": "Mencari ilmu pengetahuan", "benar_salah": false}, 
+            {"id": 3, "teks": "Ziarah dan berdoa", "benar_salah": true}, 
+            {"id": 4, "teks": "Berdagang", "benar_salah": false}, 
+            {"id": 5, "teks": "Mengadakan upacara adat", "benar_salah": false}
+        ]
+    }, 
+    {
+        "pertanyaan": "Apa nama asli dari Habib Basirih?",
+        "pilihan": [
+            {"id": 1, "teks": "Habib Abdurrahman Al-Habsyi", "benar_salah": false}, 
+            {"id": 2, "teks": "Habib Muhammad Alaydrus", "benar_salah": false}, 
+            {"id": 3, "teks": "Habib Abdullah Basirih", "benar_salah": false}, 
+            {"id": 4, "teks": "Habib Ali Zainal Abidin", "benar_salah": false}, 
+            {"id": 5, "teks": "Habib Ahmad bin Abdurrahman Al-Habsyi", "benar_salah": true}
+        ]
+    }, 
+    {"pertanyaan": "Dimana lokasi Rumah Anno Banjarmasin?",
+    "pilihan": [
+        {"id": 1, "teks": "Jalan Pahlawan", "benar_salah": false}, 
+        {"id": 2, "teks": "Jalan Siring Tendean", "benar_salah": true}, 
+        {"id": 3, "teks": "Jalan Ahmad Yani", "benar_salah": false}, 
+        {"id": 4, "teks": "Jalan Lambung Mangkurat", "benar_salah": false},
+        {"id": 5, "teks": "Jalan Hasan Basry", "benar_salah": false}]}, 
+    {"pertanyaan": "Rumah Anno Banjarmasin dikenal sebagai?",
+    "pilihan": [
+        {"id": 1, "teks": "Rumah dinas pemerintah", "benar_salah": false}, 
+        {"id": 2, "teks": "Rumah adat suku Dayak", "benar_salah": false}, 
+        {"id": 3, "teks": "Museum sejarah Banjar", "benar_salah": false}, 
+        {"id": 4, "teks": "Rumah adat suku Banjar", "benar_salah": true},
+        {"id": 5, "teks": "Tempat pameran seni", "benar_salah": false}]}, 
+    {"pertanyaan": "Arsitektur Rumah Anno Banjarmasin mencerminkan gaya?",
+    "pilihan": [
+        {"id": 1, "teks": "Modern minimalis", "benar_salah": false}, 
+        {"id": 2, "teks": "Tradisional Banjar", "benar_salah": true}, 
+        {"id": 3, "teks": "Kolonial Belanda", "benar_salah": false}, 
+        {"id": 4, "teks": "Bali klasik", "benar_salah": false},
+        {"id": 5, "teks": "Jawa klasik  ", "benar_salah": false}]}, 
+    {"pertanyaan": "Rumah Anno Banjarmasin berfungsi sebagai?",
+    "pilihan": [
+        {"id": 1, "teks": "Tempat tinggal keluarga kerajaan", "benar_salah": false}, 
+        {"id": 2, "teks": "Pusat kebudayaan", "benar_salah": false}, 
+        {"id": 3, "teks": "Museum rumah adat", "benar_salah": true}, 
+        {"id": 4, "teks": "Toko oleh-oleh khas Banjar", "benar_salah": false},
+        {"id": 5, "teks": "Gedung pemerintahan", "benar_salah": false}]}, 
+        {
+            "pertanyaan": "Apa nama masjid terbesar di Banjarmasin yang menjadi ikon kota?",
+            "pilihan": [
+              {"id": 1, "teks": "Masjid Al-Falah", "benar_salah": false},
+              {"id": 2, "teks": "Masjid Sabilal Muhtadin", "benar_salah": true},
+              {"id": 3, "teks": "Masjid Raya Al-Munawwarah", "benar_salah": false},
+              {"id": 4, "teks": "Masjid Agung Al-Karomah", "benar_salah": false},
+              {"id": 5, "teks": "Masjid Jami Banjarmasin", "benar_salah": false}
+            ]
+          },
+          {
+            "pertanyaan": "Masjid Sabilal Muhtadin terletak di dekat sungai apa?",
+            "pilihan": [
+              {"id": 1, "teks": "Sungai Martapura", "benar_salah": true},
+              {"id": 2, "teks": "Sungai Barito", "benar_salah": false},
+              {"id": 3, "teks": "Sungai Kapuas", "benar_salah": false},
+              {"id": 4, "teks": "Sungai Mahakam", "benar_salah": false},
+              {"id": 5, "teks": "Sungai Kahayan", "benar_salah": false}
+            ]
+          },
+          {
+            "pertanyaan": "Siapakah nama ulama yang menjadi inspirasi penamaan Masjid Sabilal Muhtadin?",
+            "pilihan": [
+              {"id": 1, "teks": "Syekh Arsyad Al-Banjari", "benar_salah": true},
+              {"id": 2, "teks": "KH Zaini Abdul Ghani", "benar_salah": false},
+              {"id": 3, "teks": "Syekh Muhammad Syarwani Abdan", "benar_salah": false},
+              {"id": 4, "teks": "Syekh Muhammad Nafis Al-Banjari", "benar_salah": false},
+              {"id": 5, "teks": "Syekh Abdul Karim Banjarmasin", "benar_salah": false}
+            ]
+          },
+          {
+            "pertanyaan": "Masjid Sabilal Muhtadin diresmikan pada tahun berapa?",
+            "pilihan": [
+              {"id": 1, "teks": "1950", "benar_salah": false},
+              {"id": 2, "teks": "1965", "benar_salah": false},
+              {"id": 3, "teks": "1981", "benar_salah": true},
+              {"id": 4, "teks": "1979", "benar_salah": false},
+              {"id": 5, "teks": "1990", "benar_salah": false}
+            ]
+          }, 
+          [
+            {
+              "pertanyaan": "Apa nama masjid terbesar di Banjarmasin yang menjadi ikon kota?",
+              "pilihan": [
+                {"id": 1, "teks": "Masjid Al-Falah", "benar_salah": false},
+                {"id": 2, "teks": "Masjid Sabilal Muhtadin", "benar_salah": true},
+                {"id": 3, "teks": "Masjid Raya Al-Munawwarah", "benar_salah": false},
+                {"id": 4, "teks": "Masjid Agung Al-Karomah", "benar_salah": false},
+                {"id": 5, "teks": "Masjid Jami Banjarmasin", "benar_salah": false}
+              ]
+            },
+            {
+              "pertanyaan": "Masjid Sabilal Muhtadin terletak di dekat sungai apa?",
+              "pilihan": [
+                {"id": 1, "teks": "Sungai Martapura", "benar_salah": true},
+                {"id": 2, "teks": "Sungai Barito", "benar_salah": false},
+                {"id": 3, "teks": "Sungai Kapuas", "benar_salah": false},
+                {"id": 4, "teks": "Sungai Mahakam", "benar_salah": false},
+                {"id": 5, "teks": "Sungai Kahayan", "benar_salah": false}
+              ]
+            },
+            {
+              "pertanyaan": "Siapakah nama ulama yang menjadi inspirasi penamaan Masjid Sabilal Muhtadin?",
+              "pilihan": [
+                {"id": 1, "teks": "Syekh Arsyad Al-Banjari", "benar_salah": true},
+                {"id": 2, "teks": "KH Zaini Abdul Ghani", "benar_salah": false},
+                {"id": 3, "teks": "Syekh Muhammad Syarwani Abdan", "benar_salah": false},
+                {"id": 4, "teks": "Syekh Muhammad Nafis Al-Banjari", "benar_salah": false},
+                {"id": 5, "teks": "Syekh Abdul Karim Banjarmasin", "benar_salah": false}
+              ]
+            },
+            {
+              "pertanyaan": "Masjid Sabilal Muhtadin diresmikan pada tahun berapa?",
+              "pilihan": [
+                {"id": 1, "teks": "1950", "benar_salah": false},
+                {"id": 2, "teks": "1965", "benar_salah": false},
+                {"id": 3, "teks": "1981", "benar_salah": true},
+                {"id": 4, "teks": "1979", "benar_salah": false},
+                {"id": 5, "teks": "1990", "benar_salah": false}
+              ]
+            }
+          ]
+          , 
+          [
+            {
+              "pertanyaan": "Kelenteng Po An Kiong terletak di kota mana?",
+              "pilihan": [
+                {"id": 1, "teks": "Samarinda", "benar_salah": false},
+                {"id": 2, "teks": "Palangkaraya", "benar_salah": false},
+                {"id": 3, "teks": "Pontianak", "benar_salah": false},
+                {"id": 4, "teks": "Banjarmasin", "benar_salah": true},
+                {"id": 5, "teks": "Balikpapan", "benar_salah": false}
+              ]
+            },
+            {
+              "pertanyaan": "Kelenteng Po An Kiong didirikan pada tahun berapa?",
+              "pilihan": [
+                {"id": 1, "teks": "1680", "benar_salah": false},
+                {"id": 2, "teks": "1780", "benar_salah": false},
+                {"id": 3, "teks": "1880", "benar_salah": true},
+                {"id": 4, "teks": "1980", "benar_salah": false},
+                {"id": 5, "teks": "2000", "benar_salah": false}
+              ]
+            },
+            {
+              "pertanyaan": "Kelenteng Po An Kiong merupakan tempat ibadah umat yang beragama?",
+              "pilihan": [
+                {"id": 1, "teks": "Islam", "benar_salah": false},
+                {"id": 2, "teks": "Hindu", "benar_salah": false},
+                {"id": 3, "teks": "Buddha", "benar_salah": false},
+                {"id": 4, "teks": "Taoisme", "benar_salah": true},
+                {"id": 5, "teks": "Kristen", "benar_salah": false}
+              ]
+            }
+          ]
+]

@@ -1,0 +1,226 @@
+.title {
+    text-align: center;
+    margin-bottom: 20px;
+}
+
+.soal {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    background-color: #fff;
+    justify-content: center;
+}
+
+.panduan {
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    background-color: #fff;
+}
+
+.jawaban {
+    width: 200px;
+    height: 150px;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.jawaban:hover {
+    border-color: #007BFF;
+}
+
+.jawaban img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.kotakJawaban {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    position: relative;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.kotakJawaban.dragover {
+    background-color: #d0ffd0;
+}
+
+.result {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    font-size: 16px;
+    font-weight: bold;
+}
+
+.button-container {
+    text-align: center;
+    margin-top: 20px;
+}
+
+.button-container button {
+    padding: 10px 20px;
+    margin: 0 10px;
+    font-size: 16px;
+    cursor: pointer;
+    border: none;
+    border-radius: 5px;
+}
+
+.submit-button {
+    background-color: #007BFF;
+    color: white;
+}
+
+.reset-button {
+    background-color: #DC3545;
+    color: white;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0, 0, 0, 0.4);
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 15% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+    max-width: 500px;
+    text-align: center;
+}
+
+.close,
+.closeReset {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close:hover,
+.close:focus,
+.closeReset:hover,
+.closeReset:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.jawaban-container {
+    display: flex;
+    /* Use flexbox for horizontal layout */
+    justify-content: space-between;
+    /* Space items evenly */
+    gap: 20px;
+    /* Add space between items */
+    margin-top: 20px;
+    /* Add top margin if needed */
+}
+
+.jawaban-item {
+    flex: 1;
+    /* Make each item flexible */
+    text-align: center;
+    /* Center the headings */
+}
+
+.judul-historio,
+.judul-non-historio {
+    font-size: 20px;
+    /* Increase font size */
+    font-weight: bold;
+    /* Make text bold */
+    color: #333;
+    /* Darker color for better contrast */
+    margin: 0 0 10px 0;
+    /* Remove top margin and add space below */
+}
+
+.kotakJawaban2 {
+    border: 2px dashed #aaa;
+    padding: 20px;
+    margin: 20px 0;
+    min-height: 200px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    background-color: #f0f0f0;
+    border-radius: 10px;
+    position: relative;
+    transition: background-color 0.3s;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.historio {
+    background-color: #cceeff;
+    /* Light blue */
+}
+
+.non-historio {
+    background-color: #ffe6e6;
+    /* Light pink */
+}
+
+.jawaban2 {
+    width: 200px;
+    height: 150px;
+    cursor: pointer;
+    text-align: center;
+    border: 2px solid transparent;
+    transition: border-color 0.3s;
+}
+
+.jawaban2:hover {
+    border-color: #007BFF;
+}
+
+.jawaban2 img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 5px;
+}
+
+.soal2 {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 10px;
+    border: 1px solid #ccc;
+    padding: 20px;
+    margin: 20px 0;
+    border-radius: 10px;
+    background-color: #fff;
+    justify-content: center;
+}

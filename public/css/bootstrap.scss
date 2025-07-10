@@ -1,0 +1,24 @@
+// Primary Colors
+$primary: #8b4513; // Cokelat
+$secondary: #006400; // Hijau Tua
+$accent: #F5DEB3; // Krem
+
+// Text Colors
+$text-dark: #2E2E2E; // Warna teks gelap
+$text-light: #FFFFFF; // Warna teks terang
+
+// Background Colors
+$background-light: #FFF8E7; // Latar belakang terang
+$background-dark: #2B1D0E; // Latar belakang gelap
+
+// Gradients
+$gradient-primary: linear-gradient(90deg, $primary, $secondary);
+$gradient-accent: linear-gradient(90deg, $accent, $background-light);
+
+// Shadows
+$box-shadow-light: 0px 4px 6px rgba(0, 0, 0, 0.1);
+$box-shadow-dark: 0px 4px 6px rgba(0, 0, 0, 0.3);
+
+
+// Import Bootstrap
+@import 'node_modules/bootstrap/scss/bootstrap';
