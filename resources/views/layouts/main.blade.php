@@ -4,7 +4,8 @@
 @section('container-base')
 
 {{-- <h1 id="progress_halaman">0</h1> --}}
-
+<!-- Google Translate -->
+<div id="google_translate_element" style="position: fixed; top: 10px; left: 10px; z-index: 9999;"></div>
 <div class="g-0 row">
     <div class="border-end border-top col-lg-3">
         <div class="bg-white sticky-top accordion">
@@ -383,5 +384,16 @@
         $sub--;
     }
 </script>
+<script type="text/javascript">
+  function googleTranslateElementInit() {
+    new google.translate.TranslateElement({
+      pageLanguage: 'id',
+      includedLanguages: 'id,en,es', // tambahkan sesuai kebutuhan
+      layout: google.translate.TranslateElement.InlineLayout.SIMPLE
+    }, 'google_translate_element');
+  }
+</script>
+
+<script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
 
 @endsection
