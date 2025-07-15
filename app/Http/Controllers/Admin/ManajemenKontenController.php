@@ -106,26 +106,32 @@ class ManajemenKontenController extends Controller
     public function update(Request $request, ManajemenKonten $manajemen_konten)
     {
         $validated = $request->validate([
-            'nomor' => 'required|integer',
             'kategori_konten' => 'required|string',
             'gambar' => 'nullable|image|mimes:jpg,jpeg,png,webp',
             'konten_teks' => 'nullable|string',
         ]);
 
-        if ($request->hasFile('gambar')) {
-            $path = $request->file('gambar')->store('uploads', 'public');
+        $konten = '';
 
-            $imgTag = "<img src='" . asset('storage/' . $path) . "' class='d-block mx-auto img-fluid my-3 shadow' style='width: 500px; height: auto;'>";
+        if ($validated['kategori_konten'] === 'kegiatanPembelajaran1') {
+            if ($request->hasFile('gambar')) {
+                $path = $request->file('gambar')->store('uploads', 'public');
 
-            $figcaption = "<figcaption class='text-center my-3'>" . e($validated['konten_teks']) . "</figcaption>";
+                $imgTag = "<img src='" . asset('storage/' . $path) . "' class='d-block mx-auto img-fluid my-3 shadow' style='width: 500px; height: auto;'>";
 
-            $konten = $imgTag . $figcaption;
+                $figcaption = "<figcaption class='text-center my-3'>" . e($validated['konten_teks']) . "</figcaption>";
+
+                $konten = $imgTag . $figcaption;
+            } else {
+                $konten = $validated['konten_teks'];
+            }
+        } elseif ($validated['kategori_konten'] === 'kegiatanPembelajaran2') {
+            $konten = "<li>" . e($validated['konten_teks']) . "</li>";
         } else {
             $konten = $validated['konten_teks'];
         }
 
         $manajemen_konten->update([
-            'nomor' => $validated['nomor'],
             'kategori_konten' => $validated['kategori_konten'],
             'konten' => $konten,
         ]);

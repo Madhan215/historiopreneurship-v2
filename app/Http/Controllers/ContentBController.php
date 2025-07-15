@@ -107,7 +107,10 @@ class ContentBController extends Controller
         $prevUrl = "/Kesejarahan/Kuis-Kesejarahan";
         $nextUrl = "/Kesejarahan/Analisis-Kelompok";
         $activeMenu = 'menu2';
-        return view('content-B.kegiatanPembelajaran2', compact('activeMenu', 'prevUrl', 'nextUrl', 'user'));
+        $contents = ManajemenKonten::where('kategori_konten', 'kegiatanPembelajaran2')
+            ->orderBy('nomor')
+            ->get();
+        return view('content-B.kegiatanPembelajaran2', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'contents'));
     }
 
     public function analisisKelompok()

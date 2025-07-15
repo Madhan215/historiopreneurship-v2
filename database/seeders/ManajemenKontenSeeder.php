@@ -13,7 +13,7 @@ class ManajemenKontenSeeder extends Seeder
      */
     public function run(): void
     {
-        $konten = [
+        $konten1 = [
             "<img class='d-block mx-auto img-fluid my-3 shadow' src='https://historiopreneurship.research-media.web.id/img/MasjidSultanSuriansyah.jpg' alt='Masjid Sultan Suriansyah' style='width: 500px; height: auto;'><figcaption class='text-center my-3'>Gambar Masjid Sultan Suriansyah, Kuin Utara Banjarmasin</figcaption>",
             "<p>Sejarah adalah peninggalan masa lalu yang perlu dirawat sebagai ingatan kolektif manusia, dengan banyak peninggalannya, termasuk bangunan bersejarah, tersebar di Kalimantan Selatan. Mempelajari sejarah tidak hanya memahami masa lalu, tetapi juga memberikan manfaat untuk masa depan sebagai dialog antara peristiwa lampau dan perkembangan masa depan (Kochhar, 2008).</p>",
             "<p>Pariwisata di Indonesia memiliki peluang besar karena setiap tujuan wisatanya menawarkan daya tarik budaya, atraksi, dan sejarah yang khas di setiap daerah. Sesuai dengan Undang-Undang Nomor 9 Tahun 1990 dan Undang-Undang Nomor 10 Tahun 2009, pengembangan pariwisata berbasis budaya memanfaatkan potensi seni, budaya, serta peninggalan sejarah sebagai modal pembangunan untuk meningkatkan kesejahteraan rakyat (Yoeti, 2006; Kirom, Sudarmiatin, & Putra, 2016).</p>",
@@ -26,9 +26,23 @@ class ManajemenKontenSeeder extends Seeder
             "<p>Peninggalan bersejarah memiliki daya tarik besar, termasuk bagi wisatawan mancanegara. Untuk mengembangkan wisata sejarah Kota Banjarmasin, diperlukan identifikasi potensi objek wisata berdasarkan kelayakan lanskap dan nilai-nilai kultural yang ada. Strategi pengembangan ini bertujuan mengoptimalkan variabel kelayakan lanskap agar wisata sejarah dapat mendukung peningkatan kesejahteraan kota dan masyarakat.</p>"
         ];
 
-        foreach ($konten as $index => $item) {
+        foreach ($konten1 as $index => $item) {
             ManajemenKonten::create([
                 'kategori_konten' => 'kegiatanPembelajaran1',
+                'nomor' => $index + 1,
+                'konten' => $item,
+            ]);
+        }
+
+        $konten2 = [
+            "<li>Mahasiswa mampu mengorganisasikan objek kesejarahan berdasarkan hasil identifikasi dan eksplorasi dalam pemetaan.</li>",
+            "<li>Mahasiswa mampu mengasesmen objek kesejarahan berdasarkan hasil identifikasi.</li>",
+            "<li>Mahasiswa mampu mendesain potensi usaha berdasarkan hasil kelayakan objek (<i>object pattern and feasibility</i>).</li>"
+        ];
+
+        foreach ($konten2 as $index => $item) {
+            ManajemenKonten::create([
+                'kategori_konten' => 'kegiatanPembelajaran2',
                 'nomor' => $index + 1,
                 'konten' => $item,
             ]);
