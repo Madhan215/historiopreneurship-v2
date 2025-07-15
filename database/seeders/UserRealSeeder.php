@@ -31,6 +31,16 @@ class UserRealSeeder extends Seeder
             'password' => Hash::make('123456789'),
             'alamat' => 'Dijalan'
         ]);
+        //admin
+            User::create([
+            'nama_lengkap' => 'Admin',
+            'no_hp' => '08212238874',
+            'peran' => 'admin',
+            'email' => 'admin@gmail.com',
+            'password' => Hash::make('12345678'),
+            'alamat' => 'Dijalan'
+        ]);
+
         // User::create([
         //     'nama_lengkap' => 'Madhan',
         //     'no_hp' => '0811',
