@@ -205,7 +205,7 @@ class DashboardController extends Controller
             'poin_DND_KWU',
             'post_test_KWU',
         ];
-        
+
         //leaderboard
 
         // Buat query untuk leaderboard
@@ -241,6 +241,8 @@ class DashboardController extends Controller
 
         //dd($data['leaderboard']);
         $data['claimedBadges'] = $claimedBadges;
+        $data['jumlahGuru'] = User::where('peran', 'guru')->count();
+        $data['jumlahSiswa'] = User::where('peran', 'siswa')->count();
         return view('dashboard', $data);
     }
 

@@ -214,7 +214,6 @@
         function checkAnswer() {
 
 
-
             console.log('Cek Jawaban', minutes);
 
 
