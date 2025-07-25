@@ -30,10 +30,32 @@
             padding: 10px;
             border-radius: 5px;
         }
+
+        /* Floating Alert */
+        .floating-alert {
+            position: fixed;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1050;
+            width: auto;
+            max-width: 400px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            border-radius: 8px;
+            padding: 12px 20px;
+            opacity: 1;
+            transition: opacity 0.5s ease-in-out;
+        }
     </style>
 </head>
 
 <body>
+    @if (session('success'))
+        <div class="alert alert-success floating-alert fade show" role="alert">
+            {{ session('success') }}
+        </div>
+    @endif
+
     <!-- Google Translate -->
     <div id="google_translate_element" style="position: fixed; top: 10px; left: 10px; z-index: 9999;"></div>
     <div class="min-vh-100 d-flex flex-column">
@@ -57,13 +79,13 @@
                     <div class="gap-2 navbar-nav">
                         @auth
                             <li class="nav-item dropdown">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Selamat datang {{ auth()->user()->nama_lengkap }}
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                     <li>
-                                        <form action="{{route('login.logout')}}" method="get">
+                                        <form action="{{ route('login.logout') }}" method="get">
                                             @csrf
                                             <button type="submit" class="dropdown-item">
                                                 <i class="bi bi-box-arrow-right"></i> Logout
@@ -85,7 +107,7 @@
                 @yield('container-base')
             </div>
         </section>
-        @if(View::hasSection('container'))
+        @if (View::hasSection('container'))
             <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
                 <div class="container">
                     @yield('container')
@@ -141,7 +163,7 @@
 
         function startCountdown() {
             const checkBtn = document.getElementById("checkBtn");
-            countdown = setInterval(function () {
+            countdown = setInterval(function() {
                 if (minutes === 0 && seconds === 0) {
                     clearInterval(countdown); // Timer selesai
                     alert("Waktu habis!");
@@ -255,7 +277,7 @@
                 checkBtn.innerText = "Berikutnya";
             }
 
-            checkBtn.onclick = function () {
+            checkBtn.onclick = function() {
                 nextQuestion(namaTest);
             };
             disableAllRadios();
@@ -302,8 +324,32 @@
         }
     </script>
 
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+                return new bootstrap.Tooltip(tooltipTriggerEl);
+            });
+        });
+    </script>
+
+    <script>
+        // Hilangkan Alert Otomatis
+        document.addEventListener("DOMContentLoaded", function() {
+            const alert = document.querySelector(".floating-alert");
+            if (alert) {
+                setTimeout(() => {
+                    alert.style.opacity = "0"; // Fade out effect
+                    setTimeout(() => {
+                        alert.remove(); // Hapus elemen setelah animasi selesai
+                    }, 500);
+                }, 3000); // 3 detik sebelum hilang
+            }
+        });
+    </script>
 
 </body>
 

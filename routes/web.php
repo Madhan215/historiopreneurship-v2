@@ -1,6 +1,7 @@
 <?php
 
-
+use App\Http\Controllers\KelasController;
+use App\Http\Middleware\GuruMiddleware;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
@@ -140,7 +141,6 @@ Route::group(['middleware' => ['admin']], function () {
     Route::prefix('/admin')->group(function () {
         Route::resource('/manajemen-konten', App\Http\Controllers\Admin\ManajemenKontenController::class);
     });
-
 });
 
 // Latihan
@@ -204,5 +204,9 @@ Route::get('/export-evaluasi', [dataExportController::class, 'exportEvaluasi'])-
 Route::get('/export-kelas', [dataExportController::class, 'exportKelas'])->name('export.kelas');
 Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
 
-
-
+// Sistem Kelas
+Route::middleware([
+    GuruMiddleware::class,
+])->group(function () {
+    Route::resource('kelas', KelasController::class);
+});

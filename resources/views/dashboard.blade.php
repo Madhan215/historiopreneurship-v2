@@ -63,7 +63,7 @@
         <h2 class="mb-3">Dashboard</h2>
 
         <div class="row text-center">
-            @if (auth()->user()->peran == 'siswa' && auth()->user()->peran == 'guru')
+            @if (auth()->user()->peran == 'siswa' || auth()->user()->peran == 'guru')
                 <!-- Profil -->
                 <div class="col-md-6 mb-4">
                     <div class="card p-4">
@@ -122,8 +122,6 @@
                         </div>
                     </div>
                 </div>
-
-
             @endif
             @if (auth()->user()->peran == 'siswa')
                 <!-- Badge -->
@@ -137,8 +135,8 @@
                             <div class="row">
                                 @foreach ($claimedBadges as $badge)
                                     <div class="col-md-4 mb-3">
-                                        <img src="{{ asset($badge->link_gambar) }}" alt="{{ $badge->deskripsi }}" class="img-fluid"
-                                            style="max-width: 100px;">
+                                        <img src="{{ asset($badge->link_gambar) }}" alt="{{ $badge->deskripsi }}"
+                                            class="img-fluid" style="max-width: 100px;">
                                         <p class="text-center">{{ $badge->nama }}</p>
                                     </div>
                                 @endforeach
@@ -148,7 +146,8 @@
                                     </div>
                                 @endif
                             </div>
-                            <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#badgeModal">
+                            <button type="button" class="btn btn-primary" data-bs-toggle="modal"
+                                data-bs-target="#badgeModal">
                                 Cek Badge
                             </button>
                         </div>
@@ -161,7 +160,8 @@
                         <div class="modal-content">
                             <div class="modal-header">
                                 <h5 class="modal-title" id="badgeModalLabel">Perolehan Badge</h5>
-                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal"
+                                    aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
                                 <!-- Badges with Claim Buttons -->
@@ -172,7 +172,8 @@
                                     <div class="col-md-6 d-flex align-items-center button-container">
                                         <form action="{{ route('awardHighRankBadge') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-success button" id="claimButton" {{ $highRankBadgeClaimed || !$eligibleForHighRankBadge ? 'disabled' : '' }}>
+                                            <button type="submit" class="btn btn-success button" id="claimButton"
+                                                {{ $highRankBadgeClaimed || !$eligibleForHighRankBadge ? 'disabled' : '' }}>
                                                 Klaim Badge
                                             </button>
                                             <div class="hover-text">Rebut posisi 3 besar untuk mendapatkan</div>
@@ -188,7 +189,7 @@
                                         <form action="{{ route('awardSiCepatBadge') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success button" id="claimButton"
-                                                {{$siCepatBadgeClaimed || !$eligibleForCepat ? 'disabled' : '' }}>
+                                                {{ $siCepatBadgeClaimed || !$eligibleForCepat ? 'disabled' : '' }}>
                                                 Klaim Badge
                                             </button>
                                             <div class="hover-text">Selesaikan test dibawah 15 menit</div>
@@ -197,26 +198,29 @@
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <img src="{{ asset('img/masterkesejarahan.png') }}" alt="Master Badge" width="100px">
+                                        <img src="{{ asset('img/masterkesejarahan.png') }}" alt="Master Badge"
+                                            width="100px">
                                     </div>
                                     <div class="col-md-6 d-flex align-items-center button-container">
                                         <form action="{{ route('awardHistoricalBadge') }}" method="POST">
                                             @csrf
                                             <button type="submit" class="btn btn-success" id="claimButton"
-                                                {{$badgeKesejarahanClaimed || !$eligibleForBadgeKesejarahan ? 'disabled' : '' }}>Klaim Badge</button>
+                                                {{ $badgeKesejarahanClaimed || !$eligibleForBadgeKesejarahan ? 'disabled' : '' }}>Klaim
+                                                Badge</button>
                                             <div class="hover-text">Selesaikan Bab Kesejarahan</div>
                                         </form>
                                     </div>
                                 </div>
                                 <div class="row mb-3">
                                     <div class="col-md-6">
-                                        <img src="{{ asset('img/masterkewirausahaan.png') }}" alt="Master of Material Badge"
-                                            width="100px">
+                                        <img src="{{ asset('img/masterkewirausahaan.png') }}"
+                                            alt="Master of Material Badge" width="100px">
                                     </div>
                                     <div class="col-md-6 d-flex align-items-center button-container">
                                         <form action="{{ route('awardEntrepreneurialBadge') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-success" id="claimButton" {{$badgeKwuClaimed || !$eligibleForBadgeKWU ? 'disabled' : ''  }}>
+                                            <button type="submit" class="btn btn-success" id="claimButton"
+                                                {{ $badgeKwuClaimed || !$eligibleForBadgeKWU ? 'disabled' : '' }}>
                                                 Klaim Badge
                                             </button>
                                             <div class="hover-text">Selesaikan Bab KWU</div>
@@ -231,7 +235,9 @@
                                     <div class="col-md-6 d-flex align-items-center button-container">
                                         <form action="{{ route('awardCombinedBadge') }}" method="POST">
                                             @csrf
-                                            <button type="submit" class="btn btn-success" id="claimButton" {{$badgeTamatClaimed || !$eligibleForTamat ? 'disabled' : ''  }}>Klaim Badge</button>
+                                            <button type="submit" class="btn btn-success" id="claimButton"
+                                                {{ $badgeTamatClaimed || !$eligibleForTamat ? 'disabled' : '' }}>Klaim
+                                                Badge</button>
                                             <div class="hover-text">Selesaikan Semua Bab</div>
                                         </form>
                                     </div>
@@ -299,7 +305,6 @@
                         </div>
                     </div>
                 </div>
-
             @endif
         </div>
     </body>
