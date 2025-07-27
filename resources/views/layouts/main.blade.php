@@ -11,7 +11,7 @@
             <div class="bg-white sticky-top accordion">
                 <h5 class="active text-primary text-center p-3 mb-0">MENU</h5>
                 <div class="list-group list-group-flush">
-                    @if($userRole === 'siswa' || $userRole === 'guru')
+                    @if ($userRole === 'siswa' || $userRole === 'guru')
                         <a href="/dashboard"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('dashboard') ? 'active' : '' }}">
                             <span><i class="bi bi-speedometer"></i> Dashboard</span></a>
@@ -32,16 +32,20 @@
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('progress-belajar') ? 'active' : '' }}">
                             <span><i class="bi bi-list-ol"></i> Progress Belajar</span></a>
                         <a href="/Data-Nilai"
-                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ (Route::is('data-nilai') || Route::is('dataJawabanIndividu')) ? 'active' : '' }}">
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-nilai') || Route::is('dataJawabanIndividu') ? 'active' : '' }}">
                             <span><i class="bi bi-journal-text"></i> Data Nilai</span></a>
                         <a href="/data-export-nilai"
-                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ (Route::is('data-export-nilai') || Route::is('dataJawabanIndividu')) ? 'active' : '' }}">
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-export-nilai') || Route::is('dataJawabanIndividu') ? 'active' : '' }}">
                             <span><i class="bi bi-download"></i> Export Nilai</span></a>
                     @endif
                     @if (auth()->user()->peran == 'admin')
                         <a href="{{ route('manajemen-konten.index') }}"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('manajemen-konten.*') ? 'active' : '' }}">
                             <span><i class="bi bi-folder2-open"></i> Manajemen Konten</span>
+                        </a>
+                        <a href="/admin/reset-password"
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.reset.password') ? 'active' : '' }}">
+                            <span><i class="bi bi-key"></i> Reset Password</span>
                         </a>
                     @endif
                 </div>
@@ -51,8 +55,8 @@
                         <h2 class="accordion-header">
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu1' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1" aria-expanded="true"
-                                aria-controls="menuCollapse1">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1"
+                                aria-expanded="true" aria-controls="menuCollapse1">
                                 <i class="bi bi-info-circle"></i>
                                 &nbsp;
                                 Informasi Umum
@@ -91,8 +95,8 @@
 
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu2' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse2" aria-expanded="true"
-                                aria-controls="menuCollapse2">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse2"
+                                aria-expanded="true" aria-controls="menuCollapse2">
                                 {{-- <i class="bi bi-1-square"></i> --}}
                                 <i class="bi bi-1-square"></i>
                                 &nbsp;
@@ -137,8 +141,8 @@
                         <h2 class="accordion-header">
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu3' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse3" aria-expanded="true"
-                                aria-controls="menuCollapse3">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse3"
+                                aria-expanded="true" aria-controls="menuCollapse3">
                                 <i class="bi bi-2-square"></i>
                                 &nbsp;
                                 KWU & Kepariwisataan
@@ -213,16 +217,12 @@
             <div class="p-4 p-lg-5">
                 @yield('container-content')
                 {{-- Tombol Sebelumnya --}}
-                @if(
-                        request()->routeIs('A-*') ||
-                        request()->routeIs('B-*') ||
-                        request()->routeIs('C-*')
-                    )
+                @if (request()->routeIs('A-*') || request()->routeIs('B-*') || request()->routeIs('C-*'))
                     <div class="w-100 py-5 d-flex align-items-center justify-content-between bottom-0  ">
                         {{-- Tombol Sebelumnya --}}
-                        @if($prevUrl)
-                            <a href="{{ $prevUrl }}" class="d-flex align-items-center py-2 px-3 text-white btn btn-danger"
-                                id="prevButton">
+                        @if ($prevUrl)
+                            <a href="{{ $prevUrl }}"
+                                class="d-flex align-items-center py-2 px-3 text-white btn btn-danger" id="prevButton">
                                 <i class="bi bi-chevron-double-left"></i> Sebelumnya
                             </a>
                         @else
@@ -232,9 +232,9 @@
                         @endif
 
                         {{-- Tombol Selanjutnya --}}
-                        @if($nextUrl)
-                            <a href="{{ $nextUrl }}" class="d-flex align-items-center py-2 px-3 text-white btn btn-success"
-                                id="nextButton">
+                        @if ($nextUrl)
+                            <a href="{{ $nextUrl }}"
+                                class="d-flex align-items-center py-2 px-3 text-white btn btn-success" id="nextButton">
                                 Selanjutnya <i class="bi bi-chevron-double-right"></i>
                             </a>
                         @else
@@ -274,7 +274,7 @@
         }
 
         $get_.forEach(link => {
-            link.addEventListener('click', function () {
+            link.addEventListener('click', function() {
                 // Remove the 'active' class from all nav links
                 $get_.forEach(nav => nav.classList.remove('active'));
 
@@ -340,44 +340,44 @@
         // Mempertahankan progress halaman
         // Index dimulai dari 0
 
-        let $progress_a = {{session('materi_a') ?? 0}}
-            let $progress_b = {{session('materi_b') ?? 0}}
-                let $progress_c = {{session('materi_c') ?? 0}}
+        let $progress_a = {{ session('materi_a') ?? 0 }}
+        let $progress_b = {{ session('materi_b') ?? 0 }}
+        let $progress_c = {{ session('materi_c') ?? 0 }}
 
-                function buka_($side, $bab) {
-                    console.log('MAU BUKA  YAAA', $side)
-                    if ($bab == "A") {
-                        for (let i = 0; i <= $progress_a; i++) {
-                            console.log($progress_a)
-                            $side[i].querySelector('a').classList.remove('disabled');
-                            $side[i].querySelector('a').classList.remove('text-gray');
+        function buka_($side, $bab) {
+            console.log('MAU BUKA  YAAA', $side)
+            if ($bab == "A") {
+                for (let i = 0; i <= $progress_a; i++) {
+                    console.log($progress_a)
+                    $side[i].querySelector('a').classList.remove('disabled');
+                    $side[i].querySelector('a').classList.remove('text-gray');
 
-                            // Mengubah lock menjadi dot
-                            $side[i].querySelector('i').classList.remove('bi-lock')
-                            $side[i].querySelector('i').classList.add('bi-dot')
-                        }
-                    } else if ($bab == "B") {
-                        for (let i = 0; i <= $progress_b; i++) {
-                            console.log($progress_b)
-                            $side[i].querySelector('a').classList.remove('disabled');
-                            $side[i].querySelector('a').classList.remove('text-gray');
-
-                            // Mengubah lock menjadi dot
-                            $side[i].querySelector('i').classList.remove('bi-lock')
-                            $side[i].querySelector('i').classList.add('bi-dot')
-                        }
-                    } else if ($bab == "C") {
-                        for (let i = 0; i <= $progress_c; i++) {
-                            console.log($progress_c)
-                            $side[i].querySelector('a').classList.remove('disabled');
-                            $side[i].querySelector('a').classList.remove('text-gray');
-
-                            // Mengubah lock menjadi dot
-                            $side[i].querySelector('i').classList.remove('bi-lock')
-                            $side[i].querySelector('i').classList.add('bi-dot')
-                        }
-                    }
+                    // Mengubah lock menjadi dot
+                    $side[i].querySelector('i').classList.remove('bi-lock')
+                    $side[i].querySelector('i').classList.add('bi-dot')
                 }
+            } else if ($bab == "B") {
+                for (let i = 0; i <= $progress_b; i++) {
+                    console.log($progress_b)
+                    $side[i].querySelector('a').classList.remove('disabled');
+                    $side[i].querySelector('a').classList.remove('text-gray');
+
+                    // Mengubah lock menjadi dot
+                    $side[i].querySelector('i').classList.remove('bi-lock')
+                    $side[i].querySelector('i').classList.add('bi-dot')
+                }
+            } else if ($bab == "C") {
+                for (let i = 0; i <= $progress_c; i++) {
+                    console.log($progress_c)
+                    $side[i].querySelector('a').classList.remove('disabled');
+                    $side[i].querySelector('a').classList.remove('text-gray');
+
+                    // Mengubah lock menjadi dot
+                    $side[i].querySelector('i').classList.remove('bi-lock')
+                    $side[i].querySelector('i').classList.add('bi-dot')
+                }
+            }
+        }
 
         let $side_A = document.querySelectorAll('#side_A li')
         let $side_B = document.querySelectorAll('#side_B li')
@@ -385,13 +385,10 @@
         buka_($side_A, 'A')
         buka_($side_B, 'B')
         buka_($side_C, 'C')
-
-
-
     </script>
 
     {{-- Mengirim progress ke dalam database --}}
-    <form id="updateHalaman" action="{{url('updateAksesHalaman')}}" method="GET" hidden>
+    <form id="updateHalaman" action="{{ url('updateAksesHalaman') }}" method="GET" hidden>
         @csrf
         {{-- <input type="hidden" name="user_id" value="{{ $user }}"> --}}
         <input type="hidden" name="halaman" value="materi_b">
@@ -403,6 +400,7 @@
         var $sub = document.getElementById('progress_halaman').innerHTML;
         // Status Bar -> Perlu diatur B dan C nya
         let status_bar = document.getElementById('status_bar');
+
         function update_status() {
             let persen = $sub * 12.5;
             status_bar.style.width = `${persen}%`;
@@ -456,7 +454,7 @@
         }
     </script>
 
-    <script type="text/javascript"
-        src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+    <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
+    </script>
 
 @endsection
