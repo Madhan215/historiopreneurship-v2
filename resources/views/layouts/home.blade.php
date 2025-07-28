@@ -78,12 +78,43 @@
                     </div>
                     <div class="gap-2 navbar-nav">
                         @auth
-                            <li class="nav-item dropdown">
+                            <li class="nav-item dropdown" id="MenuKanan">
                                 <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
                                     role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Selamat datang {{ auth()->user()->nama_lengkap }}
+                                    <img src="{{ auth()->user()->profilePhotoUrl }}" alt="Profile Photo"
+                                        class="rounded-circle border border-primary ms-1"
+                                        style="width: 25px; height: 25px;">
                                 </a>
                                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                    <li>
+                                        <form action="{{ route('dashboard') }}" method="GET">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-speedometer"></i> Dashboard
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('change.profile') }}" method="GET">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-person-circle"></i> Ubah Foto Profil
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('change.name') }}" method="GET">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-tag"></i> Ubah Nama
+                                            </button>
+                                        </form>
+                                    </li>
+                                    <li>
+                                        <form action="{{ route('reset.password') }}" method="GET">
+                                            <button type="submit" class="dropdown-item">
+                                                <i class="bi bi-key"></i> Ubah Password
+                                            </button>
+                                        </form>
+                                    </li>
                                     <li>
                                         <form action="{{ route('login.logout') }}" method="get">
                                             @csrf

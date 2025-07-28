@@ -3,9 +3,12 @@
 namespace App\Models;
 
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
+use App\Models\Kelompok;
+use App\Models\PasswordResetsLog;
+use Illuminate\Notifications\Notifiable;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
-use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
 {
@@ -25,7 +28,8 @@ class User extends Authenticatable
         'email',
         'password',
         'kelas',
-        'jenis_kelamin'
+        'jenis_kelamin',
+        'profile_photo'
     ];
 
     /**
@@ -51,11 +55,26 @@ class User extends Authenticatable
         ];
     }
 
-        /**
+    /**
      * Get the kelompok that owns the user.
      */
     public function kelompok()
     {
         return $this->hasOne(Kelompok::class, 'email', 'email');
+    }
+
+    public function profilePhotoUrl(): Attribute
+    {
+        return Attribute::get(
+            fn() =>
+            $this->profile_photo
+            ? asset('storage/' . $this->profile_photo)
+            : asset('img/avatars/default-avatar.png')
+        );
+    }
+
+    public function passwordResetsLog()
+    {
+        return $this->hasOne(PasswordResetsLog::class);
     }
 }
