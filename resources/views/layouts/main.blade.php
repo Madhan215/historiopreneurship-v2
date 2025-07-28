@@ -53,6 +53,9 @@
                 <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
                     <div class="accordion-item" id="menuHeading1">
                         <h2 class="accordion-header">
+                            @php
+                                $activeMenu = $activeMenu ?? ''; 
+                            @endphp
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu1' ? '' : 'collapsed' }} text-dark"
                                 type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1"

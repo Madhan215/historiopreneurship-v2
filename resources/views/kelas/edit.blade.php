@@ -1,10 +1,6 @@
-<!DOCTYPE html>
-<html>
-<head>
-    <title>Tambah Kelas</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-</head>
-<body>
+@extends('layouts.main')
+
+@section('container-content')
 <div class="container" style="max-width: 600px">
     <h3>Edit Kelas {{ $kelas->nama_kelas }}</h3>
 
@@ -25,5 +21,4 @@
         <button type="submit" class="btn btn-primary">SIMPAN</button>
     </form>
 </div>
-</body>
-</html>
+@endsection

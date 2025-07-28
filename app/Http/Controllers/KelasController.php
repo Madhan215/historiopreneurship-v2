@@ -41,8 +41,7 @@ class KelasController extends Controller
             'kode_kelas' => $kode,
             'deskripsi_kelas' => $request->deskripsi_kelas,
         ]);
-
-        
+       
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
     }
 
