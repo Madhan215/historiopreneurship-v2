@@ -211,10 +211,7 @@ Route::middleware([
     GuruMiddleware::class,
 ])->group(function () {
     Route::resource('kelas', KelasController::class);
-<<<<<<< HEAD
     Route::get('kelas/create', [KelasController::class, 'create'])->name('kelas.create');
-});
-=======
 });
 
 // Halaman Rubah foto Profil
@@ -250,4 +247,3 @@ Route::get('/reset-password', function () {
 
 Route::get('/admin/reset-password', [ResetPasswordController::class, 'showResetPassword'])->name('admin.reset.password');
 Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'resetPassword']);
->>>>>>> e9eb5665660a4396ae9be1c6e07c2effbf99575b
