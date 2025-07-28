@@ -209,4 +209,5 @@ Route::middleware([
     GuruMiddleware::class,
 ])->group(function () {
     Route::resource('kelas', KelasController::class);
+    Route::get('kelas/create', [KelasController::class, 'create'])->name('kelas.create');
 });

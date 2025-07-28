@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Kelas;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use Illuminate\Support\Str;
 
 class KelasController extends Controller
 {
@@ -31,7 +32,18 @@ class KelasController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        do {
+            $kode = Str::upper(Str::random(6));
+        } while (Kelas::where('kode_kelas', $kode)->exists());
+
+        Kelas::create([
+            'nama_kelas' => $request->nama_kelas,
+            'kode_kelas' => $kode,
+            'deskripsi_kelas' => $request->deskripsi_kelas,
+        ]);
+
+        
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
     }
 
     /**
@@ -47,7 +59,8 @@ class KelasController extends Controller
      */
     public function edit(string $id)
     {
-        //
+        $kelas = Kelas::findOrFail($id);
+        return view('kelas.edit', compact('kelas'));
     }
 
     /**
@@ -55,14 +68,24 @@ class KelasController extends Controller
      */
     public function update(Request $request, string $id)
     {
-        //
+        $kelas = Kelas::findOrFail($id);
+        $kelas->update([
+            'nama_kelas' => $request->nama_kelas,
+            'deskripsi_kelas' => $request->deskripsi_kelas,
+        ]);
+
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil diperbarui');
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(string $id)
+    public function destroy($id)
     {
-        //
+        $kelas = Kelas::findOrFail($id);
+        $kelas->delete();
+
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dihapus.');
+
     }
 }
