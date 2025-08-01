@@ -17,6 +17,9 @@
                             <span><i class="bi bi-speedometer"></i> Dashboard</span></a>
                     @endif
                     @if (auth()->user()->peran == 'siswa')
+                        <a href="/kelas"
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-kelas') ? 'active' : '' }}">
+                            <span><i class="bi bi-archive-fill"></i></i> Data Kelas</span></a>                    
                         <a href="/hasil"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('hasil') ? 'active' : '' }}">
                             <span><i class="bi bi-journal-check"></i> Hasil</span></a>
