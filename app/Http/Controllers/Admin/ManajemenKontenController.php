@@ -123,7 +123,7 @@ class ManajemenKontenController extends Controller
 
                 $konten = $imgTag . $figcaption;
             } else {
-                $konten = $validated['konten_teks'];
+                $konten = "<p>".$validated['konten_teks']."</p>";
             }
         } elseif ($validated['kategori_konten'] === 'kegiatanPembelajaran2') {
             $konten = "<li>" . e($validated['konten_teks']) . "</li>";

@@ -63,7 +63,7 @@
         <h2 class="mb-3">Dashboard</h2>
 
         <div class="row text-center">
-            @if (auth()->user()->peran == 'siswa' && auth()->user()->peran == 'guru')
+            @if (auth()->user()->peran == 'siswa' || auth()->user()->peran == 'guru')
                 <!-- Profil -->
                 <div class="col-md-6 mb-4">
                     <div class="card p-4">
@@ -266,7 +266,7 @@
                     </div>
                 </div>
             @endif
-            @if (auth()->user()->peran == 'siswa' && auth()->user()->peran == 'guru')
+            @if (auth()->user()->peran == 'siswa' || auth()->user()->peran == 'guru')
                 <!-- Leaderboard -->
                 <div class="col-md-6 mb-4">
                     <div class="card p-4">
