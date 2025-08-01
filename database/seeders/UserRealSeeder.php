@@ -25,20 +25,16 @@ class UserRealSeeder extends Seeder
 
         User::create([
             'nama_lengkap' => 'Guru',
-            'no_hp' => '082',
             'peran' => 'guru',
             'email' => 'guru@gmail.com',
             'password' => Hash::make('123456789'),
-            'alamat' => 'Dijalan'
         ]);
         //admin
-            User::create([
+        User::create([
             'nama_lengkap' => 'Admin',
-            'no_hp' => '08212238874',
             'peran' => 'admin',
             'email' => 'admin@gmail.com',
             'password' => Hash::make('12345678'),
-            'alamat' => 'Dijalan'
         ]);
 
         // User::create([
@@ -152,208 +148,208 @@ class UserRealSeeder extends Seeder
         //     'poin' => 1800,
         // ]);
 
-        // 20 User untuk Uji Lapangan
-        User::create([
-            'nama_lengkap' => 'User 1',
-            'no_hp' => '08511',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user1@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 2',
-            'no_hp' => '08512',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user2@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 3',
-            'no_hp' => '08513',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user3@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 4',
-            'no_hp' => '08514',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user4@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 5',
-            'no_hp' => '08515',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user5@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 6',
-            'no_hp' => '08516',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user6@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 7',
-            'no_hp' => '08517',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user7@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 8',
-            'no_hp' => '08518',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user8@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 9',
-            'no_hp' => '08519',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user9@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 10',
-            'no_hp' => '085110',
-            'peran' => 'siswa',
-            'kelas' => 'A1',
-            'email' => 'user10@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        // A2
-        User::create([
-            'nama_lengkap' => 'User 11',
-            'no_hp' => '085111',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user11@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 12',
-            'no_hp' => '085122',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user12@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 13',
-            'no_hp' => '085133',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user13@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 14',
-            'no_hp' => '085144',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user14@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 15',
-            'no_hp' => '085155',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user15@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 16',
-            'no_hp' => '085166',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user16@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 17',
-            'no_hp' => '085177',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user17@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 18',
-            'no_hp' => '085188',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user18@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 19',
-            'no_hp' => '085199',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user19@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        User::create([
-            'nama_lengkap' => 'User 20',
-            'no_hp' => '085120',
-            'peran' => 'siswa',
-            'kelas' => 'A2',
-            'email' => 'user20@gmail.com',
-            'password' => Hash::make('12345678'),
-            'alamat' => 'Jalan',
-            'poin' => 0,
-        ]);
-        
+        // // 20 User untuk Uji Lapangan
+        // User::create([
+        //     'nama_lengkap' => 'User 1',
+        //     'no_hp' => '08511',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user1@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 2',
+        //     'no_hp' => '08512',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user2@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 3',
+        //     'no_hp' => '08513',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user3@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 4',
+        //     'no_hp' => '08514',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user4@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 5',
+        //     'no_hp' => '08515',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user5@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 6',
+        //     'no_hp' => '08516',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user6@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 7',
+        //     'no_hp' => '08517',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user7@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 8',
+        //     'no_hp' => '08518',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user8@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 9',
+        //     'no_hp' => '08519',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user9@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 10',
+        //     'no_hp' => '085110',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A1',
+        //     'email' => 'user10@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // // A2
+        // User::create([
+        //     'nama_lengkap' => 'User 11',
+        //     'no_hp' => '085111',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user11@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 12',
+        //     'no_hp' => '085122',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user12@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 13',
+        //     'no_hp' => '085133',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user13@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 14',
+        //     'no_hp' => '085144',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user14@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 15',
+        //     'no_hp' => '085155',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user15@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 16',
+        //     'no_hp' => '085166',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user16@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 17',
+        //     'no_hp' => '085177',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user17@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 18',
+        //     'no_hp' => '085188',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user18@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 19',
+        //     'no_hp' => '085199',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user19@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+        // User::create([
+        //     'nama_lengkap' => 'User 20',
+        //     'no_hp' => '085120',
+        //     'peran' => 'siswa',
+        //     'kelas' => 'A2',
+        //     'email' => 'user20@gmail.com',
+        //     'password' => Hash::make('12345678'),
+        //     'alamat' => 'Jalan',
+        //     'poin' => 0,
+        // ]);
+
     }
 }

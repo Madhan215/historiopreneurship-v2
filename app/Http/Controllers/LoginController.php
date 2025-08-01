@@ -23,7 +23,7 @@ class LoginController extends Controller
             'password' => 'required'
         ]);
 
-        
+
 
         // dd($credentials);
 
@@ -43,10 +43,10 @@ class LoginController extends Controller
             Session::put('materi_c', $materi_c);
 
             // dd($credentials);
-            return redirect()->intended('/dashboard');
+            return redirect()->route('beranda')->with('success', 'Login berhasil!');
         }
 
-       
+
 
         return back()->withErrors([
             'email' => 'Akun tidak ditemukan'
@@ -56,10 +56,10 @@ class LoginController extends Controller
     {
         // dd(Auth::user());
         Auth::logout();
-      
+
         $request->session()->invalidate();
         $request->session()->regenerateToken();
 
-        return redirect()->route('login');
+        return redirect()->route('beranda')->with('success', 'Logout berhasil!');
     }
 }

@@ -4,8 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-return new class extends Migration
-{
+return new class extends Migration {
     /**
      * Run the migrations.
      */
@@ -13,9 +12,12 @@ return new class extends Migration
     {
         Schema::create('kelas', function (Blueprint $table) {
             $table->id();
-            $table->string('created_by')->index();
-            $table->string('deskripsi_kelas');
-            $table->date('created_at');
+            $table->string("nama_kelas");
+            $table->string("kode_kelas")->unique();
+            $table->text("deskripsi_kelas")->nullable();
+            $table->timestamps();
+            $table->unsignedBigInteger('created_by')->nullable();
+            $table->foreign('created_by')->references('id')->on('users')->onDelete('set null');
         });
     }
 

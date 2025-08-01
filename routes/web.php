@@ -1,12 +1,14 @@
 <?php
 
-
+use App\Http\Controllers\Admin\ResetPasswordController;
 use Illuminate\Support\Facades\Route;
+use App\Http\Middleware\GuruMiddleware;
 use App\Http\Controllers\FileController;
 use App\Http\Controllers\HomeController;
 use App\Http\Controllers\InfoController;
 use App\Http\Controllers\PoinController;
 use App\Http\Controllers\DosenController;
+use App\Http\Controllers\KelasController;
 use App\Http\Controllers\LoginController;
 use App\Http\Controllers\nilaiController;
 
@@ -23,6 +25,7 @@ use App\Http\Controllers\RegisterController;
 use App\Http\Controllers\DashboardController;
 use App\Http\Controllers\userBadgeController;
 
+use App\Http\Controllers\Admin\AuthController;
 use App\Http\Controllers\dataExportController;
 use App\Http\Controllers\uploadFileController;
 use App\Http\Controllers\jawabanTestController;
@@ -140,7 +143,6 @@ Route::group(['middleware' => ['admin']], function () {
     Route::prefix('/admin')->group(function () {
         Route::resource('/manajemen-konten', App\Http\Controllers\Admin\ManajemenKontenController::class);
     });
-
 });
 
 // Latihan
@@ -204,5 +206,44 @@ Route::get('/export-evaluasi', [dataExportController::class, 'exportEvaluasi'])-
 Route::get('/export-kelas', [dataExportController::class, 'exportKelas'])->name('export.kelas');
 Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
 
+// Sistem Kelas
+Route::middleware([
+    GuruMiddleware::class,
+])->group(function () {
+    Route::resource('kelas', KelasController::class);
+    Route::get('kelas/create', [KelasController::class, 'create'])->name('kelas.create');
+});
 
+// Halaman Rubah foto Profil
+Route::get('/change-profil-photo', function () {
+    return view('auth.change-profile');
+})->name('change.profile');
 
+// Update Foto Profil
+Route::post('/update-profile-photo', [AuthController::class, 'updateProfilePhoto'])->name('profile.photo.update');
+
+// Halaman Rubah Nama
+Route::get('/change-name', function () {
+    return view('auth.change-name');
+})->name('change.name');
+
+// Update Nama dan Password
+Route::post('/update-nama', [AuthController::class, 'updateName'])->name('update.nama');
+Route::post('/update-password', [AuthController::class, 'updatePassword'])->name('update.auth');
+
+// Halaman Reset Password
+Route::get('/reset-password', function () {
+    return view('auth.reset-password');
+})->name('reset.password');
+
+// Route::controller(AdminController::class)->group(function () {
+//     Route::get('/admin/dashboard', 'dashboard')->name('admin.dashboard');
+//     Route::get('/admin/reset-password', 'showResetPassword')->name('admin.reset.password');
+//     Route::post('/admin/reset-password/{id}', 'resetPassword');
+//     Route::get('/admin/data-kelas', 'dataKelas')->name('admin.data.kelas');
+//     Route::delete('/kelas/{id}', [AdminController::class, 'destroy'])->name('kelas.destroy');
+
+// });
+
+Route::get('/admin/reset-password', [ResetPasswordController::class, 'showResetPassword'])->name('admin.reset.password');
+Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'resetPassword']);
