@@ -207,10 +207,12 @@ Route::get('/export-kelas', [dataExportController::class, 'exportKelas'])->name(
 Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
 
 // Sistem Kelas
+Route::resource('kelas', KelasController::class);
+Route::get('kelas/input', [KelasController::class, 'show'])->name('kelas.input.form');
+Route::post('/kelas/join', [KelasController::class, 'storeUser'])->name('kelas.join');
 Route::middleware([
     GuruMiddleware::class,
-])->group(function () {
-    Route::resource('kelas', KelasController::class);
+    ])->group(function () {
     Route::get('kelas/create', [KelasController::class, 'create'])->name('kelas.create');
 });
 

@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Kelas;
+use App\Models\User;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Str;
@@ -14,9 +15,12 @@ class KelasController extends Controller
      */
     public function index()
     {
-        $kelas = Kelas::all();
-        $activeMenu = '';
-        return view('kelas.index', compact('kelas', 'activeMenu'));
+    $user = auth()->user();
+    $kelasIds = array_keys($user->token_kelas ?? []); // ambil semua ID kelas dari token_kelas
+    $activeMenu = '';
+
+    $kelas = \App\Models\Kelas::whereIn('id', $kelasIds)->get();        
+    return view('kelas.index', compact('kelas', 'activeMenu'));
     }
 
     /**
@@ -36,21 +40,50 @@ class KelasController extends Controller
             $kode = Str::upper(Str::random(6));
         } while (Kelas::where('kode_kelas', $kode)->exists());
 
-        Kelas::create([
+         $kelas = Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'kode_kelas' => $kode,
             'deskripsi_kelas' => $request->deskripsi_kelas,
         ]);
-       
+
+        $user = auth()->user();
+
+        $existingTokens = $user->token_kelas ?? [];
+
+        $existingTokens[$kelas->id] = $kode;
+
+        $user->token_kelas = $existingTokens;
+        $user->save();      
+        return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
+
+    }
+
+
+    public function storeUser(Request $request)
+    {
+        $kode = $request->input('kode_kelas');
+        $kelas = Kelas::where('kode_kelas', $kode)->first();
+
+        if (!$kelas) {
+            return back()->with('error', 'Kode kelas tidak ditemukan.');
+        }
+
+        $user = auth()->user();
+
+        $existingTokens = $user->token_kelas ?? [];
+        $existingTokens[$kelas->id] = $kode;
+
+        $user->token_kelas = $existingTokens;
+        $user->save();
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
     }
 
     /**
      * Display the specified resource.
      */
-    public function show(string $id)
+    public function show()
     {
-        //
+         return view('kelas.input');
     }
 
     /**
@@ -82,6 +115,19 @@ class KelasController extends Controller
     public function destroy($id)
     {
         $kelas = Kelas::findOrFail($id);
+
+            $users = \App\Models\User::whereNotNull('token_kelas')->get();
+
+        foreach ($users as $user) {
+            $tokens = $user->token_kelas;
+
+            if (is_array($tokens) && array_key_exists($kelas->id, $tokens)) {
+                unset($tokens[$kelas->id]);
+                $user->token_kelas = $tokens;
+                $user->save();
+            }
+        }
+
         $kelas->delete();
 
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil dihapus.');
