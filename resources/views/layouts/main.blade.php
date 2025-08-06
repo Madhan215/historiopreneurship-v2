@@ -19,7 +19,7 @@
                     @if (auth()->user()->peran == 'siswa')
                         <a href="/kelas"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-kelas') ? 'active' : '' }}">
-                            <span><i class="bi bi-archive-fill"></i></i> Data Kelas</span></a>                    
+                            <span><i class="bi bi-archive-fill"></i></i> Data Kelas</span></a>
                         <a href="/hasil"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('hasil') ? 'active' : '' }}">
                             <span><i class="bi bi-journal-check"></i> Hasil</span></a>
@@ -50,6 +50,10 @@
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.reset.password') ? 'active' : '' }}">
                             <span><i class="bi bi-key"></i> Reset Password</span>
                         </a>
+                        <a href="{{ route('admin.daftarGuru') }}"
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.reset.password') ? 'active' : '' }}">
+                            <span><i class="bi bi-key"></i> Daftar Guru</span>
+                        </a>
                     @endif
                 </div>
                 <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
@@ -61,8 +65,8 @@
                             @endphp
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu1' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1"
-                                aria-expanded="true" aria-controls="menuCollapse1">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1" aria-expanded="true"
+                                aria-controls="menuCollapse1">
                                 <i class="bi bi-info-circle"></i>
                                 &nbsp;
                                 Informasi Umum
@@ -101,8 +105,8 @@
 
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu2' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse2"
-                                aria-expanded="true" aria-controls="menuCollapse2">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse2" aria-expanded="true"
+                                aria-controls="menuCollapse2">
                                 {{-- <i class="bi bi-1-square"></i> --}}
                                 <i class="bi bi-1-square"></i>
                                 &nbsp;
@@ -147,8 +151,8 @@
                         <h2 class="accordion-header">
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu3' ? '' : 'collapsed' }} text-dark"
-                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse3"
-                                aria-expanded="true" aria-controls="menuCollapse3">
+                                type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse3" aria-expanded="true"
+                                aria-controls="menuCollapse3">
                                 <i class="bi bi-2-square"></i>
                                 &nbsp;
                                 KWU & Kepariwisataan
@@ -196,6 +200,53 @@
                                     <span><i class="bi bi-dot"></i> Refleksi 2</span></a>
                             </div>
                         </div>
+                        <div id="sidebarAccordion">
+                            @foreach($topiks as $index => $topik)
+                                @php
+                                    $menuId = 'menuCollapse' . $index;
+                                    $headingId = 'menuHeading' . $index;
+                                    $isActive = request()->is(Str::slug($topik->nama_topik) . '/*');
+                                @endphp
+
+                                <div class="accordion-item">
+                                    <h2 class="accordion-header" id="{{ $headingId }}">
+                                        <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}" type="button"
+                                            data-bs-toggle="collapse" data-bs-target="#{{ $menuId }}"
+                                            aria-expanded="{{ $isActive ? 'true' : 'false' }}" aria-controls="{{ $menuId }}">
+                                            {{ $topik->nama_topik }}
+                                        </button>
+                                    </h2>
+
+                                    <div id="{{ $menuId }}" class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
+                                        aria-labelledby="{{ $headingId }}" data-bs-parent="#sidebarAccordion">
+                                        <div class="list-group list-group-flush">
+                                            @foreach($topik->subtopiks_urut as $i => $item)
+                                                @php
+                                                    $icon = match ($item['tipe']) {
+                                                        'materi' => 'bi bi-journal-text',
+                                                        'evaluasi' => 'bi bi-pencil-square',
+                                                        'upload' => 'bi bi-upload',
+                                                        default => 'bi bi-dot'
+                                                    };
+
+                                                    $slugTopik = Str::slug($topik->nama_topik);
+                                                    $slugItem = Str::slug($item['nama']);
+                                                    $url = url("/{$slugTopik}/{$slugItem}");
+
+                                                    $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
+                                                @endphp
+
+                                                <a href="{{ $url }}"
+                                                    class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark list-group-item {{ $isCurrent ? 'active' : '' }}">
+                                                    <span><i class="{{ $icon }}"></i> {{ $item['nama'] }}</span>
+                                                </a>
+                                            @endforeach
+                                        </div>
+                                    </div>
+                                </div>
+                            @endforeach
+                        </div>
+
                     </div>
                     <div class="list-group list-group-flush">
                         <a href="/bahan-bacaan"
@@ -227,8 +278,8 @@
                     <div class="w-100 py-5 d-flex align-items-center justify-content-between bottom-0  ">
                         {{-- Tombol Sebelumnya --}}
                         @if ($prevUrl)
-                            <a href="{{ $prevUrl }}"
-                                class="d-flex align-items-center py-2 px-3 text-white btn btn-danger" id="prevButton">
+                            <a href="{{ $prevUrl }}" class="d-flex align-items-center py-2 px-3 text-white btn btn-danger"
+                                id="prevButton">
                                 <i class="bi bi-chevron-double-left"></i> Sebelumnya
                             </a>
                         @else
@@ -239,8 +290,8 @@
 
                         {{-- Tombol Selanjutnya --}}
                         @if ($nextUrl)
-                            <a href="{{ $nextUrl }}"
-                                class="d-flex align-items-center py-2 px-3 text-white btn btn-success" id="nextButton">
+                            <a href="{{ $nextUrl }}" class="d-flex align-items-center py-2 px-3 text-white btn btn-success"
+                                id="nextButton">
                                 Selanjutnya <i class="bi bi-chevron-double-right"></i>
                             </a>
                         @else
@@ -280,7 +331,7 @@
         }
 
         $get_.forEach(link => {
-            link.addEventListener('click', function() {
+            link.addEventListener('click', function () {
                 // Remove the 'active' class from all nav links
                 $get_.forEach(nav => nav.classList.remove('active'));
 
@@ -347,43 +398,43 @@
         // Index dimulai dari 0
 
         let $progress_a = {{ session('materi_a') ?? 0 }}
-        let $progress_b = {{ session('materi_b') ?? 0 }}
-        let $progress_c = {{ session('materi_c') ?? 0 }}
+            let $progress_b = {{ session('materi_b') ?? 0 }}
+                let $progress_c = {{ session('materi_c') ?? 0 }}
 
-        function buka_($side, $bab) {
-            console.log('MAU BUKA  YAAA', $side)
-            if ($bab == "A") {
-                for (let i = 0; i <= $progress_a; i++) {
-                    console.log($progress_a)
-                    $side[i].querySelector('a').classList.remove('disabled');
-                    $side[i].querySelector('a').classList.remove('text-gray');
+                function buka_($side, $bab) {
+                    console.log('MAU BUKA  YAAA', $side)
+                    if ($bab == "A") {
+                        for (let i = 0; i <= $progress_a; i++) {
+                            console.log($progress_a)
+                            $side[i].querySelector('a').classList.remove('disabled');
+                            $side[i].querySelector('a').classList.remove('text-gray');
 
-                    // Mengubah lock menjadi dot
-                    $side[i].querySelector('i').classList.remove('bi-lock')
-                    $side[i].querySelector('i').classList.add('bi-dot')
+                            // Mengubah lock menjadi dot
+                            $side[i].querySelector('i').classList.remove('bi-lock')
+                            $side[i].querySelector('i').classList.add('bi-dot')
+                        }
+                    } else if ($bab == "B") {
+                        for (let i = 0; i <= $progress_b; i++) {
+                            console.log($progress_b)
+                            $side[i].querySelector('a').classList.remove('disabled');
+                            $side[i].querySelector('a').classList.remove('text-gray');
+
+                            // Mengubah lock menjadi dot
+                            $side[i].querySelector('i').classList.remove('bi-lock')
+                            $side[i].querySelector('i').classList.add('bi-dot')
+                        }
+                    } else if ($bab == "C") {
+                        for (let i = 0; i <= $progress_c; i++) {
+                            console.log($progress_c)
+                            $side[i].querySelector('a').classList.remove('disabled');
+                            $side[i].querySelector('a').classList.remove('text-gray');
+
+                            // Mengubah lock menjadi dot
+                            $side[i].querySelector('i').classList.remove('bi-lock')
+                            $side[i].querySelector('i').classList.add('bi-dot')
+                        }
+                    }
                 }
-            } else if ($bab == "B") {
-                for (let i = 0; i <= $progress_b; i++) {
-                    console.log($progress_b)
-                    $side[i].querySelector('a').classList.remove('disabled');
-                    $side[i].querySelector('a').classList.remove('text-gray');
-
-                    // Mengubah lock menjadi dot
-                    $side[i].querySelector('i').classList.remove('bi-lock')
-                    $side[i].querySelector('i').classList.add('bi-dot')
-                }
-            } else if ($bab == "C") {
-                for (let i = 0; i <= $progress_c; i++) {
-                    console.log($progress_c)
-                    $side[i].querySelector('a').classList.remove('disabled');
-                    $side[i].querySelector('a').classList.remove('text-gray');
-
-                    // Mengubah lock menjadi dot
-                    $side[i].querySelector('i').classList.remove('bi-lock')
-                    $side[i].querySelector('i').classList.add('bi-dot')
-                }
-            }
-        }
 
         let $side_A = document.querySelectorAll('#side_A li')
         let $side_B = document.querySelectorAll('#side_B li')
