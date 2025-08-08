@@ -40,6 +40,7 @@ class User extends Authenticatable
     protected $hidden = [
         'password',
         'remember_token',
+        'token_kelas'
     ];
 
     /**
@@ -50,6 +51,7 @@ class User extends Authenticatable
     protected function casts(): array
     {
         return [
+            'token_kelas' => 'array',
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];

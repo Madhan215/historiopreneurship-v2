@@ -1,6 +1,13 @@
 <?php
 
+use App\Http\Controllers\Admin\adminController;
 use App\Http\Controllers\Admin\ResetPasswordController;
+use App\Http\Controllers\Admin\evaluasiController;
+use App\Http\Controllers\Admin\materiController;
+use App\Http\Controllers\Admin\subtopikController;
+use App\Http\Controllers\Admin\topikController;
+use App\Http\Controllers\Admin\uploadController;
+use App\Http\Controllers\Admin\WebDinamisController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\GuruMiddleware;
 use App\Http\Controllers\FileController;
@@ -143,6 +150,26 @@ Route::group(['middleware' => ['admin']], function () {
     Route::prefix('/admin')->group(function () {
         Route::resource('/manajemen-konten', App\Http\Controllers\Admin\ManajemenKontenController::class);
     });
+    Route::get('/admin/daftar-guru', [adminController::class, 'daftarGuru'])->name('admin.daftarGuru');
+    Route::resource('topik', topikController::class);
+    Route::post('/topik/{id}/toggle-status', [topikController::class, 'toggleStatus'])->name('topik.toggleStatus');
+
+    Route::get('/subtopik/create/{id_topik}', [subtopikController::class, 'create'])->name('subtopik.create');
+    Route::post('/subtopik/store', [subtopikController::class, 'store'])->name('subtopik.store');
+    Route::get('/subtopik/{tipe}/{id}/edit', [subtopikController::class, 'edit'])->name('subtopik.edit');
+    Route::put('/subtopik/{tipe}/{id}', [subtopikController::class, 'update'])->name('subtopik.update');
+    Route::delete('/subtopik/{tipe}/{id}', [subtopikController::class, 'destroy'])->name('subtopik.destroy');
+
+
+
+    Route::post('/materi/{id}/toggle-status', [materiController::class, 'toggleStatus'])->name('materi.toggleStatus');
+    Route::post('/evaluasi/{id}/toggle-status', [evaluasiController::class, 'toggleStatus'])->name('evaluasi.toggleStatus');
+    Route::post('/upload/{id}/toggle-status', [uploadController::class, 'toggleStatus'])->name('upload.toggleStatus');
+
+
+    Route::get('/atur-urutan', [topikController::class, 'aturUrutan'])->name('atur-urutan');
+    Route::post('/atur-urutan', [TopikController::class, 'simpanUrutan'])->name('atur-urutan.update');
+    Route::get('/lihat-urutan', [TopikController::class, 'lihatUrutan'])->name('lihat-urutan');
 });
 
 // Latihan
@@ -207,10 +234,12 @@ Route::get('/export-kelas', [dataExportController::class, 'exportKelas'])->name(
 Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
 
 // Sistem Kelas
+Route::resource('kelas', KelasController::class);
+Route::get('kelas/input', [KelasController::class, 'show'])->name('kelas.input.form');
+Route::post('/kelas/join', [KelasController::class, 'storeUser'])->name('kelas.join');
 Route::middleware([
     GuruMiddleware::class,
 ])->group(function () {
-    Route::resource('kelas', KelasController::class);
     Route::get('kelas/create', [KelasController::class, 'create'])->name('kelas.create');
 });
 
@@ -247,3 +276,7 @@ Route::get('/reset-password', function () {
 
 Route::get('/admin/reset-password', [ResetPasswordController::class, 'showResetPassword'])->name('admin.reset.password');
 Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'resetPassword']);
+
+
+Route::get('/{topik}/{subtopik}', [WebDinamisController::class, 'showSubtopik'])
+    ->name('webdinamis.subtopik');
