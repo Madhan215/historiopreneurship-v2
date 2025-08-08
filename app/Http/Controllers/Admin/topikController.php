@@ -8,6 +8,7 @@ use App\Models\materiDinamis;
 use App\Models\topikdinamis;
 use App\Models\uploadDinamis;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 
 class topikController extends Controller
 {
@@ -117,73 +118,75 @@ class topikController extends Controller
 
         return view('admin.FiturKontenDinamis.topik.aturUrutan', compact('topiks', 'token_kelas'));
     }
-
-
     public function simpanUrutan(Request $request)
     {
-        // Validasi request terlebih dahulu
-        $request->validate([
-            'topik_id' => 'required|array',
-            'topik_urutan' => 'required|array',
-        ]);
 
         $topikUrutan = $request->topik_urutan ?? [];
         $materiUrutan = $request->materi_urutan ?? [];
         $evaluasiUrutan = $request->evaluasi_urutan ?? [];
         $uploadUrutan = $request->upload_urutan ?? [];
 
-        // Cek duplikasi urutan antar topik
-        if (count($topikUrutan) !== count(array_unique($topikUrutan))) {
+        // Validasi urutan topik tidak boleh duplikat
+        if (count($topikUrutan) !== count(array_unique(array_values($topikUrutan)))) {
             return redirect()->back()->with('error', 'Urutan antar topik tidak boleh sama!');
         }
 
-        // Cek duplikasi urutan sub-topik dalam satu topik (gunakan kombinasi ID topik jika perlu)
-        $subTopikGabungan = array_merge($materiUrutan, $evaluasiUrutan, $uploadUrutan);
-        if (count($subTopikGabungan) !== count(array_unique($subTopikGabungan))) {
-            return redirect()->back()->with('error', 'Urutan antar subtopik dalam satu topik tidak boleh sama!');
-        }
+        // Gabungkan subtopik berdasarkan topik-nya
+        $subTopikPerTopik = [];
 
-        // Update topik
-        foreach ($request->topik_id as $index => $id) {
-            if (isset($topikUrutan[$index])) {
-                topikdinamis::where('id_topik', $id)->update([
-                    'urutan' => $topikUrutan[$index]
-                ]);
+        // Ambil topik masing-masing subtopik
+        foreach ($materiUrutan as $id => $urutan) {
+            $materi = materiDinamis::find($id);
+            if (!$materi) {
+                dd("Materi dengan id_materi $id tidak ditemukan");
             }
         }
 
-        // Update materi
-        foreach ($request->materi_id ?? [] as $index => $id) {
-            if (isset($materiUrutan[$index])) {
-                materiDinamis::where('id_materi', $id)->update([
-                    'urutan' => $materiUrutan[$index]
-                ]);
+
+        foreach ($evaluasiUrutan as $id => $urutan) {
+            $evaluasi = evaluasiDinamis::find($id);
+            if ($evaluasi) {
+                $subTopikPerTopik[$evaluasi->id_topik][] = $urutan;
             }
         }
 
-        // Update evaluasi
-        foreach ($request->evaluasi_id ?? [] as $index => $id) {
-            if (isset($evaluasiUrutan[$index])) {
-                evaluasiDinamis::where('id_evaluasi', $id)->update([
-                    'urutan' => $evaluasiUrutan[$index]
-                ]);
+        foreach ($uploadUrutan as $id => $urutan) {
+            $upload = uploadDinamis::find($id);
+            if ($upload) {
+                $subTopikPerTopik[$upload->id_topik][] = $urutan;
             }
         }
 
-        // Update upload
-        foreach ($request->upload_id ?? [] as $index => $id) {
-            if (isset($uploadUrutan[$index])) {
-                uploadDinamis::where('id_upload', $id)->update([
-                    'urutan' => $uploadUrutan[$index]
-                ]);
+        // Cek duplikasi urutan dalam masing-masing topik
+        foreach ($subTopikPerTopik as $idTopik => $urutans) {
+            if (count($urutans) !== count(array_unique($urutans))) {
+                return redirect()->back()->with('error', "Urutan subtopik di Topik ID $idTopik tidak boleh sama!");
             }
+        }
+
+        // Simpan urutan topik
+        foreach ($topikUrutan as $id => $urutan) {
+            topikdinamis::where('id_topik', $id)->update(['urutan' => $urutan]);
+        }
+
+        // Simpan urutan materi
+        foreach ($materiUrutan as $id => $urutan) {
+            materiDinamis::where('id_materi', $id)->update(['urutan' => $urutan]);
+        }
+
+        // Simpan urutan evaluasi
+        foreach ($evaluasiUrutan as $id => $urutan) {
+            evaluasiDinamis::where('id_evaluasi', $id)->update(['urutan' => $urutan]);
+        }
+
+        // Simpan urutan upload
+        foreach ($uploadUrutan as $id => $urutan) {
+            uploadDinamis::where('id_upload', $id)->update(['urutan' => $urutan]);
         }
 
         return redirect()->route('topik.index', ['token_kelas' => $request->token_kelas])
             ->with('success', 'Urutan berhasil disimpan!');
     }
-
-
 
 
     public function lihatUrutan()
@@ -229,6 +232,45 @@ class topikController extends Controller
             });
 
         return view('admin.FiturKontenDinamis.topik.lihatUrutan', compact('topiks'));
+    }
+
+    public function paketMateri(Request $request)
+    {
+        $token = $request->query('token_kelas');
+
+        if (!$token) {
+            return redirect()->back()->with('error', 'Token kelas tidak ditemukan.');
+        }
+
+        // Cek apakah sudah ada topik default (hindari duplikasi)
+        $sudahAda = topikdinamis::where('token_kelas', $token)
+            ->whereIn('nama_topik', ['Pembukaan', 'Kesejarahan', 'Kewirausahaan'])
+            ->exists();
+
+        if ($sudahAda) {
+            return redirect()->route('topik.index', ['token_kelas' => $token])
+                ->with('error', 'Paket topik sudah pernah diklaim.');
+        }
+
+        $topiks = [
+            ['nama_topik' => 'Pembukaan', 'urutan' => 1],
+            ['nama_topik' => 'Kesejarahan', 'urutan' => 2],
+            ['nama_topik' => 'Kewirausahaan', 'urutan' => 3],
+        ];
+
+        foreach ($topiks as $topik) {
+            topikdinamis::create([
+                'nama_topik' => $topik['nama_topik'],
+                'status' => 'on', // default off, bisa diubah sesuai kebutuhan
+                'urutan' => $topik['urutan'],
+                'token_kelas' => $token,
+                'created_at' => Carbon::now(),
+                'updated_at' => Carbon::now(),
+            ]);
+        }
+
+        return redirect()->route('topik.index', ['token_kelas' => $token])
+            ->with('success', 'Paket topik berhasil diklaim.');
     }
 
 }

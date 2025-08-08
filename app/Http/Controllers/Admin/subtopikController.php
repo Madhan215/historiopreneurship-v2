@@ -72,45 +72,62 @@ class subtopikController extends Controller
                 $request->validate([
                     'nama_upload' => 'required|string|max:255',
                     'deskripsi_upload' => 'required|string',
+                    'konten_upload' => 'required|string', // ← isi dari Quill editor
                     'tipe_file' => 'required|in:word,excel,pdf,image,video',
                 ], [
                     'nama_upload.required' => 'Nama upload harus diisi.',
                     'deskripsi_upload.required' => 'Deskripsi upload harus diisi.',
+                    'konten_upload.required' => 'Konten editor harus diisi.',
                     'tipe_file.required' => 'Tipe file harus dipilih.',
                     'tipe_file.in' => 'Tipe file tidak valid.',
                 ]);
 
-                $input = '<label for="myfile">Select a file:</label>';
+                // Cek tipe file untuk accept
                 $accept = '';
+                $ext_info = '';
 
                 switch ($request->tipe_file) {
                     case 'word':
-                        $accept = '.doc,.docx';
+                        $accept = '.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document';
+                        $ext_info = '.doc atau .docx';
                         break;
                     case 'excel':
-                        $accept = '.xls,.xlsx';
+                        $accept = '.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet';
+                        $ext_info = '.xls atau .xlsx';
                         break;
                     case 'pdf':
-                        $accept = '.pdf';
+                        $accept = '.pdf,application/pdf';
+                        $ext_info = '.pdf';
                         break;
                     case 'image':
                         $accept = 'image/*';
+                        $ext_info = 'gambar (jpeg, png, dll)';
                         break;
                     case 'video':
                         $accept = 'video/*';
+                        $ext_info = 'video (mp4, avi, dll)';
                         break;
                 }
 
-                $input .= '<input type="file" id="myfile" name="myfile" accept="' . $accept . '">';
+                // Simpan instruksi upload ke variabel konten (HTML dari Quill)
+                $input = '
+        <div class="mb-2">
+            <div>' . $request->konten_upload . '</div>
+        </div>
+        <label for="formFile1" class="form-label fw-semibold">' . e($request->deskripsi_upload) . '</label>
+        <input class="form-control" type="file" id="formFile1" name="file" accept="' . $accept . '">
+        <small>Kumpulkan dengan format <strong>' . $ext_info . '</strong></small>
+    ';
 
                 uploadDinamis::create([
                     'id_topik' => $request->id_topik,
                     'nama_upload' => $request->nama_upload,
-                    'konten' => $input,
-                    'deskripsi' => $request->deskripsi_upload,
+                    'konten' => $input, // ← termasuk konten dari Quill
+                    'deskripsi' => $request->deskripsi_upload, // ← ringkasan biasa
                     'status' => 'on',
                 ]);
                 break;
+
 
             default:
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
@@ -200,24 +217,42 @@ class subtopikController extends Controller
             ->with('success', 'Subtopik berhasil dirubah');
     }
 
-    public function destroy($tipe, $id)
+    public function destroy(Request $request, $tipe, $id)
     {
-        switch ($tipe) {
-            case 'materi':
-                $data = materiDinamis::findOrFail($id);
-                break;
-            case 'evaluasi':
-                $data = evaluasiDinamis::findOrFail($id);
-                break;
-            case 'upload':
-                $data = uploadDinamis::findOrFail($id);
-                break;
-            default:
-                abort(404);
+        // Validasi dulu apakah id_topik ada dalam request
+        if (!$request->has('id_topik')) {
+            abort(400, 'ID Topik tidak ditemukan dalam permintaan.');
         }
 
+        // Ambil topik berdasarkan ID dari request
+        $topik = TopikDinamis::find($request->id_topik);
+
+        // Cek apakah topik ditemukan
+        if (!$topik) {
+            abort(404, 'Topik tidak ditemukan.');
+        }
+
+        // Ambil data subtopik berdasarkan tipe
+        switch ($tipe) {
+            case 'materi':
+                $data = MateriDinamis::findOrFail($id);
+                break;
+            case 'evaluasi':
+                $data = EvaluasiDinamis::findOrFail($id);
+                break;
+            case 'upload':
+                $data = UploadDinamis::findOrFail($id);
+                break;
+            default:
+                abort(404, 'Tipe subtopik tidak dikenali.');
+        }
+
+        // Hapus subtopik
         $data->delete();
 
-        return redirect()->route('admin.FiturKontenDinamis.topik.index')->with('success', 'Subtopik berhasil dihapus.');
+        // Redirect ke halaman topik dengan token_kelas
+        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', 'Subtopik berhasil dihapus.');
     }
+
 }

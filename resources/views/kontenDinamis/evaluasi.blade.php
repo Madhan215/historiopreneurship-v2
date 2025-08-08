@@ -50,7 +50,7 @@
             </div>
         </div>
 
-        <form id="preTestForm" action="{{ route('simpanNilaiPretest') }}" method="POST" style="display: none;">
+        <form id="preTestForm" action="{{ route('SimpanNilaiEvaluasi') }}" method="POST" style="display: none;">
             @csrf
             <input type="hidden" name="email" value="{{ Auth::user()->email }}">
             <input type="hidden" name="nilai_akhir" id="nilaiAkhir">

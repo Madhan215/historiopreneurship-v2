@@ -168,8 +168,12 @@ Route::group(['middleware' => ['admin']], function () {
 
 
     Route::get('/atur-urutan', [topikController::class, 'aturUrutan'])->name('atur-urutan');
-    Route::post('/atur-urutan', [TopikController::class, 'simpanUrutan'])->name('atur-urutan.update');
-    Route::get('/lihat-urutan', [TopikController::class, 'lihatUrutan'])->name('lihat-urutan');
+    Route::post('/atur-urutan/{token_kelas}', [topikController::class, 'simpanUrutan'])->name('atur-urutan.update');
+    Route::get('/lihat-urutan', [topikController::class, 'lihatUrutan'])->name('lihat-urutan');
+
+    //paketmateri
+    Route::get('/klaim-paket-materi', [topikController::class, 'paketMateri'])->name('topik.paketMateri');
+
 });
 
 // Latihan
@@ -280,3 +284,8 @@ Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'rese
 
 Route::get('/{topik}/{subtopik}', [WebDinamisController::class, 'showSubtopik'])
     ->name('webdinamis.subtopik');
+
+
+
+Route::post('/SimpanNilaiEvaluasi', action: [WebDinamisController::class, 'SimpanNilaiEvaluasi'])->name('SimpanNilaiEvaluasi');
+Route::post('/SimpanUpload', [WebDinamisController::class, 'uploadFileDinamis'])->name('uploadFileDinamis');

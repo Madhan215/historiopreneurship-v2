@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\ManajemenKonten;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ManajemenKontenSeeder extends Seeder
 {
@@ -13,228 +14,239 @@ class ManajemenKontenSeeder extends Seeder
      */
     public function run(): void
     {
-        $konten1 = [
-            "<img class='d-block mx-auto img-fluid my-3 shadow' src='https://historiopreneurship.research-media.web.id/img/MasjidSultanSuriansyah.jpg' alt='Masjid Sultan Suriansyah' style='width: 500px; height: auto;'><figcaption class='text-center my-3'>Gambar Masjid Sultan Suriansyah, Kuin Utara Banjarmasin</figcaption>",
-            "<p>Sejarah adalah peninggalan masa lalu yang perlu dirawat sebagai ingatan kolektif manusia, dengan banyak peninggalannya, termasuk bangunan bersejarah, tersebar di Kalimantan Selatan. Mempelajari sejarah tidak hanya memahami masa lalu, tetapi juga memberikan manfaat untuk masa depan sebagai dialog antara peristiwa lampau dan perkembangan masa depan (Kochhar, 2008).</p>",
-            "<p>Pariwisata di Indonesia memiliki peluang besar karena setiap tujuan wisatanya menawarkan daya tarik budaya, atraksi, dan sejarah yang khas di setiap daerah. Sesuai dengan Undang-Undang Nomor 9 Tahun 1990 dan Undang-Undang Nomor 10 Tahun 2009, pengembangan pariwisata berbasis budaya memanfaatkan potensi seni, budaya, serta peninggalan sejarah sebagai modal pembangunan untuk meningkatkan kesejahteraan rakyat (Yoeti, 2006; Kirom, Sudarmiatin, & Putra, 2016).</p>",
-            "<p>Peninggalan bersejarah mempunyai daya tarik yang besar yang dapat menarik wisatawan. Potensi pariwisata berbasis sejarah budaya merupakan salah satu aset yang memiliki potensi untuk dikembangkan oleh setiap daerah (Adi et al, 2013). Pengembangan potensi sektor pariwisata di daerah selain untuk menambah pendapatan daerah juga dapat memperkenalkan sejarah serta melestarikan budaya daerah wisata tersebut.</p>",
-            "<p>Peninggalan bersejarah memiliki daya tarik besar yang dapat menarik wisatawan dan menjadi aset potensial untuk dikembangkan oleh setiap daerah (Adi et al., 2013). Pengembangan pariwisata berbasis sejarah dan budaya tidak hanya meningkatkan pendapatan daerah, tetapi juga memperkenalkan sejarah serta melestarikan budaya lokal.</p>",
-            "<p>Daya tarik wisata sejarah terletak pada keunikan keragaman budaya dan sejarah di suatu daerah, yang memungkinkan wisatawan mempelajari budaya lokal untuk memenuhi kebutuhan rekreasi sekaligus mendapatkan edukasi dari peristiwa sejarah (Jamal, Bustami, & Desma). Menurut Irdika (Pusaka Budaya dan Pariwisata, 2007), terdapat 10 elemen budaya yang menjadi daya tarik wisata, yaitu kerajinan, tradisi, sejarah, arsitektur, makanan lokal, seni musik, cara hidup masyarakat, agama, bahasa, dan pakaian lokal. Daya tarik ini semakin kuat jika dikemas dalam bentuk atraksi wisata yang menarik dan unik.</p>",
-            "<p>Setiap daerah memiliki sejarah budaya yang unik, menjadi karakteristik pembeda sekaligus potensi pariwisata sejarah (Suyatmin & Edy, 2017). Penelitian Aziz (2018) menyimpulkan bahwa daya tarik kota Banjarmasin meliputi wisata heritage dan peninggalan sejarah, dengan keberadaan sungai, peninggalan kerajaan Banjar, dan nuansa Islami sebagai elemen utamanya. Tempat bersejarah seperti masjid dari era kerajaan dan makam keramat para wali yang berperan dalam penyebaran Islam menjadi daya tarik utama bagi wisatawan lokal maupun nonlokal.</p>",
-            "<img class='d-block mx-auto img-fluid my-3 shadow' src='https://historiopreneurship.research-media.web.id/img/2.jpg' alt='Pasar Terapung' style='width: 500px; height: auto;'><figcaption class='text-center my-3'>Gambar Pasar Terapung, Lok Baintan</figcaption>",
-            "<p>Pasar Terapung di Kuin mengalami penurunan eksistensi akibat pergeseran aktivitas ekonomi masyarakat ke darat (Pradana, 2020), ditambah pengembangan Pasar Terapung buatan di Siring Tandean yang membuat Pasar Terapung Muara Kuin semakin terpinggirkan. Faktor lain yang memengaruhi adalah kurangnya pengemasan daya tarik wisata, minimnya fasilitas, kondisi lingkungan yang kurang mendukung, serta waktu operasional yang terbatas dari pukul 03.00 hingga 07.00 WITA (Huiwen & Hassink, 2017). Penurunan ini turut menyebabkan hilangnya nilai-nilai sosial dan budaya yang terkandung dalam Pasar Terapung Kuin (Gibson, 2015).</p>",
-            "<p>Peninggalan bersejarah memiliki daya tarik besar, termasuk bagi wisatawan mancanegara. Untuk mengembangkan wisata sejarah Kota Banjarmasin, diperlukan identifikasi potensi objek wisata berdasarkan kelayakan lanskap dan nilai-nilai kultural yang ada. Strategi pengembangan ini bertujuan mengoptimalkan variabel kelayakan lanskap agar wisata sejarah dapat mendukung peningkatan kesejahteraan kota dan masyarakat.</p>"
-        ];
+        // Insert topik terlebih dahulu
+        $idTopik = DB::table('topikdinamis')->insertGetId([
+            'nama_topik' => 'Panduan Penggunaan',
+            'status' => 'on',
+            'urutan' => 1,
+        ]);
 
-        foreach ($konten1 as $index => $item) {
-            ManajemenKonten::create([
-                'kategori_konten' => 'kegiatanPembelajaran1',
-                'nomor' => $index + 1,
-                'konten' => $item,
-            ]);
-        }
+        // Isi konten HTML ul dari Blade
+        $konten = '
+            <h2>Cara Penggunaan</h2>
+            <ul>
+                <li>
+                    Media ajar ajar ini dirancang untuk membantu dosen untuk melaksanakan kegiatan program kewirausahaan kesejarahan (historiopreneurship) di perguruan tinggi yang menerapkan Merdeka Belajar Kampus Merdeka.
+                </li>
+                <li>
+                    Di dalam media ajar ajar ini ada beberapa aktivitas yang saling berkaitan, dengan beberapa formatif asesmen sebagai diagnostik asesmen dan asesmen sumatif sebagai ujung dari proses pembelajaran. Disarankan agar media ajar ajar ini dilakukan sesuai dengan urutan di alur CPMK.
+                </li>
+                <li>
+                    Waktu yang direkomendasikan untuk pelaksanaan media ajar ajar ini adalah 1 semester atau 14 kali tatap muka dengan durasi kurang lebih 28 JP. Sebaiknya ada jeda waktu antar aktivitas agar di satu sisi para dosen mempunyai waktu yang cukup untuk melakukan persiapan materi untuk memantik diskusi dan refleksi mahasiswa. Mahasiswa juga mempunyai waktu untuk berpikir, berefleksi, dan menjalankan masing-masing aktivitas dengan baik.
+                </li>
+            </ul>
+        ';
 
-        $konten2 = [
-            "<li>Mahasiswa mampu mengorganisasikan objek kesejarahan berdasarkan hasil identifikasi dan eksplorasi dalam pemetaan.</li>",
-            "<li>Mahasiswa mampu mengasesmen objek kesejarahan berdasarkan hasil identifikasi.</li>",
-            "<li>Mahasiswa mampu mendesain potensi usaha berdasarkan hasil kelayakan objek (<i>object pattern and feasibility</i>).</li>"
-        ];
+        // Masukkan ke materi dinamis
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Cara Penggunaan',
+            'konten' => $konten,
+            'status' => 'on',
+            'urutan' => 1,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
 
-        foreach ($konten2 as $index => $item) {
-            ManajemenKonten::create([
-                'kategori_konten' => 'kegiatanPembelajaran2',
-                'nomor' => $index + 1,
-                'konten' => $item,
-            ]);
-        }
-        $konten3 = [
-            [
-                "question" => "Siapakah pendiri Kesultanan Banjar?",
-                "options" => ["Sultan Adam", "Sultan Suriansyah", "Pangeran Antasari", "Pangeran Hidayatullah"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Perang Banjar terjadi pada tahun?",
-                "options" => ["1860-1865", "1859-1905", "1845-1862", "1870-1885"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Siapa yang memimpin Perang Banjar setelah Pangeran Antasari?",
-                "options" => ["Sultan Adam", "Pangeran Hidayatullah", "Pangeran Diponegoro", "Sultan Suriansyah"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa nama kerajaan sebelum menjadi Kesultanan Banjar?",
-                "options" => ["Kerajaan Tanjungpura", "Kerajaan Daha", "Kerajaan Kutai", "Kerajaan Martapura"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Pahlawan nasional dari Kalimantan Selatan adalah?",
-                "options" => ["Pangeran Diponegoro", "Cut Nyak Dien", "Pangeran Antasari", "Sultan Hasanuddin"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa dampak dari Perang Banjar terhadap masyarakat lokal?",
-                "options" => ["Meningkatnya kesejahteraan", "Peningkatan pendidikan", "Kerugian ekonomi dan sosial", "Pembangunan infrastruktur"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Mengapa Sultan Suriansyah memeluk Islam?",
-                "options" => ["Untuk mendapatkan kekuasaan", "Pengaruh dari pedagang", "Untuk menyatukan rakyat", "Tekanan dari Belanda"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi motivasi utama Pangeran Antasari dalam memimpin Perang Banjar?",
-                "options" => ["Mendapatkan kekayaan", "Mempertahankan tanah air", "Mendapatkan dukungan dari Belanda", "Mencari ketenaran"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa peran perempuan dalam Perang Banjar?",
-                "options" => ["Tidak ada peran", "Sebagai pengumpul dana", "Sebagai pejuang", "Sebagai diplomat"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang dapat dipelajari dari perjuangan Pangeran Antasari?",
-                "options" => ["Kepentingan kekuasaan", "Nilai-nilai kepemimpinan dan keberanian", "Pentingnya aliansi dengan Belanda", "Kepentingan ekonomi"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Bagaimana cara Pangeran Hidayatullah melanjutkan perjuangan setelah Pangeran Antasari?",
-                "options" => ["Dengan diplomasi", "Dengan strategi militer", "Dengan penggalangan massa", "Dengan perjanjian damai"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi ciri khas budaya Banjar setelah Islam masuk?",
-                "options" => ["Pengaruh Hindu yang kuat", "Tradisi lisan yang hilang", "Perkembangan seni dan sastra Islam", "Penutupan terhadap budaya lokal"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi tantangan utama Kesultanan Banjar dalam mempertahankan kemerdekaan?",
-                "options" => ["Persaingan antar kerajaan", "Kekurangan sumber daya", "Intervensi kolonial Belanda", "Kurangnya dukungan rakyat"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang dapat dilakukan untuk melestarikan sejarah Perang Banjar?",
-                "options" => ["Mengabaikan sejarah", "Mendokumentasikan dan mengajarkan kepada generasi muda", "Membuat film tentang Perang Banjar", "Menyembunyikan fakta sejarah"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi pengaruh Perang Banjar terhadap perkembangan politik di Indonesia?",
-                "options" => ["Meningkatnya kekuasaan kolonial", "Berkurangnya kesadaran politik", "Munculnya gerakan nasionalisme", "Peningkatan kerjasama dengan Belanda"],
-                "correct" => 2,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Siapa yang menjadi tokoh penting dalam diplomasi Kesultanan Banjar?",
-                "options" => ["Sultan Adam", "Pangeran Antasari", "Pangeran Hidayatullah", "Sultan Suriansyah"],
-                "correct" => 0,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi strategi utama dalam Perang Banjar?",
-                "options" => ["Perang terbuka", "Perang gerilya", "Perang diplomasi", "Perang ekonomi"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi warisan budaya dari Kesultanan Banjar?",
-                "options" => ["Seni tari", "Seni lukis", "Seni musik", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Bagaimana cara masyarakat Banjar merayakan hari kemerdekaan?",
-                "options" => ["Dengan upacara resmi", "Dengan festival budaya", "Dengan demonstrasi", "Dengan perayaan sederhana"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi peran penting pendidikan dalam masyarakat Banjar?",
-                "options" => ["Meningkatkan kesadaran sejarah", "Meningkatkan keterampilan ekonomi", "Meningkatkan kesadaran politik", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi tantangan dalam pelestarian budaya Banjar?",
-                "options" => ["Globalisasi", "Kurangnya minat generasi muda", "Keterbatasan sumber daya", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi kontribusi Kesultanan Banjar terhadap Indonesia?",
-                "options" => ["Peningkatan perdagangan", "Peningkatan pendidikan", "Perjuangan melawan penjajahan", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi simbol perjuangan rakyat Banjar?",
-                "options" => ["Bendera Kesultanan", "Lambang Pahlawan", "Lagu perjuangan", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi harapan masyarakat Banjar untuk masa depan?",
-                "options" => ["Kemandirian ekonomi", "Pelestarian budaya", "Pendidikan yang lebih baik", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi peran penting pemuda dalam sejarah Banjar?",
-                "options" => ["Sebagai pengikut", "Sebagai pemimpin perubahan", "Sebagai penonton", "Sebagai pengacau"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi nilai-nilai yang diajarkan dalam sejarah Perang Banjar?",
-                "options" => ["Keberanian dan pengorbanan", "Kekuasaan dan kekayaan", "Kepentingan pribadi", "Semua jawaban salah"],
-                "correct" => 0,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi faktor utama yang memicu Perang Banjar?",
-                "options" => ["Pajak yang tinggi", "Kekuasaan lokal", "Perbedaan agama", "Intervensi asing"],
-                "correct" => 0,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Bagaimana pengaruh Perang Banjar terhadap identitas masyarakat Banjar?",
-                "options" => ["Menghilangkan identitas lokal", "Memperkuat identitas budaya", "Mendorong asimilasi", "Tidak ada pengaruh"],
-                "correct" => 1,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi peran penting sejarah dalam pendidikan masyarakat Banjar?",
-                "options" => ["Membentuk karakter", "Meningkatkan keterampilan teknis", "Mendorong persaingan", "Mengabaikan nilai-nilai lokal"],
-                "correct" => 0,
-                "explanation" => ""
-            ],
-            [
-                "question" => "Apa yang menjadi harapan masyarakat Banjar terhadap generasi muda?",
-                "options" => ["Menjaga tradisi", "Meningkatkan pengetahuan", "Berpartisipasi dalam pembangunan", "Semua jawaban benar"],
-                "correct" => 3,
-                "explanation" => ""
-            ]
-        ];
-        foreach ($konten3 as $index => $item) {
-            ManajemenKonten::create([
-                'kategori_konten' => 'kegiatanPembelajaran2',
-                'nomor' => $index + 1,
-                'konten' => $item,
-            ]);
-        }
+        // Materi 2: Capaian Pembelajaran Lulusan
+        $konten2 = '
+        <h2>Capaian Pembelajaran Lulusan (CPL)</h2>
+        <p>CPL yang ingin dicapai dalam pembelajaran ini adalah mahasiswa mampu mengaplikasikan teori dan nilai-nilai kewirausahaan dalam kehidupan nyata berdasarkan potensi kewirausahaan kesejarahan (historiopreneurship) beserta berbagai aspek pendukungnya, dengan konten kesejarahan, kewirausahaan dan kepariwisataan yang mengacu  pada kebutuhan materi, Merdeka Belajar Kampus Merdeka, dan project based learning.</p>';
+
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Capaian Pembelajaran Lulusan (CPL)',
+            'konten' => $konten2,
+            'status' => 'on',
+            'urutan' => 2,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $konten3 = '
+    <h2>Capaian Pembelajaran Mata Kuliah (CPMK)</h2>
+    <p>Melalui media ajar berbasis <i>Project based learning</i> (PjBL) ini, diharapkan:</p>
+    <table class="shadow my-4 table table-striped table-sm">
+        <tr>
+            <td class="text-nowrap"><b>CPMK 1</b></td>
+            <td>Mahasiswa mampu mendeskripsikan konten dan karakter objek berdasarkan kesejarahan serta urgensinya dalam perspektif budaya dan nilai karakter</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 2</b></td>
+            <td>Mahasiswa mampu mengorganisasikan objek kesejarahan berdasarkan hasil identifikasi dan eksplorasi dalam pemetaan</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 3</b></td>
+            <td>Mahasiswa mampu mengasesmen objek kesejarahan berdasarkan hasil identifikasi</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 4</b></td>
+            <td>Mahasiswa mampu mendesain pola perjalanan (travel pattern) objek berdasarkan hasil kelayakan</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 5</b></td>
+            <td>Mahasiswa mampu menyusun laporan terkait ramburambu wisata kesejarahan berbasis kewirausahaan berdasarkan hasil observasi lapangan</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 6</b></td>
+            <td>Mahasiswa mampu menguraikan perspektif terkait pemasaran kewirausahaan kesejarahan melalui diskusi kelompok dan pakar</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 7</b></td>
+            <td>Mahasiswa mampu merancang produk dan jasa terkait kewirausahaan kesejarahan berdasarkan konsep kewirausahaan</td>
+        </tr>
+        <tr>
+            <td class="text-nowrap"><b>CPMK 8</b></td>
+            <td>Mahasiswa memiliki keterampilan memasarkan produk dan jasa terkait kewirausahaan kesejarahan berdasarkan hasil praktik lapangan</td>
+        </tr>
+    </table>
+    <h3>HAL YANG HARUS DIPERHATIKAN SEBELUM MEMULAI PROSES PEMBELAJARAN</h3>
+    <p>
+        Dalam proses belajar berbasis PjBL ini, sangat penting sekali diajukan sebuah pertanyaan atau studi kasus untuk menstimulasi mahasiswa agar mengekplorasi pembahasan masalah melalui pendalaman materi, lalu menganalisisnya dari berbagai sudut pandang dan teori, yang akhirnya mengkonfirmasi masalah tersebut melalui diskusi, refleksi dan pengambilan kesimpulan. Mahasiswa diberikan stimulus yang memicu pembelajaran aktif dan menyenangkan sesuai dengan konsep merdeka belajar untuk mengkonstruksi pengetahuannya sendiri melalui pengalaman yang nyata. Pada akhir kegiatan pembelajaran, mahasiswa berkreasi membuat sebuah project bisnis dengan memanfaatkan potensi wirausaha dalam berbagai bidang pariwisata yang sudah teridentifikasi.
+    </p>';
+
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'CPMK dan Pedoman Belajar',
+            'konten' => $konten3,
+            'status' => 'on',
+            'urutan' => 3,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $konten4 = '<h2>Kolaborasi Narasumber</h2>
+<p class="text-justify">
+    Apabila dosen dan mahasiswa mempunyai keterbatasan untuk memperoleh konten, dosen bisa mengundang narasumber ahli misalnya dari guru mata pelajaran produktif, praktisi di berbagai bidang, dan bisa menggunakan sarana sekitar sebagai sumber belajar primer maupun sekunder. 
+</p>';
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Kolaborasi Narasumber',
+            'konten' => $konten4,
+            'status' => 'on',
+            'urutan' => 4,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $konten5 = '<h2>Peran Dosen</h2>
+<ol>
+    <li>
+        Fasilitator: memfasilitasi kegiatan, menyediakan media belajar, lembar belajar, lembar kerja dan lain-lain.
+    </li>
+    <li>
+        Moderator: memoderasi diskusi, memberikan pertanyaan pemantik, menutup dengan kesimpulan.
+    </li>
+    <li>
+        Penyedia Informasi: menyediakan artikel, video, tautan informasi.
+    </li>
+    <li>
+        Mentor: membimbing peserta didik dalam mengembangkan proyek.
+    </li>
+</ol>';
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Peran Dosen',
+            'konten' => $konten5,
+            'status' => 'on',
+            'urutan' => 5,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $konten6 = '<h2>Sarana dan Prasarana</h2>
+<p><b>Sarana Pembelajaran</b></p>
+<ol>
+    <li>
+        Digital dan Nondigital berupa Buku paket, e-book, portal pembelajaran, tautan edukasi di internet, surat kabar, majalah, televisi, radio, teks iklan di ruang publik, tempat wisata kesejarahan.
+    </li>
+    <li>
+        Video pembelajaran di internet.
+    </li>
+    <li>
+        Aplikasi “BAHIMAT” yang telah dikembangkan dan diunduh dari Google Playstore.
+    </li>
+</ol>
+<p><b>Prasarana Pembelajaran</b></p>
+<ol>
+    <li>
+        Perangkat keras (PC, Laptop, Smartphone, Tablet, Headset).
+    </li>
+    <li>
+        Perangkat lunak (Aplikasi pembelajaran: Whatsapp, Zoom, Google Classroom, Media Sosial: Youtube, Instagram, dan lain-lain).
+    </li>
+    <li>
+        Jaringan internet
+    </li>
+</ol>';
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Sarana dan Prasarana',
+            'konten' => $konten6,
+            'status' => 'on',
+            'urutan' => 6,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
+
+        $konten7 = '<h2>Tahapan Kegiatan Pembelajaran <i>Project Based Learning</i></h2>
+<p class="mt-3"><b>Merdeka Belajar</b></p>
+<ol>
+    <li>
+        Mulai dari diri: Mahasiswa diberi pertanyaan pemantik oleh dosen dan mencurahkannya
+        berbagai pendapat dan pengalamannya.
+    </li>
+    <li>
+        Eksplorasi konsep: Mahasiswa melihat tayangan foto maupun video wisata sejarah yang ada di Kalimantan Selatan.
+    </li>
+    <li>
+        Ruang kolaborasi: Mahasiswa melakukan identifikasi dan asesmen potensi wisata sejarah secara berkelompok.
+    </li>
+    <li>
+        Refleksi terbimbing: merefleksi hasil kajiannya bersama dengan kelompok.
+    </li>
+    <li>
+        Demokrasi konstekstual: Mengerjakan lembar analisis individu.
+    </li>
+    <li>
+        Elaborasi: Mahasiswa memperdalam materi pengayaan untuk memperluas pemahaman.
+    </li>
+    <li>
+        Koneksi antar materi: Mahasiswa membuat kesimpulan materi dan keterkaitannya
+        dengan materi atau mata kuliah lain.
+    </li>
+    <li>
+        Aksi nyata: Mahasiswa melakukan presentasi hasil kajian bersama kelompok.
+    </li>
+</ol>
+<p><b>Project Based Learning</b></p>
+<ol>
+    <li>
+        Pertanyaan mendasar: Mahasiswa secara berkelompok menentukan topik "objek wisata sejarah" yang akan dijadikan potensi wirausaha wisata kesejarahan.                        
+    </li>
+    <li>
+        Desain perencanaan: Mahasiswa secara berkelompok menyusun desain perencanaan produk melalui marketing mix, merencanakan startegi pemasarannya melalui teknologi digital.                        
+    </li>
+    <li>
+        Menyusun jadwal: Mahasiswa secara berkelompok membuat jadwal langkah-langkah penyediakan produk dan jadwal pembuatan sampai dengan pengoperasian pemasaran.                        
+    </li>
+    <li>
+        Monitor perkembangan: Mahasiswa secara berkelompok memonitor perkembangan pemasaran produknya selama 2 minggu.                        
+    </li>
+    <li>
+        Uji hasil: setelah 2 minggu melakukan pemasaran, mahasiswa melaporkan hasil pemasaran produknya.
+    </li>
+</ol>';
+        DB::table('materidinamis')->insert([
+            'id_topik' => $idTopik,
+            'nama_materi' => 'Tahapan',
+            'konten' => $konten7,
+            'status' => 'on',
+            'urutan' => 7,
+            'created_at' => now(),
+            'updated_at' => now(),
+        ]);
     }
+
+
 }
