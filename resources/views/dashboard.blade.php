@@ -119,6 +119,43 @@
                 </div>
             </div>
         </div>
+        <div class="card shadow-sm mt-4">
+            <div class="card-body">
+                <h5 class="card-title mb-3">🏆 Leaderboard</h5>
+                <div class="table-responsive">
+                    <table class="table table-bordered align-middle text-center">
+                        <thead class="table-dark">
+                            <tr>
+                                <th>Rank</th>
+                                <th>Nama</th>
+                                <th>Badge</th>
+                                <th>Poin</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @foreach ($leaderboard as $index => $user)
+                                @php
+                                    $badges = $user->badges ? explode(',', $user->badges) : [];
+                                    $isCurrentUser = $user->email === auth()->user()->email;
+                                @endphp
+                                <tr class="{{ $isCurrentUser ? 'table-warning fw-bold' : '' }}">
+                                    <td>{{ $index + 1 }}</td>
+                                    <td>{{ $user->nama_lengkap }}</td>
+                                    <td>
+                                        @forelse ($badges as $badge)
+                                            <img src="{{ asset($badge) }}" alt="badge" width="40" height="40" class="rounded-circle me-1">
+                                        @empty
+                                            <span class="text-muted">-</span>
+                                        @endforelse
+                                    </td>
+                                    <td>{{ $user->poin }}</td>
+                                </tr>
+                            @endforeach
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
     </div>
     <script>
         Fancybox.bind("[data-fancybox]", {

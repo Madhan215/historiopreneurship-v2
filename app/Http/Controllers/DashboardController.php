@@ -243,7 +243,27 @@ class DashboardController extends Controller
         $data['claimedBadges'] = $claimedBadges;
         $data['jumlahGuru'] = User::where('peran', 'guru')->count();
         $data['jumlahSiswa'] = User::where('peran', 'siswa')->count();
+
+        // Leaderboard dengan badge
+        $data['leaderboard'] = DB::table('users')
+            ->join('nilai', 'users.email', '=', 'nilai.email')
+            ->leftJoin('user_badge', 'users.email', '=', 'user_badge.email')
+            ->leftJoin('badge', 'user_badge.id_badge', '=', 'badge.id')
+            ->select(
+                'users.email',
+                'users.nama_lengkap',
+                DB::raw('SUM(CASE WHEN nilai.aspek IN ("' . implode('", "', $nilaiAspek) . '") THEN nilai.nilai_akhir ELSE 0 END) as poin'),
+                DB::raw('GROUP_CONCAT(badge.link_gambar) as badges')
+            )
+            ->where('users.peran', 'siswa')
+            ->groupBy('users.email', 'users.nama_lengkap')
+            ->orderBy('poin', 'desc')
+            ->limit(10)
+            ->get();
+
         return view('dashboard', $data);
+
+
     }
 
 

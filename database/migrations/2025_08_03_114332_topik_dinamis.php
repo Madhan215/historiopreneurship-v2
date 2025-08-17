@@ -15,7 +15,7 @@ return new class extends Migration {
             $table->string('nama_topik');
             $table->enum('status', ['on', 'off'])->default('off');
             $table->unsignedInteger('urutan')->nullable();
-            $table->varchar('token_kelas')->nullable();
+            $table->string('token_kelas')->nullable();
             $table->timestamps();
         });
     }
