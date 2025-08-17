@@ -18,9 +18,9 @@
         <input type="hidden" name="id_topik" value="{{ $id_topik }}">
 
         <div class="row g-4">
-            <!-- Sidebar -->
-            <div class="col-md-4">
-                <div class="card shadow-sm">
+            <div class="col-12">
+                <!-- Jenis Subtopik -->
+                <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <h5 class="card-title"><i class="bi bi-ui-checks-grid"></i> Jenis Subtopik</h5>
                         <div class="mb-3">
@@ -71,23 +71,17 @@
                             <textarea name="deskripsi_upload" id="deskripsi_upload" class="form-control mt-3"
                                 placeholder="Deskripsi singkat..."></textarea>
 
-
                             <!-- Quill Editor untuk konten upload -->
                             <label class="mt-3">Instruksi Lengkap (Editor)</label>
                             <div id="upload-editor" style="height: 150px; background-color: white;"></div>
                             <input type="hidden" name="konten_upload" id="konten_upload">
-
                         </div>
-
-                        <button type="submit" class="btn btn-success mt-4 w-100">
-                            <i class="bi bi-save"></i> Simpan Subtopik
-                        </button>
                     </div>
                 </div>
             </div>
 
-            <!-- Editor & Preview -->
-            <div class="col-md-8">
+            <div class="col-12">
+                <!-- Editor Konten -->
                 <div class="card shadow-sm mb-4">
                     <div class="card-body">
                         <div id="form-materi" class="d-none">
@@ -100,13 +94,22 @@
                         <input type="hidden" name="soal_json" id="soal_json">
                     </div>
                 </div>
+            </div>
 
+            <div class="col-12">
+                <!-- Live Preview -->
                 <div class="card shadow-sm">
                     <div class="card-body bg-light">
                         <h5 class="fw-bold mb-3"><i class="bi bi-eye"></i> Live Preview</h5>
                         <div id="live-preview" class="p-3 border rounded bg-white" style="min-height: 300px;"></div>
                     </div>
                 </div>
+            </div>
+
+            <div class="col-12">
+                <button type="submit" class="btn btn-success mt-4 w-100">
+                    <i class="bi bi-save"></i> Simpan Subtopik
+                </button>
             </div>
         </div>
     </form>
@@ -230,24 +233,24 @@
 
             for (let i = 0; i < jumlah; i++) {
                 container.innerHTML += `
-                    <div class="border rounded p-3 mb-3">
-                        <h6>Soal ${i + 1}</h6>
-                        <label>Pertanyaan</label>
-                        <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
-                        <label class="mt-2">Pilihan</label>
-                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
-                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
-                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
-                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
-                        <label class="mt-2">Jawaban Benar</label>
-                        <select class="form-select correct" data-index="${i}">
-                            <option value="0">Pilihan A</option>
-                            <option value="1">Pilihan B</option>
-                            <option value="2">Pilihan C</option>
-                            <option value="3">Pilihan D</option>
-                        </select>
-                    </div>
-                `;
+                        <div class="border rounded p-3 mb-3">
+                            <h6>Soal ${i + 1}</h6>
+                            <label>Pertanyaan</label>
+                            <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
+                            <label class="mt-2">Pilihan</label>
+                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
+                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
+                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
+                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
+                            <label class="mt-2">Jawaban Benar</label>
+                            <select class="form-select correct" data-index="${i}">
+                                <option value="0">Pilihan A</option>
+                                <option value="1">Pilihan B</option>
+                                <option value="2">Pilihan C</option>
+                                <option value="3">Pilihan D</option>
+                            </select>
+                        </div>
+                    `;
             }
 
             updateSoalPreview(); // otomatis tampilkan preview setelah generate
@@ -275,13 +278,13 @@
                 const options = Array.from(document.querySelectorAll(`.option[data-index="${i}"]`)).map(opt => opt.value || '');
 
                 const html = `
-                    <div class="mb-3">
-                        <p><strong>Soal ${i + 1}:</strong> ${question}</p>
-                        <ol type="A">
-                            ${options.map(o => `<li>${o}</li>`).join("")}
-                        </ol>
-                    </div>
-                `;
+                        <div class="mb-3">
+                            <p><strong>Soal ${i + 1}:</strong> ${question}</p>
+                            <ol type="A">
+                                ${options.map(o => `<li>${o}</li>`).join("")}
+                            </ol>
+                        </div>
+                    `;
                 preview.innerHTML += html;
             }
         }
@@ -295,12 +298,12 @@
             const preview = document.getElementById('live-preview');
             if (preview) {
                 preview.innerHTML = `
-                    <p><strong>Nama:</strong> ${nama}</p>
-                    <p><strong>Tipe File:</strong> ${tipe}</p>
-                    <p><strong>Deskripsi Singkat:</strong> ${deskripsiSingkat}</p>
-                    <p><strong>Instruksi:</strong></p>
-                    <div>${deskripsi}</div>
-                `;
+                        <p><strong>Nama:</strong> ${nama}</p>
+                        <p><strong>Tipe File:</strong> ${tipe}</p>
+                        <p><strong>Deskripsi Singkat:</strong> ${deskripsiSingkat}</p>
+                        <p><strong>Instruksi:</strong></p>
+                        <div>${deskripsi}</div>
+                    `;
             }
         }
     </script>
