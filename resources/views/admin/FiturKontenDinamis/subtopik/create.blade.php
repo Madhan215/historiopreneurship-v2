@@ -65,9 +65,18 @@
                                 <option value="image">Gambar</option>
                                 <option value="video">Video</option>
                             </select>
-                            <label class="form-label mt-2">Deskripsi</label>
-                            <input type="text" name="deskripsi_upload" class="form-control"
-                                placeholder="Misal: Kumpulkan dalam format PDF">
+
+                            <!-- Deskripsi singkat -->
+                            <label class="mt-3">Deskripsi</label>
+                            <textarea name="deskripsi_upload" id="deskripsi_upload" class="form-control mt-3"
+                                placeholder="Deskripsi singkat..."></textarea>
+
+
+                            <!-- Quill Editor untuk konten upload -->
+                            <label class="mt-3">Instruksi Lengkap (Editor)</label>
+                            <div id="upload-editor" style="height: 150px; background-color: white;"></div>
+                            <input type="hidden" name="konten_upload" id="konten_upload">
+
                         </div>
 
                         <button type="submit" class="btn btn-success mt-4 w-100">
@@ -110,9 +119,10 @@
 
     <script>
         let quill;
+        let quillUpload;
 
         document.addEventListener("DOMContentLoaded", function () {
-            // Inisialisasi Quill editor
+            // Inisialisasi Quill editor untuk materi
             quill = new Quill('#editor', {
                 theme: 'snow',
                 placeholder: 'Tulis konten materi...',
@@ -120,7 +130,7 @@
                     toolbar: [
                         ['bold', 'italic', 'underline'],
                         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-                        ['link', 'image'],
+                        ['link', 'image', 'video'],
                         ['clean']
                     ],
                     imageResize: {
@@ -128,6 +138,23 @@
                     }
                 }
             });
+
+            // Inisialisasi Quill editor untuk upload
+            quillUpload = new Quill('#upload-editor', {
+                theme: 'snow',
+                placeholder: 'Tulis instruksi lengkap untuk upload...',
+                modules: {
+                    toolbar: [
+                        ['bold', 'italic', 'underline'],
+                        [{ list: 'ordered' }, { list: 'bullet' }],
+                        ['link'],
+                        ['clean']
+                    ]
+                }
+            });
+
+            // Update preview saat ada perubahan isi quill upload
+            quillUpload.on('text-change', updateUploadPreview);
 
             // Submit handler
             document.getElementById("form-subtopik").addEventListener("submit", function (e) {
@@ -157,15 +184,24 @@
 
                     document.getElementById('soal_json').value = JSON.stringify(soalList);
                 }
+
+                if (tipe === 'upload') {
+                    document.getElementById('konten_upload').value = quillUpload.root.innerHTML;
+
+                    // Debugging (opsional): tampilkan isi deskripsi upload
+                    console.log('Deskripsi:', document.querySelector('textarea[name="deskripsi_upload"]').value);
+                }
             });
 
-            // Preview Materi
+            // Preview untuk materi
             quill.on('text-change', updateMateriPreview);
 
-            // Preview Upload
+            // Preview untuk upload
             document.querySelector('input[name="nama_upload"]').addEventListener('input', updateUploadPreview);
             document.querySelector('select[name="tipe_file"]').addEventListener('change', updateUploadPreview);
-            document.querySelector('input[name="deskripsi_upload"]').addEventListener('input', updateUploadPreview);
+
+            // ✅ FIXED: gunakan textarea, bukan input
+            document.querySelector('textarea[name="deskripsi_upload"]').addEventListener('input', updateUploadPreview);
         });
 
         function showForm(tipe) {
@@ -194,24 +230,24 @@
 
             for (let i = 0; i < jumlah; i++) {
                 container.innerHTML += `
-                        <div class="border rounded p-3 mb-3">
-                            <h6>Soal ${i + 1}</h6>
-                            <label>Pertanyaan</label>
-                            <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
-                            <label class="mt-2">Pilihan</label>
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
-                            <label class="mt-2">Jawaban Benar</label>
-                            <select class="form-select correct" data-index="${i}">
-                                <option value="0">Pilihan A</option>
-                                <option value="1">Pilihan B</option>
-                                <option value="2">Pilihan C</option>
-                                <option value="3">Pilihan D</option>
-                            </select>
-                        </div>
-                    `;
+                    <div class="border rounded p-3 mb-3">
+                        <h6>Soal ${i + 1}</h6>
+                        <label>Pertanyaan</label>
+                        <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
+                        <label class="mt-2">Pilihan</label>
+                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
+                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
+                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
+                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
+                        <label class="mt-2">Jawaban Benar</label>
+                        <select class="form-select correct" data-index="${i}">
+                            <option value="0">Pilihan A</option>
+                            <option value="1">Pilihan B</option>
+                            <option value="2">Pilihan C</option>
+                            <option value="3">Pilihan D</option>
+                        </select>
+                    </div>
+                `;
             }
 
             updateSoalPreview(); // otomatis tampilkan preview setelah generate
@@ -239,13 +275,13 @@
                 const options = Array.from(document.querySelectorAll(`.option[data-index="${i}"]`)).map(opt => opt.value || '');
 
                 const html = `
-                        <div class="mb-3">
-                            <p><strong>Soal ${i + 1}:</strong> ${question}</p>
-                            <ol type="A">
-                                ${options.map(o => `<li>${o}</li>`).join("")}
-                            </ol>
-                        </div>
-                    `;
+                    <div class="mb-3">
+                        <p><strong>Soal ${i + 1}:</strong> ${question}</p>
+                        <ol type="A">
+                            ${options.map(o => `<li>${o}</li>`).join("")}
+                        </ol>
+                    </div>
+                `;
                 preview.innerHTML += html;
             }
         }
@@ -253,17 +289,21 @@
         function updateUploadPreview() {
             const nama = document.querySelector('input[name="nama_upload"]').value;
             const tipe = document.querySelector('select[name="tipe_file"]').value;
-            const deskripsi = document.querySelector('input[name="deskripsi_upload"]').value;
+            const deskripsiSingkat = document.querySelector('textarea[name="deskripsi_upload"]').value;
+            const deskripsi = quillUpload.root.innerHTML;
 
             const preview = document.getElementById('live-preview');
             if (preview) {
                 preview.innerHTML = `
-                        <p><strong>Nama:</strong> ${nama}</p>
-                        <p><strong>Tipe File:</strong> ${tipe}</p>
-                        <p><strong>Deskripsi:</strong> ${deskripsi}</p>
-                    `;
+                    <p><strong>Nama:</strong> ${nama}</p>
+                    <p><strong>Tipe File:</strong> ${tipe}</p>
+                    <p><strong>Deskripsi Singkat:</strong> ${deskripsiSingkat}</p>
+                    <p><strong>Instruksi:</strong></p>
+                    <div>${deskripsi}</div>
+                `;
             }
         }
     </script>
+
 
 @endsection
