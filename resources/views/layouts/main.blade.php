@@ -7,7 +7,6 @@
     <!-- Google Translate -->
     <div id="google_translate_element" style="position: fixed; top: 10px; left: 10px; z-index: 9999;"></div>
     <div class="g-0 row">
-<<<<<<< HEAD
         <div class="border-end border-top col-lg-3">
             <div class="bg-white sticky-top accordion">
                 <h5 class="active text-primary text-center p-3 mb-0">MENU</h5>
@@ -99,7 +98,6 @@
                                 <a href="/Informasi/Tahapan"
                                     class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-7') ? 'active' : '' }}">
                                     <span><i class="bi bi-dot"></i> Tahapan</span></a>
-=======
             <div class="border-end border-top col-lg-3">
                 <div class="bg-white sticky-top accordion">
                     <h5 class="active text-primary text-center p-3 mb-0">MENU</h5>
@@ -192,7 +190,6 @@
                                         class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-7') ? 'active' : '' }}">
                                         <span><i class="bi bi-dot"></i> Tahapan</span></a>
                                 </div>
->>>>>>> 396badd2e6391392818f696df4f817631e46b24e
                             </div>
                         </div>
                         <div class="accordion-item" id="menuHeading2">
