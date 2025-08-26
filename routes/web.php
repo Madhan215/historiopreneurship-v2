@@ -241,6 +241,7 @@ Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name(
 Route::resource('kelas', KelasController::class);
 Route::get('kelas/input', [KelasController::class, 'show'])->name('kelas.input.form');
 Route::post('/kelas/join', [KelasController::class, 'storeUser'])->name('kelas.join');
+Route::post('/kelas/{id}/status', [KelasController::class, 'updateUser'])->name('kelas.updateUser');
 Route::middleware([
     GuruMiddleware::class,
 ])->group(function () {

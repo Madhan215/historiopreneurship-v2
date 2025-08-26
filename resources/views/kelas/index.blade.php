@@ -21,7 +21,17 @@
             <p class="card-text">{{ $k->deskripsi_kelas }}</p>
             <small>Dibuat pada: {{ \Carbon\Carbon::parse($k->tanggal_dibuat)->isoFormat('dddd, D MMMM Y') }}</small>
             <div class="mt-3">
-                <a href="#" class="btn btn-success">MASUK</a>
+            @php
+                $tokens = auth()->user()->token_kelas ?? [];
+                $status = collect($tokens)->firstWhere('kode', $k->kode_kelas)['status'] ?? 'tidak aktif';
+            @endphp
+            <form action="{{ route('kelas.updateUser', $k->id) }}" method="POST" style="display:inline;">
+                @csrf
+                <button type="submit" 
+                    class="btn {{ $status === 'aktif' ? 'btn-danger' : 'btn-success' }}">
+                    {{ $status === 'aktif' ? 'KELUAR' : 'MASUK' }}
+                </button>
+            </form>
 
                 @if(auth()->user()->peran === 'guru')
                     <a href="{{ route('kelas.edit', $k->id) }}" class="btn btn-info">EDIT</a>

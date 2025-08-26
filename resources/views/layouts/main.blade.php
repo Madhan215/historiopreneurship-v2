@@ -56,6 +56,7 @@
                         </a>
                     @endif
                 </div>
+                @if (collect(auth()->user()->token_kelas ?? [])->contains('status', 'aktif'))
                 <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
                 <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
                     <div class="accordion-item" id="menuHeading1">
@@ -254,6 +255,7 @@
                             <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
                     </div>
                 </div>
+                @endif
             </div>
         </div>
         <div class="bg-white text-dark border-top col-lg-9">

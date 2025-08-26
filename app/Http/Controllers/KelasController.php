@@ -16,10 +16,15 @@ class KelasController extends Controller
     public function index()
     {
     $user = auth()->user();
-    $kelasIds = array_keys($user->token_kelas ?? []); // ambil semua ID kelas dari token_kelas
+    $tokens = $user->token_kelas ?? []; 
     $activeMenu = '';
 
-    $kelas = \App\Models\Kelas::whereIn('id', $kelasIds)->get();        
+    // Ambil semua kode kelas dari token_kelas JSON
+    $kodeKelas = collect($tokens)->pluck('kode')->toArray();
+
+    // Cari data kelas berdasarkan kode, bukan id
+    $kelas = \App\Models\Kelas::whereIn('kode_kelas', $kodeKelas)->get();        
+
     return view('kelas.index', compact('kelas', 'activeMenu'));
     }
 
@@ -50,7 +55,10 @@ class KelasController extends Controller
 
         $existingTokens = $user->token_kelas ?? [];
 
-        $existingTokens[$kelas->id] = $kode;
+        $existingTokens[] = [
+            'kode' => $kode,
+            'status' => 'tidak aktif'
+        ];
 
         $user->token_kelas = $existingTokens;
         $user->save();      
@@ -71,7 +79,18 @@ class KelasController extends Controller
         $user = auth()->user();
 
         $existingTokens = $user->token_kelas ?? [];
-        $existingTokens[$kelas->id] = $kode;
+        // Cek apakah kode sudah ada dalam daftar
+        $sudahAda = collect($existingTokens)->contains(function ($item) use ($kode) {
+            return $item['kode'] === $kode;
+        });
+
+        if (!$sudahAda) {
+            // Tambahkan objek baru dengan key 'kode' dan 'status'
+            $existingTokens[] = [
+                'kode' => $kode,
+                'status' => 'tidak aktif' // default tidak aktif saat pertama kali ditambahkan
+            ];
+        }
 
         $user->token_kelas = $existingTokens;
         $user->save();
@@ -109,6 +128,34 @@ class KelasController extends Controller
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil diperbarui');
     }
 
+    public function updateUser(Request $request, string $id)
+    {
+        $kelas = Kelas::findOrFail($id);
+        $user = auth()->user();
+        $tokens = $user->token_kelas ?? [];
+
+        // Ubah status
+        foreach ($tokens as &$token) {
+            if ($token['kode'] === $kelas->kode_kelas) {
+                if ($token['status'] === 'aktif') {
+                    $token['status'] = 'tidak aktif'; // keluar
+                } else {
+                // pertama reset semua kelas jadi tidak aktif
+                    foreach ($tokens as &$t) {
+                        $t['status'] = 'tidak aktif';
+                    }
+                    // lalu aktifkan kelas ini
+                    $token['status'] = 'aktif'; // masuk
+                }
+            }        
+        }
+
+        $user->token_kelas = $tokens;
+        $user->save();
+
+        return redirect()->route('kelas.index')->with('success', 'Status kelas berhasil diubah.');
+
+    }
     /**
      * Remove the specified resource from storage.
      */
@@ -119,10 +166,14 @@ class KelasController extends Controller
             $users = \App\Models\User::whereNotNull('token_kelas')->get();
 
         foreach ($users as $user) {
-            $tokens = $user->token_kelas;
+            $tokens = $user->token_kelas ?? [];
 
-            if (is_array($tokens) && array_key_exists($kelas->id, $tokens)) {
-                unset($tokens[$kelas->id]);
+            if (is_array($tokens)) {
+                // filter token, buang yang punya kode sama dengan kelas yang dihapus
+                $tokens = collect($tokens)->reject(function ($item) use ($kelas) {
+                    return $item['kode'] === $kelas->kode_kelas;
+                })->values()->toArray();
+
                 $user->token_kelas = $tokens;
                 $user->save();
             }

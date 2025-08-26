@@ -91,6 +91,14 @@
                                         class="rounded-circle border border-primary ms-1"
                                         style="width: 25px; height: 25px;">
                                 </a>
+                                @php
+                                    $tokens = auth()->user()->token_kelas ?? [];
+                                    $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
+                                    $activeKelas = $activeKode ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first() : null;
+                                @endphp
+                                @if ($activeKelas)
+                                    <span class="ms-2">Kelas: <strong>{{ $activeKelas->nama_kelas }}</strong></span>
+                                @endif                                
                                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                     <li>
                                         <form action="{{ route('dashboard') }}" method="GET">
