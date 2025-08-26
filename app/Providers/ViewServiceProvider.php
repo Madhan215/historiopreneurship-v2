@@ -2,7 +2,7 @@
 
 namespace App\Providers;
 
-use App\Models\topikdinamis;
+use App\Models\topikDinamis;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\ServiceProvider;
@@ -26,7 +26,7 @@ class ViewServiceProvider extends ServiceProvider
             $user = Auth::user();
 
             if ($user) {
-                $topiks = topikdinamis::where('status', 'on')
+                $topiks = topikDinamis::where('status', 'on')
                     ->where('token_kelas', $user->token_kelas)
                     ->orderBy('urutan')
                     ->with([
@@ -65,8 +65,22 @@ class ViewServiceProvider extends ServiceProvider
                         $topik->subtopiks_urut = $gabungan->sortBy('urutan')->values();
                         return $topik;
                     });
+                $tokenKelas = auth()->user()->token_kelas;
 
-                $view->with('topiks', $topiks);
+                $showMateriMenu = topikDinamis::whereIn('nama_topik', [
+                    'pembukaan',
+                    'kesejarahan',
+                    'kewirausahaan'
+                ])
+                    ->where('status', 'on')
+                    ->where('token_kelas', $tokenKelas)
+                    ->exists();
+
+                $view->with([
+                    'topiks' => $topiks,
+                    'showMateriMenu' => $showMateriMenu,
+                ]);
+
             }
         });
     }

@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\evaluasiDinamis;
 use App\Models\materiDinamis;
-use App\Models\topikdinamis;
+use App\Models\topikDinamis;
 use App\Models\uploadDinamis;
 use App\Models\uploadFile;
 use Illuminate\Http\Request;
@@ -25,7 +25,7 @@ class WebDinamisController extends Controller
         $subtopikNama = urldecode(str_replace('-', ' ', $subtopik));
 
         // Cari topik berdasarkan nama, status, dan token kelas
-        $topikData = topikdinamis::whereRaw(
+        $topikData = topikDinamis::whereRaw(
             'LOWER(REPLACE(nama_topik, ".", "")) = ?',
             [strtolower(str_replace('.', '', $topikNama))]
         )

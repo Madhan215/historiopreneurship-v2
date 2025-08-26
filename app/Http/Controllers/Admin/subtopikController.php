@@ -167,54 +167,79 @@ class subtopikController extends Controller
 
     public function update(Request $request, $tipe, $id)
     {
-        $topik = topikdinamis::find($request->id_topik);
+        $request->validate([
+            'id_topik' => 'required|exists:topikdinamis,id_topik',
+        ]);
+
+        $topik = topikdinamis::findOrFail($request->id_topik);
+
         switch ($tipe) {
             case 'materi':
+                $request->validate([
+                    'nama_materi' => 'required|string|max:255',
+                    'konten_materi' => 'required|string',
+                ]);
+
                 $data = materiDinamis::findOrFail($id);
                 $data->update([
-                    'nama_materi' => $request->nama_materi ?? $data->nama_materi,
-                    'konten' => $request->konten_materi ?? $data->konten,
+                    'nama_materi' => $request->nama_materi,
+                    'konten' => $request->konten_materi,
                 ]);
                 break;
 
             case 'evaluasi':
+                $request->validate([
+                    'nama_evaluasi' => 'required|string|max:255',
+                    'soal_json' => 'required|json',
+                ]);
+
                 $data = evaluasiDinamis::findOrFail($id);
                 $data->update([
-                    'nama_evaluasi' => $request->nama_evaluasi ?? $data->nama_evaluasi,
-                    'konten' => $request->filled('soal_json') ? $request->soal_json : $data->konten,
+                    'nama_evaluasi' => $request->nama_evaluasi,
+                    'konten' => $request->soal_json,
                 ]);
                 break;
 
             case 'upload':
+                $request->validate([
+                    'nama_upload' => 'required|string|max:255',
+                    'deskripsi_upload' => 'required|string',
+                    'konten_upload' => 'required|string',
+                    'tipe_file' => 'required|in:word,excel,pdf,image,video',
+                ]);
+
+                // Tentukan accept dan info file
+                $fileInfo = [
+                    'word' => ['.doc,.docx,application/msword,application/vnd.openxmlformats-officedocument.wordprocessingml.document', '.doc atau .docx'],
+                    'excel' => ['.xls,.xlsx,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', '.xls atau .xlsx'],
+                    'pdf' => ['.pdf,application/pdf', '.pdf'],
+                    'image' => ['image/*', 'gambar (jpeg, png, dll)'],
+                    'video' => ['video/*', 'video (mp4, avi, dll)']
+                ];
+                [$accept, $ext_info] = $fileInfo[$request->tipe_file];
+
+                $input = "
+                <div class='mb-2'><div>{$request->konten_upload}</div></div>
+                <label for='formFile1' class='form-label fw-semibold'>" . e($request->deskripsi_upload) . "</label>
+                <input class='form-control' type='file' id='formFile1' name='file' accept='{$accept}'>
+                <small>Kumpulkan dengan format <strong>{$ext_info}</strong></small>
+            ";
+
                 $data = uploadDinamis::findOrFail($id);
-
-                $konten_lama = $data->konten;
-                $input = $konten_lama;
-
-                if ($request->filled('tipe_file')) {
-                    $accept = match ($request->tipe_file) {
-                        'word' => '.doc,.docx',
-                        'excel' => '.xls,.xlsx',
-                        'pdf' => '.pdf',
-                        'image' => 'image/*',
-                        'video' => 'video/*',
-                        default => '',
-                    };
-
-                    $input = '<label for="myfile">Select a file:</label>';
-                    $input .= '<input type="file" id="myfile" name="myfile" accept="' . $accept . '">';
-                }
-
                 $data->update([
-                    'nama_upload' => $request->nama_upload ?? $data->nama_upload,
+                    'nama_upload' => $request->nama_upload,
+                    'tipe_file' => $request->tipe_file,
                     'konten' => $input,
-                    'deksripsi' => $request->deskripsi_upload
+                    'deskripsi' => $request->deskripsi_upload,
                 ]);
                 break;
+
+            default:
+                return back()->with('error', 'Jenis subtopik tidak dikenali.');
         }
 
         return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil dirubah');
+            ->with('success', 'Subtopik berhasil diperbarui');
     }
 
     public function destroy(Request $request, $tipe, $id)

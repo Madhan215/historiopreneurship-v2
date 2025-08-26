@@ -5,7 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\evaluasiDinamis;
 use App\Models\materiDinamis;
-use App\Models\topikdinamis;
+use App\Models\topikDinamis;
 use App\Models\uploadDinamis;
 use Illuminate\Http\Request;
 use Illuminate\Support\Carbon;
@@ -16,7 +16,7 @@ class topikController extends Controller
     {
         $token = $request->query('token_kelas');
 
-        $query = topikdinamis::with(['materi', 'evaluasi', 'upload']);
+        $query = topikDinamis::with(['materi', 'evaluasi', 'upload']);
 
         if ($token) {
             $query->where('token_kelas', $token);
@@ -31,7 +31,7 @@ class topikController extends Controller
 
     public function toggleStatus($id)
     {
-        $topik = topikdinamis::findOrFail($id);
+        $topik = topikDinamis::findOrFail($id);
         $topik->status = $topik->status === 'on' ? 'off' : 'on';
         $topik->save();
 
@@ -54,7 +54,7 @@ class topikController extends Controller
             'token_kelas' => 'required'
         ]);
 
-        topikdinamis::create([
+        topikDinamis::create([
             'nama_topik' => $request->nama_topik,
             'status' => $request->status,
             'token_kelas' => $request->token_kelas,
@@ -68,13 +68,13 @@ class topikController extends Controller
 
     public function show($id)
     {
-        $topik = topikdinamis::findOrFail($id);
+        $topik = topikDinamis::findOrFail($id);
         return view('admin.FiturKontenDinamis.topik.show', compact('topik'));
     }
 
     public function edit($id)
     {
-        $topik = topikdinamis::findOrFail($id);
+        $topik = topikDinamis::findOrFail($id);
         return view('admin.FiturKontenDinamis.topik.edit', compact('topik'));
     }
 
@@ -85,7 +85,7 @@ class topikController extends Controller
             'status' => 'required'
         ]);
 
-        $topik = topikdinamis::findOrFail($id);
+        $topik = topikDinamis::findOrFail($id);
         $token_kelas = $topik->token_kelas; // ambil token_kelas
 
         $topik->update($request->all());
@@ -97,7 +97,7 @@ class topikController extends Controller
 
     public function destroy($id)
     {
-        $topik = topikdinamis::findOrFail($id);
+        $topik = topikDinamis::findOrFail($id);
         $token_kelas = $topik->token_kelas; // ambil token_kelas sebelum delete
 
         $topik->delete();
@@ -111,7 +111,7 @@ class topikController extends Controller
     {
         $token_kelas = $request->query('token_kelas'); // ambil dari query string
 
-        $topiks = topikdinamis::with(['materi', 'evaluasi', 'upload'])
+        $topiks = topikDinamis::with(['materi', 'evaluasi', 'upload'])
             ->where('token_kelas', $token_kelas)
             ->orderBy('urutan')
             ->get();
@@ -191,7 +191,7 @@ class topikController extends Controller
 
     public function lihatUrutan()
     {
-        $topiks = topikdinamis::where('status', 'on') // hanya ambil yang status-nya "on"
+        $topiks = topikDinamis::where('status', 'on') // hanya ambil yang status-nya "on"
             ->orderBy('urutan')
             ->with([
                 'materi' => fn($q) => $q->orderBy('urutan'),
@@ -243,7 +243,7 @@ class topikController extends Controller
         }
 
         // Cek apakah sudah ada topik default (hindari duplikasi)
-        $sudahAda = topikdinamis::where('token_kelas', $token)
+        $sudahAda = topikDinamis::where('token_kelas', $token)
             ->whereIn('nama_topik', ['Pembukaan', 'Kesejarahan', 'Kewirausahaan'])
             ->exists();
 
