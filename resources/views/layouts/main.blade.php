@@ -101,11 +101,104 @@
                                 <a href="/Informasi/Tahapan"
                                     class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-7') ? 'active' : '' }}">
                                     <span><i class="bi bi-dot"></i> Tahapan</span></a>
+=======
+            <div class="border-end border-top col-lg-3">
+                <div class="bg-white sticky-top accordion">
+                    <h5 class="active text-primary text-center p-3 mb-0">MENU</h5>
+                    <div class="list-group list-group-flush">
+                        @if ($userRole === 'siswa' || $userRole === 'guru')
+                            <a href="/dashboard"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('dashboard') ? 'active' : '' }}">
+                                <span><i class="bi bi-speedometer"></i> Dashboard</span></a>
+                        @endif
+                        @if (auth()->user()->peran == 'siswa')
+                            <a href="/kelas"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-kelas') ? 'active' : '' }}">
+                                <span><i class="bi bi-archive-fill"></i></i> Data Kelas</span></a>
+                            <a href="/hasil"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('hasil') ? 'active' : '' }}">
+                                <span><i class="bi bi-journal-check"></i> Hasil</span></a>
+                        @endif
+                        @if (auth()->user()->peran == 'guru')
+                            <a href="/kelas"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-kelas') ? 'active' : '' }}">
+                                <span><i class="bi bi-archive-fill"></i></i> Data Kelas</span></a>
+                            <a href="/Data-Mahasiswa"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-mahasiswa') ? 'active' : '' }}">
+                                <span><i class="bi bi-people-fill"></i> Data Mahasiswa</span></a>
+                            <a href="/Progress-Belajar"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('progress-belajar') ? 'active' : '' }}">
+                                <span><i class="bi bi-list-ol"></i> Progress Belajar</span></a>
+                            <a href="/Data-Nilai"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-nilai') || Route::is('dataJawabanIndividu') ? 'active' : '' }}">
+                                <span><i class="bi bi-journal-text"></i> Data Nilai</span></a>
+                            <a href="/data-export-nilai"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('data-export-nilai') || Route::is('dataJawabanIndividu') ? 'active' : '' }}">
+                                <span><i class="bi bi-download"></i> Export Nilai</span></a>
+                        @endif
+                        @if (auth()->user()->peran == 'admin')
+                            <a href="{{ route('manajemen-konten.index') }}"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('manajemen-konten.*') ? 'active' : '' }}">
+                                <span><i class="bi bi-folder2-open"></i> Manajemen Konten</span>
+                            </a>
+                            <a href="/admin/reset-password"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.reset.password') ? 'active' : '' }}">
+                                <span><i class="bi bi-key"></i> Reset Password</span>
+                            </a>
+                            <a href="{{ route('admin.daftarGuru') }}"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.reset.password') ? 'active' : '' }}">
+                                <span><i class="bi bi-key"></i> Daftar Guru</span>
+                            </a>
+                        @endif
+                    </div>
+                    @if ($showMateriMenu)
+                    <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
+                    <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
+                        <div class="accordion-item" id="menuHeading1">
+                            <h2 class="accordion-header">
+                                @php
+                                    $activeMenu = $activeMenu ?? ''; 
+                                @endphp
+                                <button
+                                    class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu1' ? '' : 'collapsed' }} text-dark"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse1" aria-expanded="true"
+                                    aria-controls="menuCollapse1">
+                                    <i class="bi bi-info-circle"></i>
+                                    &nbsp;
+                                    Informasi Umum
+                                </button>
+                            </h2>
+                            <div id="menuCollapse1"
+                                class="accordion-collapse collapse  {{ $activeMenu == 'menu1' ? 'show' : '' }}"
+                                aria-labelledby="menuHeading1" data-bs-parent="#sidebarAccordion">
+                                <div class="list-group list-group-flush">
+                                    <a href="/Informasi/CPL"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-1') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> CPL</span></a>
+                                    <a href="/Informasi/CPMK"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-2') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> CPMK</span></a>
+                                    <a href="/Informasi/Peran-Dosen"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-3') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Peran Dosen</span></a>
+                                    <a href="/Informasi/Sarana-Dan-Prasarana"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-4') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Sarana dan Prasarana</span></a>
+                                    <a href="/Informasi/Kolaborasi-Narasumber"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-5') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kolaborasi Narasumber</span></a>
+                                    <a href="/Informasi/Cara-Penggunaan"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-6') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Cara Penggunaan</span></a>
+                                    <a href="/Informasi/Tahapan"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-7') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Tahapan</span></a>
+                                </div>
+>>>>>>> 396badd2e6391392818f696df4f817631e46b24e
                             </div>
                         </div>
-                    </div>
-                    <div class="accordion-item" id="menuHeading2">
-                        <h2 class="accordion-header">
+                        <div class="accordion-item" id="menuHeading2">
+                            <h2 class="accordion-header">
 
                             <button
                                 class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu2' ? '' : 'collapsed' }} text-dark"
