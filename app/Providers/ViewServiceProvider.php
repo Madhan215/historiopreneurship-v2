@@ -65,6 +65,7 @@ class ViewServiceProvider extends ServiceProvider
                         $topik->subtopiks_urut = $gabungan->sortBy('urutan')->values();
                         return $topik;
                     });
+                    // ujar iki ni dirubah
                 $tokenKelas = auth()->user()->token_kelas;
 
                 $showMateriMenu = topikDinamis::whereIn('nama_topik', [

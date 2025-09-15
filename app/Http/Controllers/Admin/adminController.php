@@ -11,6 +11,7 @@ class adminController extends Controller
     public function daftarGuru()
     {
         // Ambil user dengan peran guru
+        //ujar iki dirubah
         $guruList = DB::table('users')
             ->where('peran', 'guru')
             ->get()
