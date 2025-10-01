@@ -32,8 +32,47 @@ class topikController extends Controller
                 ->exists();
         }
 
-        return view('admin.FiturKontenDinamis.topik.index', compact('topiks', 'token', 'sudahAda'));
+        // definisi default isi tiap topik
+        $defaultIsi = [
+            'Pembukaan' => [
+                'CPL',
+                'CPMK',
+                'Peran Dosen',
+                'Sarana dan Prasarana',
+                'Kolaborasi Narasumber',
+                'Cara Penggunaan',
+                'Tahapan'
+            ],
+            'Kesejarahan' => [
+                'Pre-Test',
+                'Kegiatan Pembelajaran 1',
+                'Kuis Kesejarahan',
+                'Kegiatan Pembelajaran 2',
+                'Analisis Individu 1',
+                'Analisis Individu 2',
+                'Kegiatan Pembelajaran 3',
+                'Post-Test',
+                'Refleksi'
+            ],
+            'Kewirausahaan' => [
+                'Pre-Test',
+                'KWU dan Kepariwisataan',
+                'Kuis KWU & Kepariwisataan',
+                'Analisis Kelompok 1',
+                'Analisis Kelompok 2',
+                'Diskusi Kelompok',
+                'Proyek Individu',
+                'Refleksi 1',
+                'Praktek Lapangan 1',
+                'Praktek Lapangan 2',
+                'Post-Test',
+                'Refleksi 2'
+            ]
+        ];
+
+        return view('admin.FiturKontenDinamis.topik.index', compact('topiks', 'token', 'sudahAda', 'defaultIsi'));
     }
+
 
 
 
@@ -125,8 +164,12 @@ class topikController extends Controller
             ->orderBy('urutan')
             ->get();
 
-        return view('admin.FiturKontenDinamis.topik.aturUrutan', compact('topiks', 'token_kelas'));
+        // Array topik default
+        $defaultTopik = ['Pembukaan', 'Kesejarahan', 'Kewirausahaan'];
+
+        return view('admin.FiturKontenDinamis.topik.aturUrutan', compact('topiks', 'token_kelas', 'defaultTopik'));
     }
+
     public function simpanUrutan(Request $request)
     {
 
@@ -200,10 +243,10 @@ class topikController extends Controller
 
     public function lihatUrutan(Request $request)
     {
-        $token = $request->query('token_kelas'); // ambil token dari URL ?token_kelas=xxxx
+        $token = $request->query('token_kelas');
 
         $topiks = topikDinamis::where('status', 'on')
-            ->when($token, fn($q) => $q->where('token_kelas', $token)) // filter berdasarkan token
+            ->when($token, fn($q) => $q->where('token_kelas', $token))
             ->orderBy('urutan')
             ->with([
                 'materi' => fn($q) => $q->orderBy('urutan'),
@@ -243,9 +286,46 @@ class topikController extends Controller
                 return $topik;
             });
 
-        return view('admin.FiturKontenDinamis.topik.lihatUrutan', compact('topiks', 'token'));
-    }
+        // Default isi untuk topik tertentu
+        $defaultIsi = [
+            'Pembukaan' => [
+                'CPL',
+                'CPMK',
+                'Peran Dosen',
+                'Sarana dan Prasarana',
+                'Kolaborasi Narasumber',
+                'Cara Penggunaan',
+                'Tahapan'
+            ],
+            'Kesejarahan' => [
+                'Pre-Test',
+                'Kegiatan Pembelajaran 1',
+                'Kuis Kesejarahan',
+                'Kegiatan Pembelajaran 2',
+                'Analisis Individu 1',
+                'Analisis Individu 2',
+                'Kegiatan Pembelajaran 3',
+                'Post-Test',
+                'Refleksi'
+            ],
+            'Kewirausahaan' => [
+                'Pre-Test',
+                'KWU dan Kepariwisataan',
+                'Kuis KWU & Kepariwisataan',
+                'Analisis Kelompok 1',
+                'Analisis Kelompok 2',
+                'Diskusi Kelompok',
+                'Proyek Individu',
+                'Refleksi 1',
+                'Praktek Lapangan 1',
+                'Praktek Lapangan 2',
+                'Post-Test',
+                'Refleksi 2'
+            ]
+        ];
 
+        return view('admin.FiturKontenDinamis.topik.lihatUrutan', compact('topiks', 'token', 'defaultIsi'));
+    }
 
     public function paketMateri(Request $request)
     {

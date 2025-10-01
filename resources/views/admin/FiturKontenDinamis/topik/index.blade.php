@@ -70,6 +70,28 @@
 
                     {{-- Body --}}
                     <div class="card-body" style="max-height: 300px; overflow-y: auto;">
+                    {{-- Isi Default --}}
+                    @if(isset($defaultIsi[$topik->nama_topik]))
+                        <div class="mb-4">
+                            <h6 class="fw-bold text-uppercase mb-3">
+                                📑 Struktur {{ $topik->nama_topik }}
+                            </h6>
+                            <ul class="list-group shadow-sm rounded-3 overflow-hidden">
+                                @foreach ($defaultIsi[$topik->nama_topik] as $index => $item)
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        <div class="d-flex align-items-center">
+                                            <span class="badge bg-primary me-3 rounded-circle" style="width: 28px; height: 28px; line-height: 20px;">
+                                                {{ $index+1 }}
+                                            </span>
+                                            <span class="fw-semibold">{{ $item }}</span>
+                                        </div>
+                                    </li>
+                                @endforeach
+                            </ul>
+                        </div>
+                    @endif
+
+
 
                         {{-- Materi --}}
                         @if ($topik->materi->count())
@@ -211,13 +233,16 @@
                             </div>
                         @endif
 
-                        {{-- Tambah Subtopik --}}
-                        <div class="mt-3">
-                            <a href="{{ route('subtopik.create', ['id_topik' => $topik->id_topik]) }}"
-                                class="btn btn-sm btn-outline-primary">
-                                ➕ Tambah Subtopik
-                            </a>
-                        </div>
+{{-- Tambah Subtopik --}}
+@if(!isset($defaultIsi[$topik->nama_topik]))
+    <div class="mt-3">
+        <a href="{{ route('subtopik.create', ['id_topik' => $topik->id_topik]) }}"
+            class="btn btn-sm btn-outline-primary">
+            ➕ Tambah Subtopik
+        </a>
+    </div>
+@endif
+
 
                     </div>
                 </div>
