@@ -47,7 +47,7 @@
                             <span><i class="bi bi-key"></i> Reset Password</span>
                         </a>
                         <a href="{{ route('admin.daftarGuru') }}"
-                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.daftarGuru') ? 'active' : '' }}">
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.daftarGuru') || Route::is('topik.index') ? 'active' : '' }} ">
                             <span><i class="bi bi-mortarboard"></i> Daftar Guru</span>
                         </a>
                     @endif
