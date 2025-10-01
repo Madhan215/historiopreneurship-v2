@@ -270,14 +270,15 @@ Route::get('/reset-password', function () {
     return view('auth.reset-password');
 })->name('reset.password');
 
-// Route::controller(AdminController::class)->group(function () {
-//     Route::get('/admin/dashboard', 'dashboard')->name('admin.dashboard');
-//     Route::get('/admin/reset-password', 'showResetPassword')->name('admin.reset.password');
-//     Route::post('/admin/reset-password/{id}', 'resetPassword');
-//     Route::get('/admin/data-kelas', 'dataKelas')->name('admin.data.kelas');
-//     Route::delete('/kelas/{id}', [AdminController::class, 'destroy'])->name('kelas.destroy');
+// Route untuk Admin
+Route::controller(AdminController::class)->group(function () {
+    Route::get('/admin/dashboard', 'dashboard')->name('admin.dashboard');
+    Route::get('/admin/reset-password', 'showResetPassword')->name('admin.reset.password');
+    Route::post('/admin/reset-password/{id}', 'resetPassword');
+    Route::get('/admin/data-kelas', 'dataKelas')->name('admin.data.kelas');
+    // Route::delete('/kelas/{id}', [AdminController::class, 'destroy'])->name('kelas.destroy');
 
-// });
+});
 
 Route::get('/admin/reset-password', [ResetPasswordController::class, 'showResetPassword'])->name('admin.reset.password');
 Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'resetPassword']);

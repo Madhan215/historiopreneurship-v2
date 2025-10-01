@@ -2,9 +2,10 @@
 
 namespace App\Http\Controllers\Admin;
 
-use App\Http\Controllers\Controller;
+use App\Models\User;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
 
 class adminController extends Controller
 {
@@ -21,5 +22,17 @@ class adminController extends Controller
             });
 
         return view('admin.FiturKontenDinamis.daftarGuru', compact('guruList'));
+    }
+
+    public function dashboard()
+    {
+        // Hitung jumlah kelas unik berdasarkan class_token
+        // $jumlahKelas = User::whereNotNull('class_token')->distinct('class_token')->count();
+        $jumlahKelas = 23;
+
+        // Hitung jumlah user non-admin
+        $jumlahUser = User::where('peran', '!=', 'admin')->count();
+
+        return view('dashboard_admin', compact('jumlahKelas', 'jumlahUser'));
     }
 }
