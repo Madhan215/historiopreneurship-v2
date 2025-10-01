@@ -24,8 +24,17 @@ class topikController extends Controller
 
         $topiks = $query->get();
 
-        return view('admin.FiturKontenDinamis.topik.index', compact('topiks', 'token'));
+        // cek apakah paket sudah diklaim
+        $sudahAda = false;
+        if ($token) {
+            $sudahAda = topikDinamis::where('token_kelas', $token)
+                ->whereIn('nama_topik', ['Pembukaan', 'Kesejarahan', 'Kewirausahaan'])
+                ->exists();
+        }
+
+        return view('admin.FiturKontenDinamis.topik.index', compact('topiks', 'token', 'sudahAda'));
     }
+
 
 
 
@@ -189,9 +198,12 @@ class topikController extends Controller
     }
 
 
-    public function lihatUrutan()
+    public function lihatUrutan(Request $request)
     {
-        $topiks = topikDinamis::where('status', 'on') // hanya ambil yang status-nya "on"
+        $token = $request->query('token_kelas'); // ambil token dari URL ?token_kelas=xxxx
+
+        $topiks = topikDinamis::where('status', 'on')
+            ->when($token, fn($q) => $q->where('token_kelas', $token)) // filter berdasarkan token
             ->orderBy('urutan')
             ->with([
                 'materi' => fn($q) => $q->orderBy('urutan'),
@@ -231,8 +243,9 @@ class topikController extends Controller
                 return $topik;
             });
 
-        return view('admin.FiturKontenDinamis.topik.lihatUrutan', compact('topiks'));
+        return view('admin.FiturKontenDinamis.topik.lihatUrutan', compact('topiks', 'token'));
     }
+
 
     public function paketMateri(Request $request)
     {

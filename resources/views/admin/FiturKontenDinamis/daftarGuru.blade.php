@@ -21,19 +21,18 @@
                     <td>
                         @if (!empty($guru->kelas))
                             <ul class="mb-0">
-                                @foreach ($guru->kelas as $kelasId => $token)
+                                @foreach ($guru->kelas as $kelas)
                                     <li>
-                                        Kelas ID: {{ $kelasId }} |
                                         Token:
-                                        <a href="{{ route('topik.index', ['token_kelas' => $token]) }}">
-                                            <code>{{ $token }}</code>
+                                        <a href="{{ route('topik.index', ['token_kelas' => $kelas['kode']]) }}">
+                                            <code>{{ $kelas['kode'] }}</code>
                                         </a>
+                                        | Status: {{ $kelas['status'] }}
                                     </li>
                                 @endforeach
                             </ul>
-
                         @else
-                            <em>Tidak ada kelas</em>
+                            <p><em>Belum ada kelas</em></p>
                         @endif
                     </td>
                 </tr>
