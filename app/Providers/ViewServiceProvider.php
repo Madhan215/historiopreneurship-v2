@@ -25,64 +25,81 @@ class ViewServiceProvider extends ServiceProvider
         View::composer('layouts.main', function ($view) {
             $user = Auth::user();
 
-            if ($user) {
-                $topiks = topikDinamis::where('status', 'on')
-                    ->where('token_kelas', $user->token_kelas)
-                    ->orderBy('urutan')
-                    ->with([
-                        'materi' => fn($q) => $q->where('status', 'on'),
-                        'evaluasi' => fn($q) => $q->where('status', 'on'),
-                        'upload' => fn($q) => $q->where('status', 'on'),
-                    ])
-                    ->get()
-                    ->map(function ($topik) {
-                        $gabungan = collect();
+            if (!$user) {
+                return; // kalau belum login, tidak usah lempar data
+            }
 
-                        foreach ($topik->materi as $m) {
-                            $gabungan->push([
-                                'tipe' => 'materi',
-                                'nama' => $m->nama_materi,
-                                'urutan' => $m->urutan,
-                            ]);
-                        }
+            // --- Ambil token kelas ---
+            $tokenKelas = collect();
 
-                        foreach ($topik->evaluasi as $e) {
-                            $gabungan->push([
-                                'tipe' => 'evaluasi',
-                                'nama' => $e->nama_evaluasi,
-                                'urutan' => $e->urutan,
-                            ]);
-                        }
+            if (!empty($user->token_kelas) && is_array($user->token_kelas)) {
+                // bentuk array [{"kode":"7BQBYF","status":"aktif"}, {"kode":"H3EML1","status":"tidak aktif"}]
+                $tokenKelas = collect($user->token_kelas)
+                    ->where('status', 'aktif') // ambil hanya yang aktif
+                    ->pluck('kode')
+                    ->filter()
+                    ->values();
+            } elseif (!empty($user->token_kelas)) {
+                // fallback kalau ternyata hanya string biasa
+                $tokenKelas = collect([$user->token_kelas]);
+            }
 
-                        foreach ($topik->upload as $u) {
-                            $gabungan->push([
-                                'tipe' => 'upload',
-                                'nama' => $u->nama_upload,
-                                'urutan' => $u->urutan,
-                            ]);
-                        }
+            // --- Query topik ---
+            $topiks = topikDinamis::where('status', 'on')
+                ->whereIn('token_kelas', $tokenKelas)
+                ->orderBy('urutan')
+                ->with([
+                    'materi'   => fn($q) => $q->where('status', 'on')->orderBy('urutan'),
+                    'evaluasi' => fn($q) => $q->where('status', 'on')->orderBy('urutan'),
+                    'upload'   => fn($q) => $q->where('status', 'on')->orderBy('urutan'),
+                ])
+                ->get()
+                ->map(function ($topik) {
+                    $gabungan = collect();
 
-                        $topik->subtopiks_urut = $gabungan->sortBy('urutan')->values();
-                        return $topik;
-                    });
-                    // ujar iki ni dirubah
-                $tokenKelas = auth()->user()->token_kelas;
+                    foreach ($topik->materi as $m) {
+                        $gabungan->push([
+                            'tipe'   => 'materi',
+                            'nama'   => $m->nama_materi,
+                            'urutan' => $m->urutan,
+                        ]);
+                    }
 
-                $showMateriMenu = topikDinamis::whereIn('nama_topik', [
+                    foreach ($topik->evaluasi as $e) {
+                        $gabungan->push([
+                            'tipe'   => 'evaluasi',
+                            'nama'   => $e->nama_evaluasi,
+                            'urutan' => $e->urutan,
+                        ]);
+                    }
+
+                    foreach ($topik->upload as $u) {
+                        $gabungan->push([
+                            'tipe'   => 'upload',
+                            'nama'   => $u->nama_upload,
+                            'urutan' => $u->urutan,
+                        ]);
+                    }
+
+                    $topik->subtopiks_urut = $gabungan->sortBy('urutan')->values();
+                    return $topik;
+                });
+
+            // --- Cek apakah menu materi default perlu ditampilkan ---
+            $showMateriMenu = topikDinamis::whereIn('nama_topik', [
                     'pembukaan',
                     'kesejarahan',
                     'kewirausahaan'
                 ])
-                    ->where('status', 'on')
-                    ->where('token_kelas', $tokenKelas)
-                    ->exists();
+                ->where('status', 'on')
+                ->whereIn('token_kelas', $tokenKelas)
+                ->exists();
 
-                $view->with([
-                    'topiks' => $topiks,
-                    'showMateriMenu' => $showMateriMenu,
-                ]);
-
-            }
+            // --- Lempar variabel ke view ---
+            $view->with([
+                'topiks'         => $topiks,
+                'showMateriMenu' => $showMateriMenu,
+            ]);
         });
     }
 }
