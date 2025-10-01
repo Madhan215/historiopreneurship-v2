@@ -47,6 +47,7 @@ class ViewServiceProvider extends ServiceProvider
             // --- Query topik ---
             $topiks = topikDinamis::where('status', 'on')
                 ->whereIn('token_kelas', $tokenKelas)
+                ->whereNotIn('nama_topik', ['pembukaan', 'kesejarahan', 'kewirausahaan']) 
                 ->orderBy('urutan')
                 ->with([
                     'materi'   => fn($q) => $q->where('status', 'on')->orderBy('urutan'),
