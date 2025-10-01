@@ -2,6 +2,7 @@
 @extends('layouts.home')
 
 @section('container-base')
+
     {{-- <h1 id="progress_halaman">0</h1> --}}
     <!-- Google Translate -->
     <div id="google_translate_element" style="position: fixed; top: 10px; left: 10px; z-index: 9999;"></div>
@@ -14,11 +15,10 @@
                         <a href="/dashboard"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('dashboard') ? 'active' : '' }}">
                             <span><i class="bi bi-speedometer"></i> Dashboard</span></a>
-                        {{-- @dd($userRole) --}}
                     @else
                         <a href="/admin/dashboard"
                             class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.dashboard') ? 'active' : '' }}">
-                            <span><i class="bi bi-speedometer"></i> Dashboard Admin</span></a>
+                            <span><i class="bi bi-speedometer"></i> Dashboard</span></a>
                     @endif
                     @if (auth()->user()->peran == 'siswa')
                         <a href="/kelas"
@@ -51,7 +51,7 @@
                             <span><i class="bi bi-key"></i> Reset Password</span>
                         </a>
                         <a href="{{ route('admin.daftarGuru') }}"
-                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.daftarGuru') ? 'active' : '' }}">
+                            class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('admin.daftarGuru') || Route::is('topik.kode') ? 'active' : '' }}">
                             <span><i class="bi bi-mortarboard"></i> Daftar Guru</span>
                         </a>
                     @endif
@@ -104,224 +104,164 @@
                         </div>
                         <div class="accordion-item" id="menuHeading2">
                             <h2 class="accordion-header">
-                                @if (collect(auth()->user()->token_kelas ?? [])->contains('status', 'aktif'))
-                                    @if ($showMateriMenu)
-                                        <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
-                                        <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
-                                            <div class="accordion-item" id="menuHeading1">
-                                                <h2 class="accordion-header">
-                                                    @php
-                                                        $activeMenu = $activeMenu ?? '';
-                                                    @endphp
-                                                    <button
-                                                        class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu1' ? '' : 'collapsed' }} text-dark"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#menuCollapse1" aria-expanded="true"
-                                                        aria-controls="menuCollapse1">
-                                                        <i class="bi bi-info-circle"></i>
-                                                        &nbsp;
-                                                        Informasi Umum
-                                                    </button>
-                                                </h2>
-                                                <div id="menuCollapse1"
-                                                    class="accordion-collapse collapse  {{ $activeMenu == 'menu1' ? 'show' : '' }}"
-                                                    aria-labelledby="menuHeading1" data-bs-parent="#sidebarAccordion">
-                                                    <div class="list-group list-group-flush">
-                                                        <a href="/Informasi/CPL"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-1') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> CPL</span></a>
-                                                        <a href="/Informasi/CPMK"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-2') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> CPMK</span></a>
-                                                        <a href="/Informasi/Peran-Dosen"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-3') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Peran Dosen</span></a>
-                                                        <a href="/Informasi/Sarana-Dan-Prasarana"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-4') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Sarana dan Prasarana</span></a>
-                                                        <a href="/Informasi/Kolaborasi-Narasumber"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-5') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kolaborasi
-                                                                Narasumber</span></a>
-                                                        <a href="/Informasi/Cara-Penggunaan"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-6') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Cara Penggunaan</span></a>
-                                                        <a href="/Informasi/Tahapan"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('A-7') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Tahapan</span></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item" id="menuHeading2">
-                                                <h2 class="accordion-header">
 
-                                                    <button
-                                                        class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu2' ? '' : 'collapsed' }} text-dark"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#menuCollapse2" aria-expanded="true"
-                                                        aria-controls="menuCollapse2">
-                                                        {{-- <i class="bi bi-1-square"></i> --}}
-                                                        <i class="bi bi-1-square"></i>
-                                                        &nbsp;
-                                                        Kesejarahan
-                                                    </button>
-                                                </h2>
-                                                <div id="menuCollapse2"
-                                                    class="accordion-collapse collapse {{ $activeMenu == 'menu2' ? 'show' : '' }}"
-                                                    aria-labelledby="menuHeading2" data-bs-parent="#sidebarAccordion">
-                                                    <div class="list-group list-group-flush">
-                                                        <a href="/Kesejarahan/Pre-Test"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-1') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Pre-Test</span></a>
-                                                        <a href="/Kesejarahan/Kegiatan-Pembelajaran-1"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-2') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran
-                                                                1</span></a>
-                                                        <a href="/Kesejarahan/Kuis-Kesejarahan"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-3') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kuis Kesejarahan</span></a>
-                                                        <a href="/Kesejarahan/Kegiatan-Pembelajaran-2"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-4') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran
-                                                                2</span></a>
-                                                        <a href="/Kesejarahan/Analisis-Kelompok"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-5') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Analisis Individu 1</span></a>
-                                                        <a href="/Kesejarahan/Analisi-Individu"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-6') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Analisis Individu 2</span></a>
-                                                        <a href="/Kesejarahan/Kegiatan-Pembelajaran-3"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-7') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran
-                                                                3</span></a>
-                                                        <a href="/Kesejarahan/Post-Test"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-8') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Post-Test</span></a>
-                                                        <a href="/Kesejarahan/Refleksi"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-9') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Refleksi</span></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div class="accordion-item" id="menuHeading3">
-                                                <h2 class="accordion-header">
-                                                    <button
-                                                        class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu3' ? '' : 'collapsed' }} text-dark"
-                                                        type="button" data-bs-toggle="collapse"
-                                                        data-bs-target="#menuCollapse3" aria-expanded="true"
-                                                        aria-controls="menuCollapse3">
-                                                        <i class="bi bi-2-square"></i>
-                                                        &nbsp;
-                                                        KWU & Kepariwisataan
-                                                    </button>
-                                                </h2>
-                                                <div id="menuCollapse3"
-                                                    class="accordion-collapse collapse {{ $activeMenu == 'menu3' ? 'show' : '' }}"
-                                                    aria-labelledby="menuHeading3" data-bs-parent="#sidebarAccordion">
-                                                    <div class="list-group list-group-flush">
-                                                        <a href="/KWU-dan-Kepariwisataan/Pre-Test"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-1') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Pre-Test</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/KWU-dan-Kepariwisataan"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-2') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> KWU & Kepariwisataan</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Kuis"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-3') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Kuis KWU &
-                                                                Kepariwisataan</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Analisis-Kelompok-1"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-4') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Analisa Kelompok 1</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Analisis-Kelompok-2"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-5') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Analisa Kelompok 2</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Diskusi-Kelompok"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-6') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Diskusi Kelompok</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Proyek-Individu"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-7') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Proyek Individu</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Refleksi-1"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-8') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Refleksi 1</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Praktik-Lapangan-1"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-9') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Praktik Lapangan 1</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Praktik-Lapangan-2"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-10') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Praktik Lapangan 2</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Post-Test"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-11') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Post-Test</span></a>
-                                                        <a href="/KWU-dan-Kepariwisataan/Refleksi-2"
-                                                            class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-12') ? 'active' : '' }}">
-                                                            <span><i class="bi bi-dot"></i> Refleksi 2</span></a>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                            <div id="sidebarAccordion">
-                                                @foreach ($topiks as $index => $topik)
+                                <button
+                                    class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu2' ? '' : 'collapsed' }} text-dark"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse2"
+                                    aria-expanded="true" aria-controls="menuCollapse2">
+                                    {{-- <i class="bi bi-1-square"></i> --}}
+                                    <i class="bi bi-1-square"></i>
+                                    &nbsp;
+                                    Kesejarahan
+                                </button>
+                            </h2>
+                            <div id="menuCollapse2"
+                                class="accordion-collapse collapse {{ $activeMenu == 'menu2' ? 'show' : '' }}"
+                                aria-labelledby="menuHeading2" data-bs-parent="#sidebarAccordion">
+                                <div class="list-group list-group-flush">
+                                    <a href="/Kesejarahan/Pre-Test"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-1') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Pre-Test</span></a>
+                                    <a href="/Kesejarahan/Kegiatan-Pembelajaran-1"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-2') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran 1</span></a>
+                                    <a href="/Kesejarahan/Kuis-Kesejarahan"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-3') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kuis Kesejarahan</span></a>
+                                    <a href="/Kesejarahan/Kegiatan-Pembelajaran-2"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-4') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran 2</span></a>
+                                    <a href="/Kesejarahan/Analisis-Kelompok"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-5') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Analisis Individu 1</span></a>
+                                    <a href="/Kesejarahan/Analisi-Individu"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-6') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Analisis Individu 2</span></a>
+                                    <a href="/Kesejarahan/Kegiatan-Pembelajaran-3"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-7') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kegiatan Pembelajaran 3</span></a>
+                                    <a href="/Kesejarahan/Post-Test"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-8') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Post-Test</span></a>
+                                    <a href="/Kesejarahan/Refleksi"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('B-9') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Refleksi</span></a>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="accordion-item" id="menuHeading3">
+                            <h2 class="accordion-header">
+                                <button
+                                    class="accordion-button text-primary fw-bold {{ $activeMenu == 'menu3' ? '' : 'collapsed' }} text-dark"
+                                    type="button" data-bs-toggle="collapse" data-bs-target="#menuCollapse3"
+                                    aria-expanded="true" aria-controls="menuCollapse3">
+                                    <i class="bi bi-2-square"></i>
+                                    &nbsp;
+                                    KWU & Kepariwisataan
+                                </button>
+                            </h2>
+                            <div id="menuCollapse3"
+                                class="accordion-collapse collapse {{ $activeMenu == 'menu3' ? 'show' : '' }}"
+                                aria-labelledby="menuHeading3" data-bs-parent="#sidebarAccordion">
+                                <div class="list-group list-group-flush">
+                                    <a href="/KWU-dan-Kepariwisataan/Pre-Test"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-1') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Pre-Test</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/KWU-dan-Kepariwisataan"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-2') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> KWU & Kepariwisataan</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Kuis"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-3') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Kuis KWU & Kepariwisataan</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Analisis-Kelompok-1"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-4') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Analisa Kelompok 1</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Analisis-Kelompok-2"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-5') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Analisa Kelompok 2</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Diskusi-Kelompok"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-6') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Diskusi Kelompok</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Proyek-Individu"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-7') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Proyek Individu</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Refleksi-1"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-8') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Refleksi 1</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Praktik-Lapangan-1"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-9') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Praktik Lapangan 1</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Praktik-Lapangan-2"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-10') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Praktik Lapangan 2</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Post-Test"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-11') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Post-Test</span></a>
+                                    <a href="/KWU-dan-Kepariwisataan/Refleksi-2"
+                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('C-12') ? 'active' : '' }}">
+                                        <span><i class="bi bi-dot"></i> Refleksi 2</span></a>
+                                </div>
+                            </div>
+                            <div id="sidebarAccordion">
+                                @foreach ($topiks as $index => $topik)
+                                    @php
+                                        $menuId = 'menuCollapse' . $index;
+                                        $headingId = 'menuHeading' . $index;
+                                        $isActive = request()->is(Str::slug($topik->nama_topik) . '/*');
+                                    @endphp
+
+                                    <div class="accordion-item">
+                                        <h2 class="accordion-header" id="{{ $headingId }}">
+                                            <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}"
+                                                type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#{{ $menuId }}"
+                                                aria-expanded="{{ $isActive ? 'true' : 'false' }}"
+                                                aria-controls="{{ $menuId }}">
+                                                {{ $topik->nama_topik }}
+                                            </button>
+                                        </h2>
+
+                                        <div id="{{ $menuId }}"
+                                            class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
+                                            aria-labelledby="{{ $headingId }}" data-bs-parent="#sidebarAccordion">
+                                            <div class="list-group list-group-flush">
+                                                @foreach ($topik->subtopiks_urut as $i => $item)
                                                     @php
-                                                        $menuId = 'menuCollapse' . $index;
-                                                        $headingId = 'menuHeading' . $index;
-                                                        $isActive = request()->is(Str::slug($topik->nama_topik) . '/*');
+                                                        $icon = match ($item['tipe']) {
+                                                            'materi' => 'bi bi-journal-text',
+                                                            'evaluasi' => 'bi bi-pencil-square',
+                                                            'upload' => 'bi bi-upload',
+                                                            default => 'bi bi-dot',
+                                                        };
+
+                                                        $slugTopik = Str::slug($topik->nama_topik);
+                                                        $slugItem = Str::slug($item['nama']);
+                                                        $url = url("/{$slugTopik}/{$slugItem}");
+
+                                                        $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
                                                     @endphp
 
-                                                    <div class="accordion-item">
-                                                        <h2 class="accordion-header" id="{{ $headingId }}">
-                                                            <button
-                                                                class="accordion-button {{ $isActive ? '' : 'collapsed' }}"
-                                                                type="button" data-bs-toggle="collapse"
-                                                                data-bs-target="#{{ $menuId }}"
-                                                                aria-expanded="{{ $isActive ? 'true' : 'false' }}"
-                                                                aria-controls="{{ $menuId }}">
-                                                                {{ $topik->nama_topik }}
-                                                            </button>
-                                                        </h2>
-
-                                                        <div id="{{ $menuId }}"
-                                                            class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
-                                                            aria-labelledby="{{ $headingId }}"
-                                                            data-bs-parent="#sidebarAccordion">
-                                                            <div class="list-group list-group-flush">
-                                                                @foreach ($topik->subtopiks_urut as $i => $item)
-                                                                    @php
-                                                                        $icon = match ($item['tipe']) {
-                                                                            'materi' => 'bi bi-journal-text',
-                                                                            'evaluasi' => 'bi bi-pencil-square',
-                                                                            'upload' => 'bi bi-upload',
-                                                                            default => 'bi bi-dot',
-                                                                        };
-
-                                                                        $slugTopik = Str::slug($topik->nama_topik);
-                                                                        $slugItem = Str::slug($item['nama']);
-                                                                        $url = url("/{$slugTopik}/{$slugItem}");
-
-                                                                        $isCurrent = request()->is(
-                                                                            "{$slugTopik}/{$slugItem}",
-                                                                        );
-                                                                    @endphp
-
-                                                                    <a href="{{ $url }}"
-                                                                        class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark list-group-item {{ $isCurrent ? 'active' : '' }}">
-                                                                        <span><i class="{{ $icon }}"></i>
-                                                                            {{ $item['nama'] }}</span>
-                                                                    </a>
-                                                                @endforeach
-                                                            </div>
-                                                        </div>
-                                                    </div>
+                                                    <a href="{{ $url }}"
+                                                        class="py-3 d-flex align-items-center justify-content-between small 
+                                                      bg-primary-light text-primary-dark list-group-item 
+                                                      {{ $isCurrent ? 'active' : '' }}">
+                                                        <span><i class="{{ $icon }}"></i>
+                                                            {{ $item['nama'] }}</span>
+                                                    </a>
                                                 @endforeach
                                             </div>
-                                            <div class="list-group list-group-flush">
-                                                <a href="/bahan-bacaan"
-                                                    class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
-                                                    <span class=""><i class="bi bi-book"></i> Bahan
-                                                        Bacaan</span></a>
-                                            </div>
                                         </div>
-                                    @endif
+                                    </div>
+                                @endforeach
+                            </div>
                         </div>
+                        <div class="list-group list-group-flush">
+                            <a href="/bahan-bacaan"
+                                class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
+                                <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
+                        </div>
+                    </div>
+                    <!-- ending sidebar dinamis -->
                 @endif
             </div>
         </div>
@@ -529,7 +469,9 @@
 
         function update_status() {
             let persen = $sub * 12.5;
-            status_bar.style.width = `${persen}%`;
+            status_bar.style.width = $ {
+                persen
+            } % ;
             status_bar.innerHTML = persen + "%";
 
         }
@@ -582,4 +524,5 @@
 
     <script type="text/javascript" src="//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit">
     </script>
+
 @endsection
