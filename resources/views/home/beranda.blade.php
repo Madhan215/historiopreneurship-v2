@@ -15,8 +15,11 @@
                 Interaktif"</p>
             <div class="d-flex flex-column flex-md-row gap-3">
                 @if (Auth::check())
-                    @if (auth()->user()->peran === 'siswa' || auth()->user()->peran === 'guru')
+                    @if (auth()->user()->peran == 'siswa')
                         <a role="button" tabindex="0" class="btn btn-primary btn-lg" href="/dashboard">MULAI BELAJAR</a>
+                    @elseif(auth()->user()->peran == 'guru')
+                        <a role="button" tabindex="0" class="btn btn-outline-primary btn-lg"
+                            href="/guru/dashboard">HALAMAN GURU</a>
                     @else
                         <a role="button" tabindex="0" class="btn btn-outline-primary btn-lg"
                             href="/admin/dashboard">HALAMAN ADMIN</a>

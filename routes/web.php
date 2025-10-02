@@ -94,6 +94,7 @@ Route::controller(ContentCController::class)->group(function () {
 
 // Dashboard
 Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard');
+Route::get('/guru/dashboard', [DashboardController::class, 'dashboardGuru'])->name('dashboard.guru');
 
 
 // Register
