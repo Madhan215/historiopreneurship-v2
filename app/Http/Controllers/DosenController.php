@@ -2,13 +2,14 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Kelompok;
-use App\Models\Nilai;
 use App\Models\User;
-use Illuminate\Http\RedirectResponse;
+use App\Models\Kelas;
+use App\Models\Nilai;
+use App\Models\Kelompok;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Http\RedirectResponse;
 
 class DosenController extends Controller
 {
@@ -17,8 +18,16 @@ class DosenController extends Controller
         $activeMenu = 'active';
         // Mengambil semua data kelompok beserta pengguna yang ada di dalamnya
         $Kelompoks = Kelompok::with('users')->get();
+
         $Mahasiswas = User::where('peran', 'siswa')->get(); // Filter users based on role
-        return view('lamanDosen.dataMahasiswa', compact('Mahasiswas', 'Kelompoks', 'activeMenu'));
+
+        // Ambil ID Guru
+        $idGuru = auth()->user()->id;
+
+        // Daftar Kode kelas
+        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
+
+        return view('lamanDosen.dataMahasiswa', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));
     }
 
     public function saveGroup(Request $request)
@@ -71,27 +80,27 @@ class DosenController extends Controller
         $kelasA1 = \DB::table('users')
             ->where('kelas', 'a1')
             ->get();
-        
+
         $kelasA2 = \DB::table('users')
             ->where('kelas', 'a2')
             ->get();
-        
+
         // Menghitung jumlah laki-laki dan perempuan pada kelas a1
         $jumlahLakiA1 = $kelasA1->where('jenis_kelamin', 'L')->count();
         $jumlahPerempuanA1 = $kelasA1->where('jenis_kelamin', 'P')->count();
-        
+
         // Menghitung jumlah laki-laki dan perempuan pada kelas a2
         $jumlahLakiA2 = $kelasA2->where('jenis_kelamin', 'L')->count();
         $jumlahPerempuanA2 = $kelasA2->where('jenis_kelamin', 'P')->count();
-    
+
         // Menghitung total siswa di kelas a1 dan a2
         $totalKelasA1 = $kelasA1->count();
         $totalKelasA2 = $kelasA2->count();
-    
+
         // Mengirimkan data ke view
         return view('lamanDosen.dataKelas', compact('jumlahLakiA1', 'jumlahPerempuanA1', 'jumlahLakiA2', 'jumlahPerempuanA2', 'totalKelasA1', 'totalKelasA2', 'activeMenu'));
     }
-    
+
     public function dataEvaluasi()
     {
         $activeMenu = 'active';
@@ -102,11 +111,11 @@ class DosenController extends Controller
             ->where('nilai.aspek', 'evaluasi')
             ->select('users.nama_lengkap', 'users.kelas', 'nilai.nilai_akhir') // Sesuaikan dengan kolom yang ada
             ->get();
-    
+
         // Mengirim data ke tampilan
-        return view('lamanDosen.dataEvaluasi', compact('mahasiswa','activeMenu'));
+        return view('lamanDosen.dataEvaluasi', compact('mahasiswa', 'activeMenu'));
     }
-    
+
 
     public function dataNilai()
     {
@@ -140,9 +149,10 @@ class DosenController extends Controller
         return view('lamanDosen.dataRefleksi', compact('Mahasiswas', 'activeMenu'));
     }
 
-    public function dataExportNilai() {
+    public function dataExportNilai()
+    {
         $activeMenu = 'active';
-    
+
         // Ambil data dari tabel users dan tabel nilai dengan aspek yang sesuai
         $mahasiswa = DB::table('users')
             ->join('nilai', 'users.email', '=', 'nilai.email')
@@ -161,11 +171,11 @@ class DosenController extends Controller
             )
             ->groupBy('users.nama_lengkap', 'users.kelas')
             ->get();
-    
+
         return view('lamanDosen.exportNilai', compact('mahasiswa', 'activeMenu'));
     }
-    
-    
+
+
 
 
     public function autoAssignGroup()

@@ -15,24 +15,20 @@ class KelasController extends Controller
      */
     public function index()
     {
-    $user = auth()->user();
-    $tokens = $user->token_kelas ?? []; 
-    $activeMenu = '';
+        $user = auth()->user();
+        $tokens = $user->token_kelas ?? [];
+        $activeMenu = '';
 
-    // Ambil semua kode kelas dari token_kelas JSON
-    $kodeKelas = collect($tokens)->pluck('kode')->toArray();
+        // Ambil semua kode kelas dari token_kelas JSON
+        $kodeKelas = collect($tokens)->pluck('kode')->toArray();
 
-    // Cari data kelas berdasarkan kode, bukan id
-<<<<<<< HEAD
-    $kelas = \App\Models\Kelas::whereIn('kode_kelas', $kodeKelas)
-                    ->with('guru')
-                    ->get();        
-        
-=======
-    $kelas = Kelas::whereIn('kode_kelas', $kodeKelas)->get();        
->>>>>>> 0b8c5805aa054b8f9306137778ff50dfac4904ce
+        // Cari data kelas berdasarkan kode, bukan id
+        $kelas = \App\Models\Kelas::whereIn('kode_kelas', $kodeKelas)
+            ->with('guru')
+            ->get();
 
-    return view('kelas.index', compact('kelas', 'activeMenu'));
+
+        return view('kelas.index', compact('kelas', 'activeMenu'));
     }
 
     /**
@@ -52,11 +48,10 @@ class KelasController extends Controller
             $kode = Str::upper(Str::random(6));
         } while (Kelas::where('kode_kelas', $kode)->exists());
 
-         $kelas = Kelas::create([
+        $kelas = Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'kode_kelas' => $kode,
             'deskripsi_kelas' => $request->deskripsi_kelas,
-            'created_by' => auth()->id(),
         ]);
 
         $user = auth()->user();
@@ -69,7 +64,7 @@ class KelasController extends Controller
         ];
 
         $user->token_kelas = $existingTokens;
-        $user->save();      
+        $user->save();
         return redirect()->route('kelas.index')->with('success', 'Kelas berhasil ditambahkan!');
 
     }
@@ -110,7 +105,7 @@ class KelasController extends Controller
      */
     public function show()
     {
-         return view('kelas.input');
+        return view('kelas.input');
     }
 
     /**
@@ -148,14 +143,14 @@ class KelasController extends Controller
                 if ($token['status'] === 'aktif') {
                     $token['status'] = 'tidak aktif'; // keluar
                 } else {
-                // pertama reset semua kelas jadi tidak aktif
+                    // pertama reset semua kelas jadi tidak aktif
                     foreach ($tokens as &$t) {
                         $t['status'] = 'tidak aktif';
                     }
                     // lalu aktifkan kelas ini
                     $token['status'] = 'aktif'; // masuk
                 }
-            }        
+            }
         }
 
         $user->token_kelas = $tokens;
@@ -171,7 +166,7 @@ class KelasController extends Controller
     {
         $kelas = Kelas::findOrFail($id);
 
-            $users = \App\Models\User::whereNotNull('token_kelas')->get();
+        $users = \App\Models\User::whereNotNull('token_kelas')->get();
 
         foreach ($users as $user) {
             $tokens = $user->token_kelas ?? [];

@@ -2,19 +2,20 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\AnalisisIndividuKesejarahan;
-use App\Models\AnalisisIndividuKesejeranhanII;
-use App\Models\AnalisisKelompokKewirausahaan;
-use App\Models\Refleksi;
-use App\Models\uploadFile;
 use App\Models\User;
+use App\Models\Kelas;
 use App\Models\Nilai;
+use App\Models\Refleksi;
 use App\Models\userBadge;
+use App\Models\uploadFile;
 use App\Models\AksesHalaman;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Session;
+use App\Models\AnalisisIndividuKesejarahan;
+use App\Models\AnalisisKelompokKewirausahaan;
+use App\Models\AnalisisIndividuKesejeranhanII;
 
 class DashboardController extends Controller
 {
@@ -272,5 +273,40 @@ class DashboardController extends Controller
     {
         $data['users'] = User::all();
         return view('dashboard_admin', $data);
+    }
+
+    public function dashboardGuru()
+    {
+        // Ambil ID Guru
+        $idGuru = auth()->user()->id;
+
+        // Ambil jumlah kelas berdasarkan kelas yang dibuat oleh guru
+        $jumlahKelasDiampu = count(Kelas::where('created_by', $idGuru)->get());
+
+        // Ambil kode kelas yang diampu guru, lalu masukkan kedalam list
+        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
+
+        $users = User::where('peran', 'siswa')->pluck('token_kelas');
+
+        // Hitung jumlah siswa
+        $jumlahSiswa = 0;
+
+        foreach ($users as $token) {
+
+            if (is_array($token)) {
+                foreach ($token as $t) {
+                    if (in_array($t['kode'], $kelasGuru->toArray())) {
+                        $jumlahSiswa++;
+                    }
+                }
+            }
+        }
+
+        // dd($jumlahSiswa);
+
+        return view('dashboard_guru', compact('jumlahKelasDiampu', 'jumlahSiswa'));
+
+
+
     }
 }
