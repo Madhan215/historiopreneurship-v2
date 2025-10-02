@@ -15,4 +15,9 @@ class Kelas extends Model
         'deskripsi_kelas',
         'created_by'
     ];
+
+    public function guru()
+    {
+        return $this->belongsTo(User::class, 'created_by');
+    }
 }
