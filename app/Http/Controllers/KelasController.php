@@ -23,10 +23,14 @@ class KelasController extends Controller
     $kodeKelas = collect($tokens)->pluck('kode')->toArray();
 
     // Cari data kelas berdasarkan kode, bukan id
+<<<<<<< HEAD
     $kelas = \App\Models\Kelas::whereIn('kode_kelas', $kodeKelas)
                     ->with('guru')
                     ->get();        
         
+=======
+    $kelas = Kelas::whereIn('kode_kelas', $kodeKelas)->get();        
+>>>>>>> 0b8c5805aa054b8f9306137778ff50dfac4904ce
 
     return view('kelas.index', compact('kelas', 'activeMenu'));
     }

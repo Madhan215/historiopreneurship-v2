@@ -94,18 +94,29 @@
                                 @php
                                     $tokens = auth()->user()->token_kelas ?? [];
                                     $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
-                                    $activeKelas = $activeKode ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first() : null;
+                                    $activeKelas = $activeKode
+                                        ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first()
+                                        : null;
                                 @endphp
                                 @if ($activeKelas)
                                     <span class="ms-2">Kelas: <strong>{{ $activeKelas->nama_kelas }}</strong></span>
-                                @endif                                
+                                @endif
                                 <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
                                     <li>
-                                        <form action="{{ route('dashboard') }}" method="GET">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-speedometer"></i> Dashboard
-                                            </button>
-                                        </form>
+                                        @if (auth()->user()->peran === 'siswa' || auth()->user()->peran === 'guru')
+                                            <form action="{{ route('dashboard') }}" method="GET">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-speedometer"></i> Dashboard
+                                                </button>
+                                            </form>
+                                        @else
+                                            <form action="{{ route('admin.dashboard') }}" method="GET">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-speedometer"></i> Dashboard
+                                                </button>
+                                            </form>
+                                        @endif
+
                                     </li>
                                     <li>
                                         <form action="{{ route('change.profile') }}" method="GET">

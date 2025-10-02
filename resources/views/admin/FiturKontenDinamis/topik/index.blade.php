@@ -4,18 +4,26 @@
     <h2 class="mb-4 fw-bold">Daftar Topik</h2>
     <div class="d-flex gap-2 mb-4">
         @if (isset($token))
-            <a href="{{ route('topik.create', ['token_kelas' => $token]) }}" class="btn btn-primary">Tambah Topik</a>
-            <a href="{{ route('topik.paketMateri', ['token_kelas' => $token]) }}"
-                onclick="return confirm('Yakin ingin klaim paket materi default ini?')" class="btn btn-success">
-                Klaim Paket Topik & Subtopik
+            <a href="{{ route('topik.create', ['token_kelas' => $token]) }}" class="btn btn-primary">
+                Tambah Topik
             </a>
 
-            <a href="{{ route('atur-urutan', ['token_kelas' => $token]) }}" class="btn btn-outline-secondary">🔀 Atur Urutan
-                Topik & Subtopik</a>
-            <a href="{{ route('lihat-urutan', ['token_kelas' => $token]) }}" class="btn btn-primary mb-3">Lihat Urutan Topik &
-                Subtopik</a>
+            <a href="{{ $sudahAda ? '#' : route('topik.paketMateri', ['token_kelas' => $token]) }}" @if($sudahAda)
+            class="btn btn-success disabled" aria-disabled="true" @else class="btn btn-success"
+                onclick="return confirm('Yakin ingin klaim paket materi default ini?')" @endif>
+                {{ $sudahAda ? 'Paket Sudah Diklaim' : 'Klaim Paket Topik & Subtopik' }}
+            </a>
+
+            <a href="{{ route('atur-urutan', ['token_kelas' => $token]) }}" class="btn btn-outline-secondary">
+                🔀 Atur Urutan Topik & Subtopik
+            </a>
+
+            <a href="{{ route('lihat-urutan', ['token_kelas' => $token]) }}" class="btn btn-primary mb-3">
+                Lihat Urutan Topik & Subtopik
+            </a>
         @endif
     </div>
+
 
     @if (session('success'))
         <div class="alert alert-success">{{ session('success') }}</div>
@@ -94,14 +102,14 @@
                                                         href="{{ route('subtopik.edit', ['tipe' => 'materi', 'id' => $materi->id_materi]) }}">Edit
                                                         Materi</a>
 
-                                                   <form method="POST"
-    action="{{ route('subtopik.destroy', ['tipe' => 'materi', 'id' => $materi->id_materi]) }}"
-    onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
-    @csrf
-    @method('DELETE')
-    <input type="hidden" name="id_topik" value="{{ $materi->id_topik }}">
-    <button class="btn btn-sm btn-outline-danger">Hapus</button>
-</form>
+                                                    <form method="POST"
+                                                        action="{{ route('subtopik.destroy', ['tipe' => 'materi', 'id' => $materi->id_materi]) }}"
+                                                        onsubmit="return confirm('Yakin ingin menghapus materi ini?')">
+                                                        @csrf
+                                                        @method('DELETE')
+                                                        <input type="hidden" name="id_topik" value="{{ $materi->id_topik }}">
+                                                        <button class="btn btn-sm btn-outline-danger">Hapus</button>
+                                                    </form>
 
                                                 </div>
                                             </div>
@@ -147,7 +155,7 @@
                                                     onsubmit="return confirm('Yakin ingin menghapus evaluasi ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                        <input type="hidden" name="id_topik" value="{{ $evaluasi->id_topik }}">
+                                                    <input type="hidden" name="id_topik" value="{{ $evaluasi->id_topik }}">
                                                     <button class="btn btn-sm btn-outline-danger">Hapus</button>
                                                 </form>
                                             </div>
@@ -193,7 +201,7 @@
                                                     onsubmit="return confirm('Yakin ingin menghapus upload ini?')">
                                                     @csrf
                                                     @method('DELETE')
-                                                        <input type="hidden" name="id_topik" value="{{ $upload->id_topik }}">
+                                                    <input type="hidden" name="id_topik" value="{{ $upload->id_topik }}">
                                                     <button class="btn btn-sm btn-outline-danger">Hapus</button>
                                                 </form>
                                             </div>

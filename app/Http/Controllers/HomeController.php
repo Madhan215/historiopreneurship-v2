@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -9,12 +10,13 @@ class HomeController extends Controller
     public function sumber()
     {
         $activeMenu = 'menu3';
-        return view('home.sumber',compact('activeMenu'));
+        return view('home.sumber', compact('activeMenu'));
     }
     public function beranda()
     {
-        $userRole = 'siswa';
-        return view('home.beranda', compact('userRole'));
+        // $userRole = auth()->user()->peran;
+        // dd($userRole);
+        return view('home.beranda');
     }
 
     public function materi()
