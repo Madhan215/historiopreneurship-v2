@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Models\User;
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Http\Controllers\Controller;
@@ -29,7 +30,7 @@ class adminController extends Controller
     {
         // Hitung jumlah kelas unik berdasarkan class_token
         // $jumlahKelas = User::whereNotNull('class_token')->distinct('class_token')->count();
-        $jumlahKelas = 23;
+        $jumlahKelas = count(Kelas::all());
 
         // Hitung jumlah user non-admin
         $jumlahUser = User::where('peran', '!=', 'admin')->count();
