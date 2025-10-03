@@ -118,6 +118,7 @@ class DashboardController extends Controller
             ->orderBy('poin', 'desc')
             ->get();
 
+        // dd($rankedUsers);
 
         // Temukan pengguna saat ini berdasarkan email
         $currentUser = $rankedUsers->firstWhere('email', $email);
@@ -126,12 +127,15 @@ class DashboardController extends Controller
         $data['eligibleForHighRankBadge'] = false;
         $data['highRankBadgeClaimed'] = false;
 
+
         // Jika pengguna ditemukan di daftar ranking
         if ($currentUser) {
             // Cari peringkat pengguna
             $userRank = $rankedUsers->search(function ($user) use ($email) {
                 return $user->email === $email;
             });
+
+            // dd($currentUser);
 
             // Jika peringkat ditemukan, tambahkan 1 karena peringkat dimulai dari 0
             if ($userRank !== false) {
@@ -149,7 +153,6 @@ class DashboardController extends Controller
                 $data['highRankBadgeClaimed'] = $userBadgeHighRank ? $userBadgeHighRank->status === 'claimed' : false;
             }
         }
-
 
         // Ambil lama waktu pengerjaan dari tabel nilai
         $lamaWaktuPengerjaan = Nilai::where('email', $email)
@@ -240,27 +243,52 @@ class DashboardController extends Controller
             ->first(); // Mengambil hanya satu hasil
 
 
+
         //dd($data['leaderboard']);
         $data['claimedBadges'] = $claimedBadges;
         $data['jumlahGuru'] = User::where('peran', 'guru')->count();
         $data['jumlahSiswa'] = User::where('peran', 'siswa')->count();
 
-        // Leaderboard dengan badge
-        $data['leaderboard'] = DB::table('users')
-            ->join('nilai', 'users.email', '=', 'nilai.email')
-            ->leftJoin('user_badge', 'users.email', '=', 'user_badge.email')
-            ->leftJoin('badge', 'user_badge.id_badge', '=', 'badge.id')
-            ->select(
-                'users.email',
-                'users.nama_lengkap',
-                DB::raw('SUM(CASE WHEN nilai.aspek IN ("' . implode('", "', $nilaiAspek) . '") THEN nilai.nilai_akhir ELSE 0 END) as poin'),
-                DB::raw('GROUP_CONCAT(badge.link_gambar) as badges')
-            )
-            ->where('users.peran', 'siswa')
-            ->groupBy('users.email', 'users.nama_lengkap')
-            ->orderBy('poin', 'desc')
-            ->limit(10)
-            ->get();
+        // Leaderboard 
+        // ambil kelas aktif user
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
+
+        if ($activeKode) {
+            // hitung poin per user
+            $poinSub = DB::table('nilai')
+                ->select('email', DB::raw('SUM(nilai_akhir) as poin'))
+                ->whereIn('aspek', $nilaiAspek)
+                ->groupBy('email');
+
+            // kumpulkan badge per user
+            $badgeSub = DB::table('user_badge')
+                ->join('badge', 'user_badge.id_badge', '=', 'badge.id')
+                ->select('user_badge.email', DB::raw('GROUP_CONCAT(DISTINCT badge.link_gambar) as badges'))
+                ->groupBy('user_badge.email');
+
+            // gabungkan ke users + filter kelas aktif
+            $data['leaderboard'] = DB::table('users')
+                ->leftJoinSub($poinSub, 'poinSub', function ($join) {
+                    $join->on('users.email', '=', 'poinSub.email');
+                })
+                ->leftJoinSub($badgeSub, 'badgeSub', function ($join) {
+                    $join->on('users.email', '=', 'badgeSub.email');
+                })
+                ->select(
+                    'users.email',
+                    'users.nama_lengkap',
+                    DB::raw('COALESCE(poinSub.poin, 0) as poin'),
+                    'badgeSub.badges'
+                )
+                ->where('users.peran', 'siswa')
+                ->whereJsonContains('users.token_kelas', [['kode' => $activeKode]]) // filter kelas aktif
+                ->orderByDesc('poin')
+                ->limit(10)
+                ->get();
+        } else {
+            $data['leaderboard'] = collect(); // kosong kalau belum ada kelas aktif
+        }
 
         return view('dashboard', $data);
 

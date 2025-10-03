@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="id">
+    <head>
+        <meta charset="utf-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>Leaderboard Cards</title>
+
+        <!-- Bootstrap 5 CDN -->
+        <link
+            href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css"
+            rel="stylesheet"
+        />
+
+        <style>
+            /* Grid layout: 2 kolom, 3 baris; kolom kanan span 3 baris */
+            .card-grid {
+                display: grid;
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: repeat(
+                    3,
+                    minmax(120px, auto)
+                ); /* tiap kotak kiri minimal tinggi 120px */
+                gap: 1rem;
+                align-items: stretch;
+            }
+
+            /* Buat card kanan membentang dari baris 1 sampai 4 (span 3 baris) */
+            .card-right {
+                grid-column: 2 / 3;
+                grid-row: 1 / 4;
+                height: 100%; /* ambil seluruh tinggi yang tersedia */
+            }
+
+            /* Kotak-kotak kiri menempati kolom 1 dan masing-masing barisnya */
+            .card-left-1 {
+                grid-column: 1 / 2;
+                grid-row: 1 / 2;
+            }
+            .card-left-2 {
+                grid-column: 1 / 2;
+                grid-row: 2 / 3;
+            }
+            .card-left-3 {
+                grid-column: 1 / 2;
+                grid-row: 3 / 4;
+            }
+
+            /* Supaya isi card kanan bisa men-scroll bila panjang */
+            .card-right .card-body {
+                overflow: auto;
+            }
+
+            /* Responsive: pada layar kecil jadi satu kolom (stack) */
+            @media (max-width: 767.98px) {
+                .card-grid {
+                    grid-template-columns: 1fr;
+                    grid-template-rows: none;
+                }
+                .card-right {
+                    grid-column: 1 / 2;
+                    grid-row: auto;
+                }
+                .card-left-1,
+                .card-left-2,
+                .card-left-3 {
+                    grid-column: 1 / 2;
+                }
+            }
+        </style>
+    </head>
+    <body class="bg-light">
+        <div class="container py-4">
+            <h3 class="mb-4">Susunan Card (2 kolom)</h3>
+
+            <div class="card-grid">
+                <!-- Kiri: Kotak 1 -->
+                <div class="card card-left-1 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Kotak 1</h5>
+                        <p class="card-text">
+                            Konten singkat atau ringkasan. Misal: Top 1 siswa,
+                            foto, poin.
+                        </p>
+                        <a href="#" class="btn btn-sm btn-primary">Lihat</a>
+                    </div>
+                </div>
+
+                <!-- Kanan: Kotak besar yang membentang ke bawah sampai kotak ke-3 -->
+                <div class="card card-right shadow-sm">
+                    <div class="card-body d-flex flex-column">
+                        <h5 class="card-title">Kotak Besar (Span 3 baris)</h5>
+                        <p class="card-text">
+                            Biasanya detail panjang, grafik, daftar lengkap,
+                            atau leaderboard yang memerlukan ruang vertikal.
+                        </p>
+
+                        <!-- Contoh isi panjang -->
+                        <div class="mt-3 flex-grow-1">
+                            <ul class="list-group list-group-flush">
+                                <li class="list-group-item">
+                                    Siswa A — 1200 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa B — 1100 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa C — 1080 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa D — 980 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa E — 950 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa F — 910 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa G — 870 poin
+                                </li>
+                                <li class="list-group-item">
+                                    Siswa H — 840 poin
+                                </li>
+                            </ul>
+                        </div>
+
+                        <div class="mt-3">
+                            <a href="#" class="btn btn-sm btn-outline-secondary"
+                                >Lihat semua</a
+                            >
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Kiri: Kotak 2 -->
+                <div class="card card-left-2 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Kotak 2</h5>
+                        <p class="card-text">
+                            Contoh isi tambahan, seperti notifikasi atau
+                            ringkasan mingguan.
+                        </p>
+                        <a href="#" class="btn btn-sm btn-primary">Aksi</a>
+                    </div>
+                </div>
+
+                <!-- Kiri: Kotak 3 -->
+                <div class="card card-left-3 shadow-sm">
+                    <div class="card-body">
+                        <h5 class="card-title">Kotak 3</h5>
+                        <p class="card-text">
+                            Konten lain, mis. statistik kecil atau quick links.
+                        </p>
+                        <a href="#" class="btn btn-sm btn-primary">Aksi</a>
+                    </div>
+                </div>
+            </div>
+            <!-- /.card-grid -->
+        </div>
+        <!-- /.container -->
+
+        <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    </body>
+</html>
