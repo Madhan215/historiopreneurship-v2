@@ -18,8 +18,8 @@
                     @foreach ($kelasGuru as $token)
                         <option value="{{ $token }}">{{ $token }}</option>
                     @endforeach
-
                 </select>
+                @dd($kelasGuru)
 
                 <!-- Nav Tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
