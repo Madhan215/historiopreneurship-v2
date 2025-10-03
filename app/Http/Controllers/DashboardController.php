@@ -316,9 +316,11 @@ class DashboardController extends Controller
 
         foreach ($users as $token) {
 
+            $token = $token ?? []; // kalau null jadi array kosong
+
             if (is_array($token)) {
                 foreach ($token as $t) {
-                    if (in_array($t['kode'], $kelasGuru->toArray())) {
+                    if (isset($t['kode']) && in_array($t['kode'], $kelasGuru->toArray())) {
                         $jumlahSiswa++;
                     }
                 }
