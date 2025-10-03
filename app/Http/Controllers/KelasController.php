@@ -48,10 +48,14 @@ class KelasController extends Controller
             $kode = Str::upper(Str::random(6));
         } while (Kelas::where('kode_kelas', $kode)->exists());
 
+        // Ambil ID Guru
+        $idGuru = auth()->user()->id;
+
         $kelas = Kelas::create([
             'nama_kelas' => $request->nama_kelas,
             'kode_kelas' => $kode,
             'deskripsi_kelas' => $request->deskripsi_kelas,
+            'created_by' => $idGuru,
         ]);
 
         $user = auth()->user();
