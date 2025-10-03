@@ -51,6 +51,50 @@
             opacity: 1;
             transition: opacity 0.5s ease-in-out;
         }
+
+        .kelas-toggle-btn {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 1050;
+            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
+            transition: all 0.3s ease;
+        }
+
+        .kelas-toggle-btn:hover {
+            transform: scale(1.1);
+        }
+
+        .kelas-card {
+            position: fixed;
+            bottom: 90px;
+            right: 20px;
+            width: 260px;
+            z-index: 1049;
+            border-radius: 15px;
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
+            opacity: 0;
+            transform: translateY(15px);
+            transition: opacity 0.35s ease, transform 0.35s ease;
+        }
+
+        /* Saat terbuka */
+        .collapse.show .kelas-card {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Saat menutup */
+        .collapsing .kelas-card {
+            opacity: 0;
+            transform: translateY(15px);
+        }
     </style>
 </head>
 
@@ -90,50 +134,6 @@
                     @endphp
 
                     @if ($activeKelas)
-                        <style>
-                            .kelas-toggle-btn {
-                                position: fixed;
-                                bottom: 20px;
-                                right: 20px;
-                                z-index: 1050;
-                                border-radius: 50%;
-                                width: 55px;
-                                height: 55px;
-                                display: flex;
-                                align-items: center;
-                                justify-content: center;
-                                box-shadow: 0 4px 10px rgba(0, 0, 0, 0.25);
-                                transition: all 0.3s ease;
-                            }
-
-                            .kelas-toggle-btn:hover {
-                                transform: scale(1.1);
-                            }
-
-                            .kelas-card {
-                                position: fixed;
-                                bottom: 90px;
-                                right: 20px;
-                                width: 260px;
-                                z-index: 1049;
-                                border-radius: 15px;
-                                box-shadow: 0 6px 20px rgba(0, 0, 0, 0.25);
-                                animation: fadeInUp 0.3s ease;
-                            }
-
-                            @keyframes fadeInUp {
-                                from {
-                                    opacity: 0;
-                                    transform: translateY(20px);
-                                }
-
-                                to {
-                                    opacity: 1;
-                                    transform: translateY(0);
-                                }
-                            }
-                        </style>
-
                         <!-- Tombol Toggle -->
                         <button class="btn btn-primary kelas-toggle-btn" type="button" data-bs-toggle="collapse"
                             data-bs-target="#kelasCard" aria-expanded="false" aria-controls="kelasCard">
