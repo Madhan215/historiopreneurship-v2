@@ -60,6 +60,11 @@
                         </a>
                     @endif
                 </div>
+                <div class="list-group list-group-flush">
+                    <a href="/bahan-bacaan"
+                        class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
+                        <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
+                </div>
                 @if ($showMateriMenu)
                     <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
                     <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
@@ -244,8 +249,8 @@
 
                                                 <a href="{{ $url }}"
                                                     class="py-3 d-flex align-items-center justify-content-between small 
-                                                                                                                                          bg-primary-light text-primary-dark list-group-item 
-                                                                                                                                          {{ $isCurrent ? 'active' : '' }}">
+                                                                                                                                                                          bg-primary-light text-primary-dark list-group-item 
+                                                                                                                                                                          {{ $isCurrent ? 'active' : '' }}">
                                                     <span><i class="{{ $icon }}"></i>
                                                         {{ $item['nama'] }}</span>
                                                 </a>
@@ -295,8 +300,8 @@
 
                                         <a href="{{ $url }}"
                                             class="py-3 d-flex align-items-center justify-content-between small 
-                                                                                                                          bg-primary-light text-primary-dark list-group-item 
-                                                                                                                          {{ $isCurrent ? 'active' : '' }}">
+                                                                                                                                                  bg-primary-light text-primary-dark list-group-item 
+                                                                                                                                                  {{ $isCurrent ? 'active' : '' }}">
                                             <span><i class="{{ $icon }}"></i>
                                                 {{ $item['nama'] }}</span>
                                         </a>
@@ -305,11 +310,6 @@
                             </div>
                         </div>
                     @endforeach
-                </div>
-                <div class="list-group list-group-flush">
-                    <a href="/bahan-bacaan"
-                        class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
-                        <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
                 </div>
             </div>
         </div>
