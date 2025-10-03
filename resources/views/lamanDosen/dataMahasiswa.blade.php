@@ -79,7 +79,7 @@
                                         <td>{{ $Mahasiswa->nama_lengkap }}</td>
                                         <td>
                                             @foreach ($Mahasiswa->token_kelas as $token)
-                                                {{ $token['kode'] }}
+                                                {{ $token['kode'] }} <br>
                                             @endforeach
                                         </td>
                                         <td>{{ $Mahasiswa->email }}</td>

@@ -18,7 +18,7 @@
 
     <h1>Dashboard</h1>
     <div class="container">
-        <div class="accordion" id="accordionExample">
+        <div class="accordion" id="accordionExample" style="display : none">
             <div class="accordion-item">
                 <h2 class="accordion-header">
                     <button class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
@@ -143,7 +143,8 @@
                                     <td>{{ $user->nama_lengkap }}</td>
                                     <td>
                                         @forelse ($badges as $badge)
-                                            <img src="{{ asset($badge) }}" alt="badge" width="40" height="40" class="rounded-circle me-1">
+                                            <img src="{{ asset($badge) }}" alt="badge" width="40" height="40"
+                                                class="rounded-circle me-1">
                                         @empty
                                             <span class="text-muted">-</span>
                                         @endforelse

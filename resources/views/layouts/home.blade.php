@@ -173,7 +173,7 @@
     <footer class="d-flex justify-content-center align-items-center py-2 border">
         <div class="d-flex align-items-center">
             <span class="fw-bold text-primary me-2">HISTORIOPRENEURSHIP</span>
-            <span class="text-muted">© 2024</span>
+            <span class="text-muted">© 2025</span>
         </div>
     </footer>
 
