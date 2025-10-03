@@ -19,8 +19,6 @@
                         <option value="{{ $token }}">{{ $token }}</option>
                     @endforeach
                 </select>
-                @dd($kelasGuru)
-
                 <!-- Nav Tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">

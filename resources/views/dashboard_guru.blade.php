@@ -17,8 +17,8 @@
 
                         <!-- Informasi Profil di Kanan -->
                         <div>
-                            <p class="mb-1"><strong>Role:</strong> {{ auth()->user()->role }}</p>
-                            <p class="mb-1"><strong>Nama:</strong> {{ auth()->user()->name }}</p>
+                            <p class="mb-1"><strong>Role:</strong> {{ auth()->user()->peran }}</p>
+                            <p class="mb-1"><strong>Nama:</strong> {{ auth()->user()->nama_lengkap }}</p>
                             <p class="mb-1"><strong>Email:</strong> {{ auth()->user()->email }}</p>
                         </div>
                     </div>
