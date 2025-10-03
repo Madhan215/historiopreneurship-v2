@@ -24,7 +24,7 @@ class HitungPoinListener
         // Jika data tidak ada, set nilai default 0
         $pretest_kesejarahan = $nilai_pretest_kesejarahan->nilai_akhir ?? 0;
         $posttest_kesejarahan = $nilai_posttest_kesejarahan->nilai_akhir ?? 0;
-        $dnd_kesejarahan = $nilai_dnd_kesejarahan->nilai_akhiir??0;
+        $dnd_kesejarahan = $nilai_dnd_kesejarahan->nilai_akhir??0;
         $pretest_kwu = $nilai_pretest_kwu->nilai_akhir ?? 0;
         $posttest_kwu = $nilai_posttest_kwu->nilai_akhir ?? 0;
         $dnd_kwu = $nilai_dnd_kwu->nilai_akhir ?? 0;

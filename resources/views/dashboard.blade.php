@@ -113,7 +113,7 @@
                 <div class="card shadow-sm h-100">
                     <div class="card-body text-center">
                         <h5 class="card-title">Perolehan Poin</h5>
-                        <h4 class="fw-semibold text-primary">3487</h4>
+                        <h4 class="fw-semibold text-primary">{{ $perolehanNilai->poin ?? 0  }}</h4>
                         {{-- <h4 class="fw-semibold text-primary">{{ $totalPoints }}</h4> --}}
                     </div>
                 </div>

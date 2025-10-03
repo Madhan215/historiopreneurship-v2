@@ -226,18 +226,13 @@ class DashboardController extends Controller
 
 
         // Buat query untuk leaderboard
+        // Buat query untuk leaderboard
         $data['perolehanNilai'] = DB::table('users')
-            ->join('nilai', 'users.email', '=', 'nilai.email')
-            ->select(
-                'users.email',
-                'users.nama_lengkap',
-                DB::raw('SUM(CASE WHEN nilai.aspek IN ("' . implode('", "', $nilaiAspek) . '") THEN nilai.nilai_akhir ELSE 0 END) as poin')
-            )
-            ->where('users.peran', 'siswa') // Hanya ambil siswa
-            ->where('users.email', $email) // Filter berdasarkan email
-            ->groupBy('users.email', 'users.nama_lengkap') // Mengelompokkan berdasarkan email dan nama_lengkap
-            ->orderBy('poin', 'desc') // Urutkan berdasarkan total poin
-            ->first(); // Mengambil hanya satu hasil
+            ->select('email', 'nama_lengkap', 'poin')
+            ->where('peran', 'siswa')       // hanya siswa
+            ->where('email', $email)        // filter berdasarkan email
+            ->orderBy('poin', 'desc')       // kalau ada banyak siswa bisa urutkan
+            ->first();                      // ambil 1 data
 
 
         //dd($data['leaderboard']);

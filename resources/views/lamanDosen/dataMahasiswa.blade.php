@@ -19,6 +19,7 @@
                         <option value="{{ $token }}">{{ $token }}</option>
                     @endforeach
                 </select>
+
                 <!-- Nav Tabs -->
                 <ul class="nav nav-tabs" id="myTab" role="tablist">
                     <li class="nav-item" role="presentation">
