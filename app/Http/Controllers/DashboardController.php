@@ -259,6 +259,7 @@ class DashboardController extends Controller
 
         //dd($data['leaderboard']);
         $data['claimedBadges'] = $claimedBadges;
+        // @dd($data['claimedBadges']);
         $data['jumlahGuru'] = User::where('peran', 'guru')->count();
         $data['jumlahSiswa'] = User::where('peran', 'siswa')->count();
 
