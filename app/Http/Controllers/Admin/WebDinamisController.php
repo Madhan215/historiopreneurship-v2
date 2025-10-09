@@ -5,6 +5,7 @@ use App\Http\Controllers\Controller;
 
 use App\Models\evaluasiDinamis;
 use App\Models\materiDinamis;
+use App\Models\Nilai;
 use App\Models\topikDinamis;
 use App\Models\uploadDinamis;
 use App\Models\uploadFile;
@@ -12,6 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Storage;
+use Str;
 
 class WebDinamisController extends Controller
 {
@@ -66,10 +68,40 @@ class WebDinamisController extends Controller
                 'topik' => $topikData->nama_topik
             ]);
         } elseif ($evaluasi) {
+            // 🔹 Tambahan bagian skor dan batas test
+            $aspekEvaluasi = $evaluasi->nama_evaluasi;
+            // Ambil nilai terakhir user di tabel nilai
+            $nilaiTerakhir = Nilai::where('email', $user->email)
+                ->where('aspek', $aspekEvaluasi)
+                ->orderByDesc('waktu_selesai')
+                ->first();
+                
+            $batas_test_value = 1;
+            if ($nilaiTerakhir) {
+                $skor_test_value = $nilaiTerakhir->nilai_akhir;
+                // Jika data sudah ada (batas_test ditemukan), set menjadi 0
+                $batas_test_value = 0;
+            } else {
+                $skor_test_value = "-";
+                // Jika data tidak ada, set menjadi 1
+                $batas_test_value = 1;
+            }
+            // Hitung sudah berapa kali user melakukan test
+            $jumlahPercobaan = Nilai::where('email', $user->email)
+                ->where('aspek', $aspekEvaluasi)
+                ->count();
+
+            // Kalau sudah mencapai batas test, kirim flag ke view
+            $bisaMengerjakan = $jumlahPercobaan < $batas_test_value;
+
             return view('kontenDinamis.evaluasi', [
                 'judul' => $evaluasi->nama_evaluasi,
                 'konten' => $evaluasi->konten,
-                'topik' => $topikData->nama_topik
+                'topik' => $topikData->nama_topik,
+                'skor_test_value' => $skor_test_value,
+                'batas_test_value' => $batas_test_value,
+                'jumlahPercobaan' => $jumlahPercobaan,
+                'bisaMengerjakan' => $bisaMengerjakan
             ]);
         } elseif ($upload) {
             return view('kontenDinamis.upload', [
