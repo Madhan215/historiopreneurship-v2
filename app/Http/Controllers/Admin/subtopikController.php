@@ -4,7 +4,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Models\evaluasiDinamis;
 use App\Models\materiDinamis;
-use App\Models\topikdinamis;
+use App\Models\topikDinamis;
 use App\Models\uploadDinamis;
 use Illuminate\Http\Request;
 
