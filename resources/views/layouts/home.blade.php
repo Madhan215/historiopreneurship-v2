@@ -407,7 +407,7 @@
                 checkBtn.innerText = "Periksa";
             } else {
                 // Tampilkan hasil dengan SweetAlert
-                let hasil = correctCount * 3.33;
+                let hasil = (correctCount / totalQuestions) * 100; // Hitung skor dinamis berdasarkan jumlah soal
                 Swal.fire({
                     title: nama + " Selesai!",
                     text: "Anda mendapatkan skor: " + Math.round(hasil),

@@ -219,12 +219,12 @@
                 </div>
             </div>
 
-            <!-- Card 4: Perolehan Badge -->
+            <!-- Card 4: Perolehan poin -->
             <div class="card card-left-2 shadow-sm">
                 <div class="card-body text-center">
                     <h5 class="card-title">Perolehan Poin</h5>
                     {{-- @dd($perolehanNilai->poin) --}}
-                    <h4 class="fw-semibold text-primary">{{ $perolehanNilai->poin ?? 0 }}</h4>
+                    <h4 class="fw-semibold text-primary">{{ $perolehanNilai->nilai_poin ?? 0 }}</h4>
                     {{-- <h4 class="fw-semibold text-primary">{{ $totalPoints }}</h4> --}}
                 </div>
             </div>

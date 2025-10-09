@@ -212,30 +212,48 @@ class DashboardController extends Controller
 
         //leaderboard
 
-        // Buat query untuk leaderboard
+        // // Buat query untuk leaderboard
 
-        $data['leaderboard'] = DB::table('users')
-            ->join('nilai', 'users.email', '=', 'nilai.email')
-            ->select(
-                'users.email',
-                'users.nama_lengkap',
-                DB::raw('SUM(CASE WHEN nilai.aspek IN ("' . implode('", "', $nilaiAspek) . '") THEN nilai.nilai_akhir ELSE 0 END) as poin')
-            )
-            ->where('users.peran', 'siswa') // Hanya ambil siswa
-            ->groupBy('users.email', 'users.nama_lengkap') // Mengelompokkan berdasarkan email dan nama_lengkap
-            ->orderBy('poin', 'desc') // Urutkan berdasarkan total poin
-            ->limit(10) // Ambil 10 besar
-            ->get();
+        // $data['leaderboard'] = DB::table('users')
+        //     ->join('nilai', 'users.email', '=', 'nilai.email')
+        //     ->select(
+        //         'users.email',
+        //         'users.nama_lengkap',
+        //         DB::raw('SUM(CASE WHEN nilai.aspek IN ("' . implode('", "', $nilaiAspek) . '") THEN nilai.nilai_akhir ELSE 0 END) as poin')
+        //     )
+        //     ->where('users.peran', 'siswa') // Hanya ambil siswa
+        //     ->groupBy('users.email', 'users.nama_lengkap') // Mengelompokkan berdasarkan email dan nama_lengkap
+        //     ->orderBy('poin', 'desc') // Urutkan berdasarkan total poin
+        //     ->limit(10) // Ambil 10 besar
+        //     ->get();
+
+        // Leaderboard 
+        // ambil kelas aktif user
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
 
-        // Buat query untuk leaderboard
-        // Buat query untuk leaderboard
         $data['perolehanNilai'] = DB::table('users')
-            ->select('email', 'nama_lengkap', 'poin')
-            ->where('peran', 'siswa')       // hanya siswa
-            ->where('email', $email)        // filter berdasarkan email
-            ->orderBy('poin', 'desc')       // kalau ada banyak siswa bisa urutkan
-            ->first();                      // ambil 1 data
+            ->select(
+                'email',
+                'nama_lengkap',
+                DB::raw("
+            JSON_UNQUOTE(
+                JSON_EXTRACT(
+                    poin,
+                    REPLACE(
+                        JSON_UNQUOTE(JSON_SEARCH(poin, 'one', ?, NULL, '$[*].kode')),
+                        '.kode',
+                        '.poin'
+                    )
+                )
+            ) as nilai_poin
+        ")
+            )
+            ->where('peran', 'siswa')
+            ->where('email', $email)
+            ->addBinding($activeKode, 'select')
+            ->first();
 
 
 
@@ -244,50 +262,55 @@ class DashboardController extends Controller
         $data['jumlahGuru'] = User::where('peran', 'guru')->count();
         $data['jumlahSiswa'] = User::where('peran', 'siswa')->count();
 
-        // Leaderboard 
-        // ambil kelas aktif user
-        $tokens = auth()->user()->token_kelas ?? [];
-        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
+
 
         if ($activeKode) {
-            // hitung poin per user
-            $poinSub = DB::table('nilai')
-                ->select('email', DB::raw('SUM(nilai_akhir) as poin'))
-                ->whereIn('aspek', $nilaiAspek)
-                ->groupBy('email');
+            // Subquery poin per siswa untuk kelas aktif
+            $poinSub = DB::table('users')
+                ->select(
+                    'email',
+                    DB::raw("
+                JSON_UNQUOTE(
+                    JSON_EXTRACT(
+                        poin,
+                        REPLACE(
+                            JSON_UNQUOTE(JSON_SEARCH(poin, 'one', '$activeKode', NULL, '$[*].kode')),
+                            '.kode',
+                            '.poin'
+                        )
+                    )
+                ) AS nilai_poin
+            ")
+                )
+                ->where('peran', 'siswa');
 
-            // kumpulkan badge per user
+            // Subquery badge per siswa
             $badgeSub = DB::table('user_badge')
                 ->join('badge', 'user_badge.id_badge', '=', 'badge.id')
                 ->select('user_badge.email', DB::raw('GROUP_CONCAT(DISTINCT badge.link_gambar) as badges'))
                 ->groupBy('user_badge.email');
 
-            // gabungkan ke users + filter kelas aktif
+            // Query utama leaderboard
             $data['leaderboard'] = DB::table('users')
-                ->leftJoinSub($poinSub, 'poinSub', function ($join) {
-                    $join->on('users.email', '=', 'poinSub.email');
-                })
-                ->leftJoinSub($badgeSub, 'badgeSub', function ($join) {
-                    $join->on('users.email', '=', 'badgeSub.email');
-                })
+                ->leftJoinSub($poinSub, 'poinSub', fn($join) => $join->on('users.email', '=', 'poinSub.email'))
+                ->leftJoinSub($badgeSub, 'badgeSub', fn($join) => $join->on('users.email', '=', 'badgeSub.email'))
                 ->select(
                     'users.email',
                     'users.nama_lengkap',
-                    DB::raw('COALESCE(poinSub.poin, 0) as poin'),
+                    DB::raw('COALESCE(poinSub.nilai_poin, 0) as poin'),
                     'badgeSub.badges'
                 )
                 ->where('users.peran', 'siswa')
-                ->whereJsonContains('users.token_kelas', [['kode' => $activeKode]]) // filter kelas aktif
+                ->whereJsonContains('users.token_kelas', [['kode' => $activeKode]])
                 ->orderByDesc('poin')
                 ->limit(10)
                 ->get();
         } else {
-            $data['leaderboard'] = collect(); // kosong kalau belum ada kelas aktif
+            $data['leaderboard'] = collect();
         }
+        // @dd($data['leaderboard']);
 
         return view('dashboard', $data);
-
-
     }
 
 

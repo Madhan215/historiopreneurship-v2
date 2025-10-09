@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Admin;
+use App\Events\PoinUpdated;
 use App\Http\Controllers\Controller;
 
 use App\Models\evaluasiDinamis;
@@ -138,8 +139,9 @@ class WebDinamisController extends Controller
                 'aspek' => $aspek
             ]);
         }
+        event(new PoinUpdated($request->email));
 
-        return redirect()->back()->with('success', 'Nilai Pre-Test berhasil disimpan');
+        return redirect()->back()->with('success', 'Nilai berhasil disimpan');
     }
     public function uploadFileDinamis(Request $request)
     {
