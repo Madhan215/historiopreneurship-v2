@@ -214,9 +214,13 @@
                         <div id="sidebarAccordion">
                             @foreach ($topiks as $index => $topik)
                                 @php
-                                    $menuId = 'menuCollapse' . $index;
-                                    $headingId = 'menuHeading' . $index;
-                                    $isActive = request()->is(Str::slug($topik->nama_topik) . '/*');
+                                    // Pastikan ID benar-benar unik
+                                    $menuId = 'menuCollapse_' . $loop->index;
+                                    $headingId = 'menuHeading_' . $loop->index;
+
+                                    // Gunakan slug agar lebih aman dari spasi atau karakter khusus
+                                    $slugTopik = Str::slug($topik->nama_topik);
+                                    $isActive = request()->is($slugTopik . '/*');
                                 @endphp
 
                                 <div class="accordion-item">
@@ -240,17 +244,16 @@
                                                         default => 'bi bi-dot',
                                                     };
 
-                                                    $slugTopik = Str::slug($topik->nama_topik);
                                                     $slugItem = Str::slug($item['nama']);
                                                     $url = url("/{$slugTopik}/{$slugItem}");
 
                                                     $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
                                                 @endphp
 
-                                                <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark list-group-item 
-                                                                     {{ $isCurrent ? 'active' : '' }}">
-                                                    <span><i class="{{ $icon }}"></i>
-                                                        {{ $item['nama'] }}</span>
+                                                <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small
+                                                   list-group-item bg-primary-light text-primary-dark
+                                                   {{ $isCurrent ? 'active' : '' }}">
+                                                    <span><i class="{{ $icon }}"></i> {{ $item['nama'] }}</span>
                                                 </a>
                                             @endforeach
                                         </div>
