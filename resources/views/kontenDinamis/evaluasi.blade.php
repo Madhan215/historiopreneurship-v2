@@ -55,7 +55,7 @@
             <input type="hidden" name="email" value="{{ Auth::user()->email }}">
             <input type="hidden" name="nilai_akhir" id="nilaiAkhir">
             <input type="hidden" name="lama_waktu_pengerjaan" id="lama_waktu_pengerjaan">
-            <input type="hidden" name="aspek" value="pre_test_kesejarahan">
+            <input type="hidden" name="aspek" value= {{ $judul }}>
         </form>
     </div>
 

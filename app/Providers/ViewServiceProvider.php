@@ -86,6 +86,7 @@ class ViewServiceProvider extends ServiceProvider
                     return $topik;
                 });
 
+
             // --- Cek apakah menu materi default perlu ditampilkan ---
             $showMateriMenu = topikDinamis::whereIn('nama_topik', [
                 'pembukaan',
@@ -101,6 +102,7 @@ class ViewServiceProvider extends ServiceProvider
                 'topiks' => $topiks,
                 'showMateriMenu' => $showMateriMenu,
             ]);
+            
         });
     }
 }

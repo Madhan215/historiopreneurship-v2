@@ -247,10 +247,8 @@
                                                     $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
                                                 @endphp
 
-                                                <a href="{{ $url }}"
-                                                    class="py-3 d-flex align-items-center justify-content-between small 
-                                                                                                                                                                          bg-primary-light text-primary-dark list-group-item 
-                                                                                                                                                                          {{ $isCurrent ? 'active' : '' }}">
+                                                <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark list-group-item 
+                                                                     {{ $isCurrent ? 'active' : '' }}">
                                                     <span><i class="{{ $icon }}"></i>
                                                         {{ $item['nama'] }}</span>
                                                 </a>
@@ -262,55 +260,6 @@
                         </div>
                     </div>
                 @endif
-                <div id="sidebarAccordion">
-                    @foreach ($topiks as $index => $topik)
-                        @php
-                            $menuId = 'menuCollapse' . $index;
-                            $headingId = 'menuHeading' . $index;
-                            $isActive = request()->is(Str::slug($topik->nama_topik) . '/*');
-                        @endphp
-
-                        <div class="accordion-item">
-                            <h2 class="accordion-header" id="{{ $headingId }}">
-                                <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}" type="button"
-                                    data-bs-toggle="collapse" data-bs-target="#{{ $menuId }}"
-                                    aria-expanded="{{ $isActive ? 'true' : 'false' }}" aria-controls="{{ $menuId }}">
-                                    {{ $topik->nama_topik }}
-                                </button>
-                            </h2>
-
-                            <div id="{{ $menuId }}" class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
-                                aria-labelledby="{{ $headingId }}" data-bs-parent="#sidebarAccordion">
-                                <div class="list-group list-group-flush">
-                                    @foreach ($topik->subtopiks_urut as $i => $item)
-                                        @php
-                                            $icon = match ($item['tipe']) {
-                                                'materi' => 'bi bi-journal-text',
-                                                'evaluasi' => 'bi bi-pencil-square',
-                                                'upload' => 'bi bi-upload',
-                                                default => 'bi bi-dot',
-                                            };
-
-                                            $slugTopik = Str::slug($topik->nama_topik);
-                                            $slugItem = Str::slug($item['nama']);
-                                            $url = url("/{$slugTopik}/{$slugItem}");
-
-                                            $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
-                                        @endphp
-
-                                        <a href="{{ $url }}"
-                                            class="py-3 d-flex align-items-center justify-content-between small 
-                                                                                                                                                  bg-primary-light text-primary-dark list-group-item 
-                                                                                                                                                  {{ $isCurrent ? 'active' : '' }}">
-                                            <span><i class="{{ $icon }}"></i>
-                                                {{ $item['nama'] }}</span>
-                                        </a>
-                                    @endforeach
-                                </div>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
             </div>
         </div>
         <div class="bg-white text-dark border-top col-lg-9">
