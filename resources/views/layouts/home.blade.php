@@ -354,26 +354,19 @@
             });
         }
 
+        let progressPerQuestion = 100 / totalQuestions;
+
         function checkAnswer() {
-
-
-            console.log('Cek Jawaban', minutes);
-
-
-
             const selectedOption = document.querySelector('input[name="option"]:checked');
-
-            if (minutes === 0) {
-                nextQuestion(namaTest);
-            }
-
             if (!selectedOption) return;
 
+            const $status_bar = document.getElementById('status_bar');
+            const no_soal = currentQuestion + 1;
 
-            let $status_bar = document.getElementById('status_bar');
-            let no_soal = currentQuestion + 1;
-            $status_bar.style.width = `${no_soal * 3.3333333}%`;
-            $status_bar.innerHTML = Math.round(no_soal * 3.3333333) + "%";
+            // ✅ Dinamis berdasarkan jumlah soal dari database
+            let progress = no_soal * progressPerQuestion;
+            $status_bar.style.width = `${progress}%`;
+            $status_bar.innerHTML = Math.round(progress) + "%";
 
             const feedbackContainer = document.getElementById("feedbackContainer");
             const checkBtn = document.getElementById("checkBtn");
@@ -382,17 +375,16 @@
             const correctValue = questions[currentQuestion].correct;
 
             feedbackContainer.style.display = 'block';
-
             if (selectedValue === correctValue) {
                 correctCount++;
                 feedbackContainer.className = 'feedback correct';
-                feedbackContainer.innerHTML = "✅ Jawaban benar! " + questions[currentQuestion].explanation;
+                feedbackContainer.innerHTML = "✅ Jawaban benar!";
             } else {
                 feedbackContainer.className = 'feedback wrong';
-                feedbackContainer.innerHTML = "❌ Jawaban salah! " + questions[currentQuestion].explanation;
+                feedbackContainer.innerHTML = "❌ Jawaban salah!";
             }
 
-            if (currentQuestion == 29) {
+            if (currentQuestion === totalQuestions - 1) {
                 checkBtn.innerText = "Cek Skor!";
             } else {
                 checkBtn.innerText = "Berikutnya";
@@ -403,6 +395,7 @@
             };
             disableAllRadios();
         }
+
 
         function nextQuestion(nama) {
             currentQuestion++;

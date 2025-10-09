@@ -75,7 +75,7 @@ class WebDinamisController extends Controller
                 ->where('aspek', $aspekEvaluasi)
                 ->orderByDesc('waktu_selesai')
                 ->first();
-                
+
             $batas_test_value = 1;
             if ($nilaiTerakhir) {
                 $skor_test_value = $nilaiTerakhir->nilai_akhir;
@@ -93,11 +93,16 @@ class WebDinamisController extends Controller
 
             // Kalau sudah mencapai batas test, kirim flag ke view
             $bisaMengerjakan = $jumlahPercobaan < $batas_test_value;
+            // 🔹 Decode JSON soal dari kolom konten
+            $questions = json_decode($evaluasi->konten, true) ?? [];
+            $jumlahSoal = count($questions);
 
             return view('kontenDinamis.evaluasi', [
                 'judul' => $evaluasi->nama_evaluasi,
                 'konten' => $evaluasi->konten,
                 'topik' => $topikData->nama_topik,
+                'questions' => $questions, // kirim array soal
+                'jumlahSoal' => $jumlahSoal, // kirim jumlah soal
                 'skor_test_value' => $skor_test_value,
                 'batas_test_value' => $batas_test_value,
                 'jumlahPercobaan' => $jumlahPercobaan,

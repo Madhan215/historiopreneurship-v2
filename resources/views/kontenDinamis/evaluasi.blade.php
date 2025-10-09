@@ -60,9 +60,11 @@
     </div>
 
     <script>
-        let namaTest = "Pre Test B";
+        let namaTest = "{{ $judul }}";
         let currentQuestion = 0;
         let correctCount = 0;
         let questions = @json($soals);
+        const totalQuestions = {{ $jumlahSoal }};
     </script>
+
 @endsection
