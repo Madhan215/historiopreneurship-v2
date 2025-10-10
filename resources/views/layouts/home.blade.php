@@ -160,8 +160,8 @@
                     <div class="gap-2 navbar-nav">
                         @auth
                             <li class="nav-item dropdown" id="MenuKanan">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown" role="button"
-                                    data-bs-toggle="dropdown" aria-expanded="false">
+                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
+                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
                                     Selamat datang {{ auth()->user()->nama_lengkap }}
                                     <img src="{{ auth()->user()->profilePhotoUrl }}" alt="Profile Photo"
                                         class="rounded-circle border border-primary ms-1"
@@ -223,15 +223,16 @@
                 </div>
             </div>
         </nav>
-        <section>
-            <div>
-                @yield('container-base')
-            </div>
-        </section>
         @if (View::hasSection('container'))
             <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
                 <div class="container">
                     @yield('container')
+                </div>
+            </section>
+        @else
+            <section>
+                <div>
+                    @yield('container-base')
                 </div>
             </section>
         @endif
@@ -284,7 +285,7 @@
 
         function startCountdown() {
             const checkBtn = document.getElementById("checkBtn");
-            countdown = setInterval(function () {
+            countdown = setInterval(function() {
                 if (minutes === 0 && seconds === 0) {
                     clearInterval(countdown); // Timer selesai
                     alert("Waktu habis!");
@@ -390,7 +391,7 @@
                 checkBtn.innerText = "Berikutnya";
             }
 
-            checkBtn.onclick = function () {
+            checkBtn.onclick = function() {
                 nextQuestion(namaTest);
             };
             disableAllRadios();
@@ -442,9 +443,9 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
@@ -452,7 +453,7 @@
 
     <script>
         // Hilangkan Alert Otomatis
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const alert = document.querySelector(".floating-alert");
             if (alert) {
                 setTimeout(() => {
