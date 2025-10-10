@@ -110,11 +110,18 @@ class WebDinamisController extends Controller
                 'bisaMengerjakan' => $bisaMengerjakan
             ]);
         } elseif ($upload) {
+            $uploadedFile = DB::table('upload_file_tugas')
+                ->where('kategori', $upload->nama_upload)
+                ->where('created_by', $user->email)
+                ->first();
+          
             return view('kontenDinamis.upload', [
                 'judul' => $upload->nama_upload,
                 'konten' => $upload->konten,
-                'topik' => $topikData->nama_topik
+                'topik' => $topikData->nama_topik,
+                'uploadedFile' => $uploadedFile
             ]);
+
         }
 
         abort(404, 'Subtopik tidak ditemukan atau belum aktif.');

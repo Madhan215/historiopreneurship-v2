@@ -52,20 +52,7 @@
             </div>
         </div>
 
-        <!-- Form Penilaian -->
-        <div class="card-body mt-4 border-top pt-4">
-            <label for="nilaiIndividu" class="mb-2 fw-semibold">Nilai diperoleh</label>
-            <div class="input-group mb-3">
-                <span class="input-group-text">Nilai</span>
-                <input type="number" class="form-control" name="nilai_akhir" min="0" max="100" required
-                    value="{{ $nilaiUploadKegiatanPembelajaran3->nilai_akhir ?? '' }}"
-                    {{ $nilaiUploadKegiatanPembelajaran3 ? 'disabled' : '' }}>
-            </div>
-
-            <label for="feedbackIndividu" class="fw-semibold">Feedback dari dosen</label>
-            <textarea class="form-control mt-2" name="data_jawaban_penilai" id="feedbackIndividu" rows="5"
-                {{ $nilaiUploadKegiatanPembelajaran3 ? 'disabled' : '' }}>{{ $nilaiUploadKegiatanPembelajaran3->data_jawaban_penilai ?? '' }}</textarea>
-        </div>
+        
     </div>
 @endif
 
