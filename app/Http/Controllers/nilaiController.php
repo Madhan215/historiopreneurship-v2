@@ -154,6 +154,7 @@ class nilaiController extends Controller
                 'aspek' => $aspek
             ]);
         }
+        event(new PoinUpdated($request->email));
 
         return redirect()->back()->with('success', 'Nilai Pre-Test berhasil disimpan');
     }
@@ -185,6 +186,7 @@ class nilaiController extends Controller
                 'aspek' => $aspek
             ]);
         }
+        event(new PoinUpdated($request->email));
 
         return redirect()->back()->with('success', 'Nilai Post-Test berhasil disimpan');
     }
