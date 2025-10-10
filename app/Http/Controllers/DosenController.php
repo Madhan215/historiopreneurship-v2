@@ -125,8 +125,14 @@ class DosenController extends Controller
         // Mengambil data mahasiswa berdasarkan peran 'siswa'
         $Mahasiswas = User::where('peran', 'siswa')->get();
 
+        // Ambil ID Guru
+        $idGuru = auth()->user()->id;
+
+        // Daftar Kode kelas
+        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
+
         // Mengirimkan kedua variabel ke view
-        return view('lamanDosen.dataNilai', compact('Mahasiswas', 'Kelompoks', 'activeMenu'));
+        return view('lamanDosen.dataNilai', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));
     }
 
     public function dataNilaiTest()
