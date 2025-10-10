@@ -12,6 +12,7 @@ use App\Models\Refleksi;
 use App\Models\uploadFile;
 use App\Models\User;
 use App\Models\userBadge;
+use DB;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -74,6 +75,7 @@ class userBadgeController extends Controller
                 return redirect()->route('dashboard')->with('success', 'Historical Badge successfully claimed!');
             }
         }
+
 
         // Jika tidak memenuhi syarat, beri tahu pengguna
         return redirect()->route('dashboard')->with('error', 'You do not meet the criteria for the Historical Badge.');
@@ -227,13 +229,33 @@ class userBadgeController extends Controller
     public function awardHighRankBadge(Request $request)
     {
         $email = Auth::user()->email;
+        // ambil kelas aktif user
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        // Ambil pengguna yang memiliki poin lebih dari nol dan urutkan berdasarkan poin dari terbesar ke terkecil
-        $rankedUsers = User::whereNotNull('poin')
-            ->where('poin', '>', 0) // Hanya ambil pengguna dengan poin lebih dari nol
-            ->orderBy('poin', 'desc')
+        $rankedUsers = DB::table('users')
+            ->select(
+                'email',
+                'nama_lengkap',
+                DB::raw("
+            CAST(
+                JSON_UNQUOTE(
+                    JSON_EXTRACT(
+                        poin,
+                        REPLACE(
+                            JSON_UNQUOTE(JSON_SEARCH(poin, 'one', '$activeKode', NULL, '$[*].kode')),
+                            '.kode',
+                            '.poin'
+                        )
+                    )
+                ) AS UNSIGNED
+            ) as nilai_poin
+        ")
+            )
+            ->where('peran', 'siswa')
+            ->having('nilai_poin', '>', 0) // hanya ambil user dengan poin > 0
+            ->orderByDesc('nilai_poin')
             ->get();
-
         // Temukan pengguna saat ini berdasarkan email
         $currentUser = $rankedUsers->firstWhere('email', $email);
 

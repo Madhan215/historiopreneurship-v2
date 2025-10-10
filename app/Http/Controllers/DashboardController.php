@@ -22,6 +22,9 @@ class DashboardController extends Controller
     public function index()
     {
         $email = auth()->user()->email;
+        // ambil kelas aktif user
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
         // Data tambahan untuk dashboard
         $data['activeMenu'] = 'active';
@@ -112,13 +115,31 @@ class DashboardController extends Controller
         // Badge High Rank
         $highRankBadgeId = 1; // ID untuk badge "High Rank"
 
-        // Ambil semua pengguna yang memiliki poin lebih dari nol, urutkan berdasarkan poin dari terbesar ke terkecil
-        $rankedUsers = User::whereNotNull('poin')
-            ->where('poin', '>', 0) // Hanya pengguna dengan poin lebih dari nol
-            ->orderBy('poin', 'desc')
+        $rankedUsers = DB::table('users')
+            ->select(
+                'email',
+                'nama_lengkap',
+                DB::raw("
+            CAST(
+                JSON_UNQUOTE(
+                    JSON_EXTRACT(
+                        poin,
+                        REPLACE(
+                            JSON_UNQUOTE(JSON_SEARCH(poin, 'one', '$activeKode', NULL, '$[*].kode')),
+                            '.kode',
+                            '.poin'
+                        )
+                    )
+                ) AS UNSIGNED
+            ) as nilai_poin
+        ")
+            )
+            ->where('peran', 'siswa')
+            ->having('nilai_poin', '>', 0) // hanya ambil user dengan poin > 0
+            ->orderByDesc('nilai_poin')
             ->get();
 
-        // dd($rankedUsers);
+
 
         // Temukan pengguna saat ini berdasarkan email
         $currentUser = $rankedUsers->firstWhere('email', $email);
@@ -127,6 +148,7 @@ class DashboardController extends Controller
         $data['eligibleForHighRankBadge'] = false;
         $data['highRankBadgeClaimed'] = false;
 
+        //@dd($currentUser);
 
         // Jika pengguna ditemukan di daftar ranking
         if ($currentUser) {
@@ -134,6 +156,7 @@ class DashboardController extends Controller
             $userRank = $rankedUsers->search(function ($user) use ($email) {
                 return $user->email === $email;
             });
+
 
             // dd($currentUser);
 
@@ -228,9 +251,7 @@ class DashboardController extends Controller
         //     ->get();
 
         // Leaderboard 
-        // ambil kelas aktif user
-        $tokens = auth()->user()->token_kelas ?? [];
-        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
+
 
 
         $data['perolehanNilai'] = DB::table('users')
