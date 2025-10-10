@@ -51,7 +51,7 @@
 </div>
 <script>
     // Script Pre Test
-    const questions = [
+    let questions = [
     {
         question: "Siapakah pendiri Kesultanan Banjar?",
         options: ["Sultan Adam", "Sultan Suriansyah", "Pangeran Antasari", "Pangeran Hidayatullah"],
@@ -238,6 +238,7 @@
     let namaTest = "Pre Test B";
     let currentQuestion = 0;
     let correctCount = 0;
+     const totalQuestions = 30;
 </script>
 
 @endsection

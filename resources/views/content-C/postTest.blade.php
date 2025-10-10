@@ -53,7 +53,7 @@
 </div>
 <script>
     // Script Pre Test
-    const questions = [
+    let questions = [
         {
             question: "Apa yang dimaksud dengan pattern identification dalam kewirausahaan?",
             options: ["Mengidentifikasi sumber dana", "Mengidentifikasi pola dalam pasar atau industri", "Menghitung keuntungan", "Mencari supplier terbaik"],
@@ -376,7 +376,7 @@
     let namaTest = "Post Test C";
     let currentQuestion = 0;
     let correctCount = 0;
-
+    const totalQuestions = 30;
     
 </script>
 
