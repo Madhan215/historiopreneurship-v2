@@ -312,14 +312,13 @@ class DashboardController extends Controller
                 ->select('user_badge.email', DB::raw('GROUP_CONCAT(DISTINCT badge.link_gambar) as badges'))
                 ->groupBy('user_badge.email');
 
-            // Query utama leaderboard
             $data['leaderboard'] = DB::table('users')
                 ->leftJoinSub($poinSub, 'poinSub', fn($join) => $join->on('users.email', '=', 'poinSub.email'))
                 ->leftJoinSub($badgeSub, 'badgeSub', fn($join) => $join->on('users.email', '=', 'badgeSub.email'))
                 ->select(
                     'users.email',
                     'users.nama_lengkap',
-                    DB::raw('COALESCE(poinSub.nilai_poin, 0) as poin'),
+                    DB::raw('CAST(COALESCE(poinSub.nilai_poin, 0) AS UNSIGNED) as poin'),
                     'badgeSub.badges'
                 )
                 ->where('users.peran', 'siswa')
@@ -327,6 +326,8 @@ class DashboardController extends Controller
                 ->orderByDesc('poin')
                 ->limit(10)
                 ->get();
+
+            // @dd($data['leaderboard']);
         } else {
             $data['leaderboard'] = collect();
         }
