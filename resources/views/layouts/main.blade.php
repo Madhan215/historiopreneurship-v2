@@ -211,58 +211,58 @@
                                 </div>
                             </div>
                         </div>
-                        <div id="sidebarAccordion">
-                            @foreach ($topiks as $index => $topik)
-                                @php
-                                    // Pastikan ID benar-benar unik
-                                    $menuId = 'menuCollapse_' . $loop->index;
-                                    $headingId = 'menuHeading_' . $loop->index;
-
-                                    // Gunakan slug agar lebih aman dari spasi atau karakter khusus
-                                    $slugTopik = Str::slug($topik->nama_topik);
-                                    $isActive = request()->is($slugTopik . '/*');
-                                @endphp
-
-                                <div class="accordion-item">
-                                    <h2 class="accordion-header" id="{{ $headingId }}">
-                                        <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}" type="button"
-                                            data-bs-toggle="collapse" data-bs-target="#{{ $menuId }}"
-                                            aria-expanded="{{ $isActive ? 'true' : 'false' }}" aria-controls="{{ $menuId }}">
-                                            {{ $topik->nama_topik }}
-                                        </button>
-                                    </h2>
-
-                                    <div id="{{ $menuId }}" class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
-                                        aria-labelledby="{{ $headingId }}" data-bs-parent="#sidebarAccordion">
-                                        <div class="list-group list-group-flush">
-                                            @foreach ($topik->subtopiks_urut as $i => $item)
-                                                @php
-                                                    $icon = match ($item['tipe']) {
-                                                        'materi' => 'bi bi-journal-text',
-                                                        'evaluasi' => 'bi bi-pencil-square',
-                                                        'upload' => 'bi bi-upload',
-                                                        default => 'bi bi-dot',
-                                                    };
-
-                                                    $slugItem = Str::slug($item['nama']);
-                                                    $url = url("/{$slugTopik}/{$slugItem}");
-
-                                                    $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
-                                                @endphp
-
-                                                <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small
-                                                   list-group-item bg-primary-light text-primary-dark
-                                                   {{ $isCurrent ? 'active' : '' }}">
-                                                    <span><i class="{{ $icon }}"></i> {{ $item['nama'] }}</span>
-                                                </a>
-                                            @endforeach
-                                        </div>
-                                    </div>
-                                </div>
-                            @endforeach
-                        </div>
                     </div>
                 @endif
+                <div id="sidebarAccordion">
+                    @foreach ($topiks as $index => $topik)
+                        @php
+                            // Pastikan ID benar-benar unik
+                            $menuId = 'menuCollapse_' . $loop->index;
+                            $headingId = 'menuHeading_' . $loop->index;
+
+                            // Gunakan slug agar lebih aman dari spasi atau karakter khusus
+                            $slugTopik = Str::slug($topik->nama_topik);
+                            $isActive = request()->is($slugTopik . '/*');
+                        @endphp
+
+                        <div class="accordion-item">
+                            <h2 class="accordion-header" id="{{ $headingId }}">
+                                <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}" type="button"
+                                    data-bs-toggle="collapse" data-bs-target="#{{ $menuId }}"
+                                    aria-expanded="{{ $isActive ? 'true' : 'false' }}" aria-controls="{{ $menuId }}">
+                                    {{ $topik->nama_topik }}
+                                </button>
+                            </h2>
+
+                            <div id="{{ $menuId }}" class="accordion-collapse collapse {{ $isActive ? 'show' : '' }}"
+                                aria-labelledby="{{ $headingId }}" data-bs-parent="#sidebarAccordion">
+                                <div class="list-group list-group-flush">
+                                    @foreach ($topik->subtopiks_urut as $i => $item)
+                                        @php
+                                            $icon = match ($item['tipe']) {
+                                                'materi' => 'bi bi-journal-text',
+                                                'evaluasi' => 'bi bi-pencil-square',
+                                                'upload' => 'bi bi-upload',
+                                                default => 'bi bi-dot',
+                                            };
+
+                                            $slugItem = Str::slug($item['nama']);
+                                            $url = url("/{$slugTopik}/{$slugItem}");
+
+                                            $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
+                                        @endphp
+
+                                        <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small
+                                                               list-group-item bg-primary-light text-primary-dark
+                                                               {{ $isCurrent ? 'active' : '' }}">
+                                            <span><i class="{{ $icon }}"></i> {{ $item['nama'] }}</span>
+                                        </a>
+                                    @endforeach
+                                </div>
+                            </div>
+                        </div>
+                    @endforeach
+                </div>
             </div>
         </div>
         <div class="bg-white text-dark border-top col-lg-9">
