@@ -107,142 +107,154 @@
 
     <!-- Google Translate -->
     <div id="google_translate_element" style="position: fixed; top: 10px; left: 10px; z-index: 9999;"></div>
-    <div class="min-vh-100 d-flex flex-column">
-        <nav class="navbar navbar-expand-md bg-white">
-            <div class="py-2 mx-2 mx-sm-auto container">
-                <a class="navbar-brand" href="/"><span class="fw-bold text-primary">HISTORIOPRENEURSHIP</span></a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                    data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
-                    aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-                <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                    <div class="mx-auto navbar-nav">
-                        <a class="nav-link {{ Route::is('beranda') ? 'active fw-semibold' : '' }}" aria-current="page"
-                            href="/">Beranda</a>
-                        <a class="nav-link {{ Route::is('materi') ? 'active fw-semibold' : '' }}"
-                            href="/materi">Materi</a>
-                        <a class="nav-link {{ Route::is('perihal') ? 'active fw-semibold' : '' }}"
-                            href="/perihal">Perihal</a>
-                    </div>
-                    @php
-                        $tokens = auth()->user()->token_kelas ?? [];
-                        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
-                        $activeKelas = $activeKode
-                            ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first()
-                            : null;
-                    @endphp
 
-                    @if ($activeKelas)
-                        <!-- Tombol Toggle -->
-                        <button class="btn btn-primary kelas-toggle-btn" type="button" data-bs-toggle="collapse"
-                            data-bs-target="#kelasCard" aria-expanded="false" aria-controls="kelasCard">
-                            <i class="bi bi-mortarboard-fill fs-4"></i>
-                        </button>
+    {{-- Containter untuk evaluasi dinamis, agar layar full --}}
 
-                        <!-- Card Info -->
-                        <div class="collapse" id="kelasCard">
-                            <div class="card kelas-card">
-                                <div
-                                    class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                    <span><i class="bi bi-mortarboard"></i> Kelas Aktif</span>
-                                    <button class="btn-close btn-close-white btn-sm" data-bs-toggle="collapse"
-                                        data-bs-target="#kelasCard"></button>
-                                </div>
-                                <div class="card-body">
-                                    <p class="mb-2"><strong>Nama:</strong> {{ $activeKelas->nama_kelas }}</p>
-                                    <p class="mb-0"><strong>Kode:</strong> {{ $activeKelas->kode_kelas }}</p>
+
+
+    @if (($tipe ?? '') == 'evaluasi')
+        @yield('container-kuis')
+    @else
+        <div class="min-vh-100 d-flex flex-column">
+            <nav class="navbar navbar-expand-md bg-white">
+                <div class="py-2 mx-2 mx-sm-auto container">
+                    <a class="navbar-brand" href="/"><span
+                            class="fw-bold text-primary">HISTORIOPRENEURSHIP</span></a>
+                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                        data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
+                        aria-label="Toggle navigation">
+                        <span class="navbar-toggler-icon"></span>
+                    </button>
+                    <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+                        <div class="mx-auto navbar-nav">
+                            <a class="nav-link {{ Route::is('beranda') ? 'active fw-semibold' : '' }}"
+                                aria-current="page" href="/">Beranda</a>
+                            <a class="nav-link {{ Route::is('materi') ? 'active fw-semibold' : '' }}"
+                                href="/materi">Materi</a>
+                            <a class="nav-link {{ Route::is('perihal') ? 'active fw-semibold' : '' }}"
+                                href="/perihal">Perihal</a>
+                        </div>
+                        @php
+                            $tokens = auth()->user()->token_kelas ?? [];
+                            $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
+                            $activeKelas = $activeKode
+                                ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first()
+                                : null;
+                        @endphp
+
+                        @if ($activeKelas)
+                            <!-- Tombol Toggle -->
+                            <button class="btn btn-primary kelas-toggle-btn" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#kelasCard" aria-expanded="false" aria-controls="kelasCard">
+                                <i class="bi bi-mortarboard-fill fs-4"></i>
+                            </button>
+
+                            <!-- Card Info -->
+                            <div class="collapse" id="kelasCard">
+                                <div class="card kelas-card">
+                                    <div
+                                        class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
+                                        <span><i class="bi bi-mortarboard"></i> Kelas Aktif</span>
+                                        <button class="btn-close btn-close-white btn-sm" data-bs-toggle="collapse"
+                                            data-bs-target="#kelasCard"></button>
+                                    </div>
+                                    <div class="card-body">
+                                        <p class="mb-2"><strong>Nama:</strong> {{ $activeKelas->nama_kelas }}</p>
+                                        <p class="mb-0"><strong>Kode:</strong> {{ $activeKelas->kode_kelas }}</p>
+                                    </div>
                                 </div>
                             </div>
+                        @endif
+
+                        <div class="gap-2 navbar-nav">
+                            @auth
+                                <li class="nav-item dropdown" id="MenuKanan">
+                                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
+                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Selamat datang {{ auth()->user()->nama_lengkap }}
+                                        <img src="{{ auth()->user()->profilePhotoUrl }}" alt="Profile Photo"
+                                            class="rounded-circle border border-primary ms-1"
+                                            style="width: 25px; height: 25px;">
+                                    </a>
+                                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                        <li>
+                                            @if (auth()->user()->peran === 'siswa' || auth()->user()->peran === 'guru')
+                                                <form action="{{ route('dashboard') }}" method="GET">
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="bi bi-speedometer"></i> Dashboard
+                                                    </button>
+                                                </form>
+                                            @else
+                                                <form action="{{ route('admin.dashboard') }}" method="GET">
+                                                    <button type="submit" class="dropdown-item">
+                                                        <i class="bi bi-speedometer"></i> Dashboard
+                                                    </button>
+                                                </form>
+                                            @endif
+
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('change.profile') }}" method="GET">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-person-circle"></i> Ubah Foto Profil
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('change.name') }}" method="GET">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-tag"></i> Ubah Nama
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('reset.password') }}" method="GET">
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-key"></i> Ubah Password
+                                                </button>
+                                            </form>
+                                        </li>
+                                        <li>
+                                            <form action="{{ route('login.logout') }}" method="get">
+                                                @csrf
+                                                <button type="submit" class="dropdown-item">
+                                                    <i class="bi bi-box-arrow-right"></i> Logout
+                                                </button>
+                                            </form>
+                                        </li>
+                                    </ul>
+                                </li>
+                            @else
+                                <a role="button" tabindex="0" class="btn btn-outline-primary"
+                                    href="/daftar">DAFTAR</a>
+                                <a role="button" tabindex="0" class="btn btn-primary" href="/masuk">MASUK</a>
+                            @endauth
                         </div>
-                    @endif
-
-                    <div class="gap-2 navbar-nav">
-                        @auth
-                            <li class="nav-item dropdown" id="MenuKanan">
-                                <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
-                                    role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Selamat datang {{ auth()->user()->nama_lengkap }}
-                                    <img src="{{ auth()->user()->profilePhotoUrl }}" alt="Profile Photo"
-                                        class="rounded-circle border border-primary ms-1"
-                                        style="width: 25px; height: 25px;">
-                                </a>
-                                <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
-                                    <li>
-                                        @if (auth()->user()->peran === 'siswa' || auth()->user()->peran === 'guru')
-                                            <form action="{{ route('dashboard') }}" method="GET">
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-speedometer"></i> Dashboard
-                                                </button>
-                                            </form>
-                                        @else
-                                            <form action="{{ route('admin.dashboard') }}" method="GET">
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-speedometer"></i> Dashboard
-                                                </button>
-                                            </form>
-                                        @endif
-
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('change.profile') }}" method="GET">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-person-circle"></i> Ubah Foto Profil
-                                            </button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('change.name') }}" method="GET">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-tag"></i> Ubah Nama
-                                            </button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('reset.password') }}" method="GET">
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-key"></i> Ubah Password
-                                            </button>
-                                        </form>
-                                    </li>
-                                    <li>
-                                        <form action="{{ route('login.logout') }}" method="get">
-                                            @csrf
-                                            <button type="submit" class="dropdown-item">
-                                                <i class="bi bi-box-arrow-right"></i> Logout
-                                            </button>
-                                        </form>
-                                    </li>
-                                </ul>
-                            </li>
-                        @else
-                            <a role="button" tabindex="0" class="btn btn-outline-primary" href="/daftar">DAFTAR</a>
-                            <a role="button" tabindex="0" class="btn btn-primary" href="/masuk">MASUK</a>
-                        @endauth
                     </div>
                 </div>
-            </div>
-        </nav>
-        @if (View::hasSection('container'))
-            <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
-                <div class="container">
-                    @yield('container')
-                </div>
-            </section>
-        @else
-            <section>
-                <div>
-                    @yield('container-base')
-                </div>
-            </section>
-        @endif
-    </div>
-    <footer class="d-flex justify-content-center align-items-center py-2 border">
-        <div class="d-flex align-items-center">
-            <span class="fw-bold text-primary me-2">HISTORIOPRENEURSHIP</span>
-            <span class="text-muted">© 2025</span>
+            </nav>
+            @if (View::hasSection('container'))
+                <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
+                    <div class="container">
+                        @yield('container')
+                    </div>
+                </section>
+            @else
+                <section>
+                    <div>
+                        @yield('container-base')
+                    </div>
+                </section>
+            @endif
         </div>
-    </footer>
+        <footer class="d-flex justify-content-center align-items-center py-2 border">
+            <div class="d-flex align-items-center">
+                <span class="fw-bold text-primary me-2">HISTORIOPRENEURSHIP</span>
+                <span class="text-muted">© 2025</span>
+            </div>
+        </footer>
+
+    @endif
 
     {{-- Bootstrap JS --}}
     <script src="{{ asset('js/bootstrap.bundle.min.js') }}"></script>
@@ -274,9 +286,11 @@
         // Mengunci Test
         let batas_test = document.getElementById('batas_test');
         let mulai_test = document.getElementById('mulai_test');
+        let mulai_waktu = document.getElementById('mulai_waktu');
         if (batas_test.innerHTML == 0) {
             mulai_test.classList.add('disabled');
-            mulai_test.style.cursor = 'not-allowed';
+            mulai_test.style.display = 'none';
+            mulai_waktu.style.display = 'none';
         }
 
         let countdown;
