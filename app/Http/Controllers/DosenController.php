@@ -128,7 +128,7 @@ class DosenController extends Controller
         // Ambil ID Guru
         $idGuru = auth()->user()->id;
 
-        // Daftar Kode kelas
+        // Daftar Kode kelas yang hanya dibuat oleh user tersebut
         $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
 
         // Mengirimkan kedua variabel ke view
