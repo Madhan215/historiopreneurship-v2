@@ -55,6 +55,13 @@
         animation: bounce 1.8s infinite;
     }
 
+    /* Sembunyikan di layar kecil (misalnya lebar ≤ 768px) */
+    @media (max-width: 768px) {
+        .scroll-down {
+            display: none;
+        }
+    }
+
     .scroll-link {
         color: var(--primary);
         font-size: 2.5rem;

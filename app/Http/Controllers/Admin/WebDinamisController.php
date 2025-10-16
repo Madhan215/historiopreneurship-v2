@@ -23,6 +23,9 @@ class WebDinamisController extends Controller
     {
         $user = auth()->user();
 
+        $aktif = collect($user->token_kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
+
         // Ubah slug jadi nama normal (decode dan ganti tanda hubung dengan spasi)
         $topikNama = urldecode(str_replace('-', ' ', $topik));
         $subtopikNama = urldecode(str_replace('-', ' ', $subtopik));
@@ -33,8 +36,10 @@ class WebDinamisController extends Controller
             [strtolower(str_replace('.', '', $topikNama))]
         )
             ->where('status', 'on')
-            ->where('token_kelas', $user->token_kelas)
+            ->where('token_kelas', $aktif)
             ->firstOrFail();
+
+        // dd($topikData);
 
         // Pencocokan subtopik dengan menghapus tanda baca umum
         $cleanSubtopikNama = strtolower(preg_replace('/[^\w\s]/u', '', $subtopikNama));
@@ -63,12 +68,15 @@ class WebDinamisController extends Controller
 
         // Tentukan view mana yang dibuka
         if ($materi) {
+            $tipe = 'materi';
             return view('kontenDinamis.materi', [
                 'judul' => $materi->nama_materi,
                 'konten' => $materi->konten,
-                'topik' => $topikData->nama_topik
+                'topik' => $topikData->nama_topik,
+                'tipe' => $tipe
             ]);
         } elseif ($evaluasi) {
+            $tipe = 'evaluasi';
             // 🔹 Tambahan bagian skor dan batas test
             $aspekEvaluasi = $evaluasi->nama_evaluasi;
             // Ambil nilai terakhir user di tabel nilai
@@ -107,19 +115,22 @@ class WebDinamisController extends Controller
                 'skor_test_value' => $skor_test_value,
                 'batas_test_value' => $batas_test_value,
                 'jumlahPercobaan' => $jumlahPercobaan,
-                'bisaMengerjakan' => $bisaMengerjakan
+                'bisaMengerjakan' => $bisaMengerjakan,
+                'tipe' => $tipe
             ]);
         } elseif ($upload) {
+            $tipe = 'upload';
             $uploadedFile = DB::table('upload_file_tugas')
                 ->where('kategori', $upload->nama_upload)
                 ->where('created_by', $user->email)
                 ->first();
-          
+
             return view('kontenDinamis.upload', [
                 'judul' => $upload->nama_upload,
                 'konten' => $upload->konten,
                 'topik' => $topikData->nama_topik,
-                'uploadedFile' => $uploadedFile
+                'uploadedFile' => $uploadedFile,
+                'tipe' => $tipe
             ]);
 
         }
