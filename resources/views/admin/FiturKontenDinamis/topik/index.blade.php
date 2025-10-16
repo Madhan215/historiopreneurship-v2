@@ -44,14 +44,15 @@
                         <div class="d-flex align-items-center gap-2">
 
                             {{-- SWITCH STATUS --}}
-                            <form method="POST"
-                                action="{{ route('topik.toggleStatus', ['id' => $topik->id_topik, 'token_kelas' => $token]) }}">
+                            <form id="topik{{ $topik->id_topik }}" method="POST"
+                                action="{{ route('topik.toggleStatus', ['id' => $topik->id_topik, 'token_kelas' => $token]) }}#topik{{ $topik->id_topik }}">
                                 @csrf
                                 <div class="form-check form-switch">
                                     <input class="form-check-input" type="checkbox" id="switch{{ $topik->id_topik }}"
                                         name="status" onchange="this.form.submit()" {{ $topik->status === 'on' ? 'checked' : '' }}>
                                 </div>
                             </form>
+
 
                             {{-- Edit --}}
                             <a href="{{ route('topik.edit', ['topik' => $topik->id_topik, 'token_kelas' => $token]) }}"
@@ -70,26 +71,27 @@
 
                     {{-- Body --}}
                     <div class="card-body" style="max-height: 300px; overflow-y: auto;">
-                    {{-- Isi Default --}}
-                    @if(isset($defaultIsi[$topik->nama_topik]))
-                        <div class="mb-4">
-                            <h6 class="fw-bold text-uppercase mb-3">
-                                📑 Struktur {{ $topik->nama_topik }}
-                            </h6>
-                            <ul class="list-group shadow-sm rounded-3 overflow-hidden">
-                                @foreach ($defaultIsi[$topik->nama_topik] as $index => $item)
-                                    <li class="list-group-item d-flex justify-content-between align-items-center">
-                                        <div class="d-flex align-items-center">
-                                            <span class="badge bg-primary me-3 rounded-circle" style="width: 28px; height: 28px; line-height: 20px;">
-                                                {{ $index+1 }}
-                                            </span>
-                                            <span class="fw-semibold">{{ $item }}</span>
-                                        </div>
-                                    </li>
-                                @endforeach
-                            </ul>
-                        </div>
-                    @endif
+                        {{-- Isi Default --}}
+                        @if(isset($defaultIsi[$topik->nama_topik]))
+                            <div class="mb-4">
+                                <h6 class="fw-bold text-uppercase mb-3">
+                                    📑 Struktur {{ $topik->nama_topik }}
+                                </h6>
+                                <ul class="list-group shadow-sm rounded-3 overflow-hidden">
+                                    @foreach ($defaultIsi[$topik->nama_topik] as $index => $item)
+                                        <li class="list-group-item d-flex justify-content-between align-items-center">
+                                            <div class="d-flex align-items-center">
+                                                <span class="badge bg-primary me-3 rounded-circle"
+                                                    style="width: 28px; height: 28px; line-height: 20px;">
+                                                    {{ $index + 1 }}
+                                                </span>
+                                                <span class="fw-semibold">{{ $item }}</span>
+                                            </div>
+                                        </li>
+                                    @endforeach
+                                </ul>
+                            </div>
+                        @endif
 
 
 
@@ -109,13 +111,15 @@
                                                     </small>
                                                 </div>
                                                 <div class="d-flex align-items-center gap-2">
-                                                    <form method="POST"
-                                                        action="{{ route('materi.toggleStatus', ['id' => $materi->id_materi]) }}">
+                                                    {{-- SWITCH STATUS MATERI --}}
+                                                    <form id="materi{{ $materi->id_materi }}" method="POST"
+                                                        action="{{ route('materi.toggleStatus', ['id' => $materi->id_materi]) }}#materi{{ $materi->id_materi }}">
                                                         @csrf
                                                         <div class="form-check form-switch">
                                                             <input class="form-check-input" type="checkbox" name="status" {{ $materi->status === 'on' ? 'checked' : '' }} {{ $topik->status === 'off' ? 'disabled' : '' }} onchange="this.form.submit()">
                                                         </div>
                                                     </form>
+
 
                                                     <button class="btn btn-sm btn-outline-primary" data-bs-toggle="modal"
                                                         data-bs-target="#materiModal{{ $materi->id_materi }}">Lihat Materi</button>
@@ -157,13 +161,14 @@
                                                 </small>
                                             </div>
                                             <div class="d-flex align-items-center gap-2">
-                                                <form method="POST"
-                                                    action="{{ route('evaluasi.toggleStatus', ['id' => $evaluasi->id_evaluasi]) }}">
+                                                <form id="evaluasi{{ $evaluasi->id_evaluasi }}" method="POST"
+                                                    action="{{ route('evaluasi.toggleStatus', ['id' => $evaluasi->id_evaluasi]) }}#evaluasi{{ $evaluasi->id_evaluasi }}">
                                                     @csrf
                                                     <div class="form-check form-switch">
                                                         <input class="form-check-input" type="checkbox" name="status" {{ $evaluasi->status === 'on' ? 'checked' : '' }} {{ $topik->status === 'off' ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     </div>
                                                 </form>
+
 
                                                 <button class="btn btn-sm btn-outline-info" data-bs-toggle="modal"
                                                     data-bs-target="#modalEvaluasi{{ $evaluasi->id_evaluasi }}">Lihat Soal</button>
@@ -203,13 +208,14 @@
                                                 </small>
                                             </div>
                                             <div class="d-flex align-items-center gap-2">
-                                                <form method="POST"
-                                                    action="{{ route('upload.toggleStatus', ['id' => $upload->id_upload]) }}">
+                                                <form id="upload{{ $upload->id_upload }}" method="POST"
+                                                    action="{{ route('upload.toggleStatus', ['id' => $upload->id_upload]) }}#upload{{ $upload->id_upload }}">
                                                     @csrf
                                                     <div class="form-check form-switch">
-                                                        <input class="form-check-input" type="checkbox" name="status" {{ $upload->status === 'on' ? 'checked' : '' }} {{ $topik->status === 'off' ? 'disabled' : '' }} onchange="this.form.submit()">
+                                                        <input class="form-check-input" type="checkbox" name="status" {{ $upload->status === 'on' ? 'checked' : '' }}{{ $topik->status === 'off' ? 'disabled' : '' }} onchange="this.form.submit()">
                                                     </div>
                                                 </form>
+
 
                                                 <button class="btn btn-sm btn-outline-success" data-bs-toggle="modal"
                                                     data-bs-target="#modalUpload{{ $upload->id_upload }}">Lihat Upload</button>
@@ -233,15 +239,15 @@
                             </div>
                         @endif
 
-{{-- Tambah Subtopik --}}
-@if(!isset($defaultIsi[$topik->nama_topik]))
-    <div class="mt-3">
-        <a href="{{ route('subtopik.create', ['id_topik' => $topik->id_topik]) }}"
-            class="btn btn-sm btn-outline-primary">
-            ➕ Tambah Subtopik
-        </a>
-    </div>
-@endif
+                        {{-- Tambah Subtopik --}}
+                        @if(!isset($defaultIsi[$topik->nama_topik]))
+                            <div class="mt-3">
+                                <a href="{{ route('subtopik.create', ['id_topik' => $topik->id_topik]) }}"
+                                    class="btn btn-sm btn-outline-primary">
+                                    ➕ Tambah Subtopik
+                                </a>
+                            </div>
+                        @endif
 
 
                     </div>

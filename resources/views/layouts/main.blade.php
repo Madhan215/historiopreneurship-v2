@@ -65,9 +65,11 @@
                         class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
                         <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
                 </div>
+
+
                 @if ($showMateriMenu)
                     <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
-                    <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
+                    <div class="accordion overflow-auto" id="sidebarAccordion">
                         <div class="accordion-item" id="menuHeading1">
                             <h2 class="accordion-header">
                                 @php
@@ -213,7 +215,7 @@
                         </div>
                     </div>
                 @endif
-                <div id="sidebarAccordion">
+                <div class="accordion overflow-auto" id="sidebarAccordion">
                     @foreach ($topiks as $index => $topik)
                         @php
                             // Pastikan ID benar-benar unik
@@ -223,6 +225,7 @@
                             // Gunakan slug agar lebih aman dari spasi atau karakter khusus
                             $slugTopik = Str::slug($topik->nama_topik);
                             $isActive = request()->is($slugTopik . '/*');
+
                         @endphp
 
                         <div class="accordion-item">
@@ -230,6 +233,11 @@
                                 <button class="accordion-button {{ $isActive ? '' : 'collapsed' }}" type="button"
                                     data-bs-toggle="collapse" data-bs-target="#{{ $menuId }}"
                                     aria-expanded="{{ $isActive ? 'true' : 'false' }}" aria-controls="{{ $menuId }}">
+                                    {{-- Ikon nomor dinamis --}}
+                                    <span class="fa-stack number-icon me-2">
+                                        <i class="fa-solid fa-square fa-stack-2x text-primary"></i>
+                                        <strong class="fa-stack-1x text-white">{{ $index + 1 }}</strong>
+                                    </span>
                                     {{ $topik->nama_topik }}
                                 </button>
                             </h2>
@@ -252,9 +260,10 @@
                                             $isCurrent = request()->is("{$slugTopik}/{$slugItem}");
                                         @endphp
 
-                                        <a href="{{ $url }}" class="py-3 d-flex align-items-center justify-content-between small
-                                                               list-group-item bg-primary-light text-primary-dark
-                                                               {{ $isCurrent ? 'active' : '' }}">
+                                        <a href="{{ $url }}"
+                                            class="py-3 d-flex align-items-center justify-content-between small
+                                                                                                               list-group-item bg-primary-light text-primary-dark
+                                                                                                               {{ $isCurrent ? 'active' : '' }}">
                                             <span><i class="{{ $icon }}"></i> {{ $item['nama'] }}</span>
                                         </a>
                                     @endforeach

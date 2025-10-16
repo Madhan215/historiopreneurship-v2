@@ -134,13 +134,16 @@ class topikController extends Controller
         ]);
 
         $topik = topikDinamis::findOrFail($id);
-        $token_kelas = $topik->token_kelas; // ambil token_kelas
+        $token_kelas = $topik->token_kelas; // simpan token_kelas
 
-        $topik->update($request->all());
+        $topik->update($request->only(['nama_topik', 'status']));
 
-        return redirect()->route('topik.index', ['token_kelas' => $token_kelas])
-            ->with('success', 'Topik berhasil diperbarui');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $token_kelas])
+            ->with('success', 'Topik berhasil diperbarui')
+            ->withFragment('topik' . $topik->id_topik); // <--- ini kuncinya
     }
+
 
 
     public function destroy($id)

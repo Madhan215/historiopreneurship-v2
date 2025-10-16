@@ -133,8 +133,11 @@ class subtopikController extends Controller
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
         }
 
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil ditambahkan');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', 'Subtopik berhasil ditambahkan')
+            ->withFragment('topik' . $topik->id_topik);
+
     }
 
 
@@ -238,8 +241,10 @@ class subtopikController extends Controller
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
         }
 
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil diperbarui');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', 'Subtopik berhasil diperbarui')
+            ->withFragment('topik' . $topik->id_topik);
     }
 
     public function destroy(Request $request, $tipe, $id)
@@ -276,8 +281,10 @@ class subtopikController extends Controller
         $data->delete();
 
         // Redirect ke halaman topik dengan token_kelas
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil dihapus.');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', 'Subtopik berhasil dihapus')
+            ->withFragment('topik' . $topik->id_topik);
     }
 
 }
