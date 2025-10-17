@@ -19,27 +19,23 @@
                         @if ($tipe1 === 'materi')
                             <div class="mb-3">
                                 <label class="form-label">Nama Materi</label>
-                                <input type="text" name="nama_materi" class="form-control"
-                                    value="{{ $data->nama_materi }}">
+                                <input type="text" name="nama_materi" class="form-control" value="{{ $data->nama_materi }}">
                             </div>
                         @elseif ($tipe1 === 'evaluasi')
                             <div class="mb-3">
                                 <label class="form-label">Nama Evaluasi</label>
-                                <input type="text" name="nama_evaluasi" class="form-control"
-                                    value="{{ $data->nama_evaluasi }}">
+                                <input type="text" name="nama_evaluasi" class="form-control" value="{{ $data->nama_evaluasi }}">
                             </div>
                         @elseif ($tipe1 === 'upload')
                             <div class="mb-3">
                                 <label class="form-label">Nama Upload</label>
-                                <input type="text" name="nama_upload" class="form-control"
-                                    value="{{ $data->nama_upload }}">
+                                <input type="text" name="nama_upload" class="form-control" value="{{ $data->nama_upload }}">
                             </div>
                             <div class="mb-3">
                                 <label class="form-label">Pilih Jenis File</label>
                                 <select name="tipe_file" class="form-control">
                                     @foreach(['word', 'excel', 'pdf', 'image', 'video'] as $tipe1File)
-                                        <option value="{{ $tipe1File }}"
-                                            {{ $data->tipe_file == $tipe1File ? 'selected' : '' }}>
+                                        <option value="{{ $tipe1File }}" {{ $data->tipe_file == $tipe1File ? 'selected' : '' }}>
                                             {{ ucfirst($tipe1File) }}
                                         </option>
                                     @endforeach
@@ -106,12 +102,22 @@
             const tipe = "{{ $tipe1 }}";
 
             if (tipe === 'materi') {
+                const AlignAttributor = Quill.import('attributors/style/align');
+                Quill.register(AlignAttributor, true);
                 const quill = new Quill('#editor', {
                     theme: 'snow',
                     placeholder: 'Tulis konten materi...',
                     modules: {
-                        toolbar: [['bold', 'italic', 'underline'], [{ 'list': 'ordered' }, { 'list': 'bullet' }], ['link', 'image'], ['clean']],
-                        imageResize: { modules: ['Resize', 'DisplaySize'] }
+                        toolbar: [
+                            ['bold', 'italic', 'underline'],
+                            [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                            [{ 'align': [] }],
+                            ['link', 'image', 'video'],
+                            ['clean']
+                        ],
+                        imageResize: {
+                            modules: ['Resize', 'DisplaySize']
+                        }
                     }
                 });
 
@@ -142,21 +148,21 @@
                 soalData.forEach((soal, i) => {
                     const options = soal.options?.length ? soal.options : ['', '', '', ''];
                     container.innerHTML += `
-                        <div class="border rounded p-3 mb-3">
-                            <h6>Soal ${i + 1}</h6>
-                            <label>Pertanyaan</label>
-                            <textarea class="form-control question" data-index="${i}" rows="2">${soal.question}</textarea>
-                            <label class="mt-2">Pilihan</label>
-                            ${options.map((opt, j) => `
-                                <input type="text" class="form-control option my-1" data-index="${i}" data-option="${j}" value="${opt}" placeholder="Pilihan ${String.fromCharCode(65 + j)}">
-                            `).join('')}
-                            <label class="mt-2">Jawaban Benar</label>
-                            <select class="form-select correct" data-index="${i}">
-                                ${[0, 1, 2, 3].map(j => `
-                                    <option value="${j}" ${soal.correct == j ? 'selected' : ''}>Pilihan ${String.fromCharCode(65 + j)}</option>
-                                `).join('')}
-                            </select>
-                        </div>`;
+                                <div class="border rounded p-3 mb-3">
+                                    <h6>Soal ${i + 1}</h6>
+                                    <label>Pertanyaan</label>
+                                    <textarea class="form-control question" data-index="${i}" rows="2">${soal.question}</textarea>
+                                    <label class="mt-2">Pilihan</label>
+                                    ${options.map((opt, j) => `
+                                        <input type="text" class="form-control option my-1" data-index="${i}" data-option="${j}" value="${opt}" placeholder="Pilihan ${String.fromCharCode(65 + j)}">
+                                    `).join('')}
+                                    <label class="mt-2">Jawaban Benar</label>
+                                    <select class="form-select correct" data-index="${i}">
+                                        ${[0, 1, 2, 3].map(j => `
+                                            <option value="${j}" ${soal.correct == j ? 'selected' : ''}>Pilihan ${String.fromCharCode(65 + j)}</option>
+                                        `).join('')}
+                                    </select>
+                                </div>`;
                 });
 
                 document.getElementById('form-subtopik').addEventListener('submit', function (e) {
@@ -189,12 +195,12 @@
                         const options = Array.from(document.querySelectorAll(`.option[data-index="${i}"]`)).map(opt => opt.value);
 
                         const html = `
-                            <div class="mb-3">
-                                <p><strong>Soal ${i + 1}:</strong> ${question}</p>
-                                <ol type="A">
-                                    ${options.map(opt => `<li>${opt}</li>`).join("")}
-                                </ol>
-                            </div>`;
+                                    <div class="mb-3">
+                                        <p><strong>Soal ${i + 1}:</strong> ${question}</p>
+                                        <ol type="A">
+                                            ${options.map(opt => `<li>${opt}</li>`).join("")}
+                                        </ol>
+                                    </div>`;
                         preview.innerHTML += html;
                     }
                 });
@@ -219,11 +225,11 @@
 
                 function updatePreview() {
                     preview.innerHTML = `
-                <p><strong>Nama:</strong> ${nama.value}</p>
-                <p><strong>Tipe File:</strong> ${tipeFile.value}</p>
-                <p><strong>Deskripsi:</strong> ${deskripsi.value}</p>
-                <div><strong>Instruksi:</strong> ${quillUpload.root.innerHTML}</div>
-            `;
+                        <p><strong>Nama:</strong> ${nama.value}</p>
+                        <p><strong>Tipe File:</strong> ${tipeFile.value}</p>
+                        <p><strong>Deskripsi:</strong> ${deskripsi.value}</p>
+                        <div><strong>Instruksi:</strong> ${quillUpload.root.innerHTML}</div>
+                    `;
                 }
 
                 [nama, tipeFile, deskripsi].forEach(el => el.addEventListener('input', updatePreview));
