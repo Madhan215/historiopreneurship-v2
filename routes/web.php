@@ -286,7 +286,8 @@ Route::post('/admin/reset-password/{id}', [ResetPasswordController::class, 'rese
 
 
 Route::get('/{topik}/{subtopik}', [WebDinamisController::class, 'showSubtopik'])
-    ->name('webdinamis.subtopik');
+    ->name('showSubtopik');
+
 
 
 

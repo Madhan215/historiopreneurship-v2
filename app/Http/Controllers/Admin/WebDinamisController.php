@@ -22,15 +22,17 @@ class WebDinamisController extends Controller
     public function showSubtopik($topik, $subtopik)
     {
         $user = auth()->user();
+        if (!$user)
+            abort(403, 'Anda harus login untuk mengakses halaman ini.');
 
         $aktif = collect($user->token_kelas)
             ->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        // Ubah slug jadi nama normal (decode dan ganti tanda hubung dengan spasi)
+        // Normalisasi nama topik dan subtopik
         $topikNama = urldecode(str_replace('-', ' ', $topik));
         $subtopikNama = urldecode(str_replace('-', ' ', $subtopik));
 
-        // Cari topik berdasarkan nama, status, dan token kelas
+        // Temukan topik aktif
         $topikData = topikDinamis::whereRaw(
             'LOWER(REPLACE(nama_topik, ".", "")) = ?',
             [strtolower(str_replace('.', '', $topikNama))]
@@ -39,111 +41,212 @@ class WebDinamisController extends Controller
             ->where('token_kelas', $aktif)
             ->firstOrFail();
 
-        // dd($topikData);
-
-        // Pencocokan subtopik dengan menghapus tanda baca umum
+        // Bersihkan nama subtopik
         $cleanSubtopikNama = strtolower(preg_replace('/[^\w\s]/u', '', $subtopikNama));
 
-        // Ambil semua jenis konten berdasarkan ID topik
+        // Cek jenis subtopik
         $materi = materiDinamis::where('id_topik', $topikData->id_topik)
-            ->where('status', 'on')
-            ->get()
-            ->first(function ($item) use ($cleanSubtopikNama) {
-                return strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_materi)) === $cleanSubtopikNama;
-            });
+            ->where('status', 'on')->get()
+            ->first(fn($item) => strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_materi)) === $cleanSubtopikNama);
 
         $evaluasi = evaluasiDinamis::where('id_topik', $topikData->id_topik)
-            ->where('status', 'on')
-            ->get()
-            ->first(function ($item) use ($cleanSubtopikNama) {
-                return strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_evaluasi)) === $cleanSubtopikNama;
-            });
+            ->where('status', 'on')->get()
+            ->first(fn($item) => strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_evaluasi)) === $cleanSubtopikNama);
 
         $upload = uploadDinamis::where('id_topik', $topikData->id_topik)
-            ->where('status', 'on')
-            ->get()
-            ->first(function ($item) use ($cleanSubtopikNama) {
-                return strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_upload)) === $cleanSubtopikNama;
-            });
+            ->where('status', 'on')->get()
+            ->first(fn($item) => strtolower(preg_replace('/[^\w\s]/u', '', $item->nama_upload)) === $cleanSubtopikNama);
 
-        // Tentukan view mana yang dibuka
-        if ($materi) {
-            $tipe = 'materi';
-            return view('kontenDinamis.materi', [
-                'judul' => $materi->nama_materi,
-                'konten' => $materi->konten,
-                'topik' => $topikData->nama_topik,
-                'tipe' => $tipe
-            ]);
-        } elseif ($evaluasi) {
-            $tipe = 'evaluasi';
-            // 🔹 Tambahan bagian skor dan batas test
-            $aspekEvaluasi = $evaluasi->nama_evaluasi;
-            // Ambil nilai terakhir user di tabel nilai
-            $nilaiTerakhir = Nilai::where('email', $user->email)
-                ->where('aspek', $aspekEvaluasi)
-                ->orderByDesc('waktu_selesai')
-                ->first();
+        // Gabungkan semua subtopik
+        $allSubtopik = $this->getAllSubtopik($topikData);
+        [$prevUrl, $nextUrl] = $this->getPrevNextUrls($allSubtopik, $cleanSubtopikNama, $topikData);
 
-            $batas_test_value = 1;
-            if ($nilaiTerakhir) {
-                $skor_test_value = $nilaiTerakhir->nilai_akhir;
-                // Jika data sudah ada (batas_test ditemukan), set menjadi 0
-                $batas_test_value = 0;
-            } else {
-                $skor_test_value = "-";
-                // Jika data tidak ada, set menjadi 1
-                $batas_test_value = 1;
-            }
-            // Hitung sudah berapa kali user melakukan test
-            $jumlahPercobaan = Nilai::where('email', $user->email)
-                ->where('aspek', $aspekEvaluasi)
-                ->count();
-
-            // Kalau sudah mencapai batas test, kirim flag ke view
-            $bisaMengerjakan = $jumlahPercobaan < $batas_test_value;
-            // 🔹 Decode JSON soal dari kolom konten
-            $questions = json_decode($evaluasi->konten, true) ?? [];
-            $jumlahSoal = count($questions);
-
-            return view('kontenDinamis.evaluasi', [
-                'judul' => $evaluasi->nama_evaluasi,
-                'konten' => $evaluasi->konten,
-                'topik' => $topikData->nama_topik,
-                'questions' => $questions, // kirim array soal
-                'jumlahSoal' => $jumlahSoal, // kirim jumlah soal
-                'skor_test_value' => $skor_test_value,
-                'batas_test_value' => $batas_test_value,
-                'jumlahPercobaan' => $jumlahPercobaan,
-                'bisaMengerjakan' => $bisaMengerjakan,
-                'tipe' => $tipe
-            ]);
-        } elseif ($upload) {
-            $tipe = 'upload';
-            $uploadedFile = DB::table('upload_file_tugas')
-                ->where('kategori', $upload->nama_upload)
-                ->where('created_by', $user->email)
-                ->first();
-            $maxSizes = [
-                'pdf' => 10240,
-                'word' => 10240,
-                'excel' => 10240,
-                'image' => 5120,
-                'video' => 51200,
-            ];
-            return view('kontenDinamis.upload', [
-                'judul' => $upload->nama_upload,
-                'konten' => $upload->konten,
-                'topik' => $topikData->nama_topik,
-                'uploadedFile' => $uploadedFile,
-                'tipe' => $tipe,
-                'maxSizes' => $maxSizes, 
-            ]);
-
-        }
+        // Panggil handler sesuai tipe
+        if ($materi)
+            return $this->handleMateri($materi, $topikData, $prevUrl, $nextUrl);
+        elseif ($evaluasi)
+            return $this->handleEvaluasi($evaluasi, $topikData, $user, $prevUrl, $nextUrl);
+        elseif ($upload)
+            return $this->handleUpload($upload, $topikData, $user, $prevUrl, $nextUrl);
 
         abort(404, 'Subtopik tidak ditemukan atau belum aktif.');
     }
+
+    // ------------------------
+    // 🧱 HANDLER-FUNCTIONS
+    // ------------------------
+
+    private function handleMateri($materi, $topikData, $prevUrl, $nextUrl)
+    {
+        return view('kontenDinamis.materi', [
+            'judul' => $materi->nama_materi,
+            'konten' => $materi->konten,
+            'topik' => $topikData->nama_topik,
+            'tipe' => 'materi',
+            'prevUrl' => $prevUrl,
+            'nextUrl' => $nextUrl,
+        ]);
+    }
+
+    private function handleEvaluasi($evaluasi, $topikData, $user, $prevUrl, $nextUrl)
+    {
+        $aspek = $evaluasi->nama_evaluasi;
+
+        $nilaiTerakhir = Nilai::where('email', $user->email)
+            ->where('aspek', $aspek)
+            ->orderByDesc('waktu_selesai')
+            ->first();
+
+        $batasPercobaan = 1; // ubah jika ingin lebih dari sekali
+        $jumlahPercobaan = Nilai::where('email', $user->email)
+            ->where('aspek', $aspek)
+            ->count();
+
+        $bisaMengerjakan = $jumlahPercobaan < $batasPercobaan;
+
+        $questions = json_decode($evaluasi->konten, true) ?? [];
+        $jumlahSoal = count($questions);
+
+        return view('kontenDinamis.evaluasi', [
+            'judul' => $evaluasi->nama_evaluasi,
+            'konten' => $evaluasi->konten,
+            'topik' => $topikData->nama_topik,
+            'questions' => $questions,
+            'jumlahSoal' => $jumlahSoal,
+            'skor_test_value' => $nilaiTerakhir->nilai_akhir ?? '-',
+            'jumlahPercobaan' => $jumlahPercobaan,
+            'bisaMengerjakan' => $bisaMengerjakan,
+            'tipe' => 'evaluasi',
+            'prevUrl' => $prevUrl,
+            'nextUrl' => $nextUrl,
+        ]);
+    }
+
+    private function handleUpload($upload, $topikData, $user, $prevUrl, $nextUrl)
+    {
+        $uploadedFile = DB::table('upload_file_tugas')
+            ->where('kategori', $upload->nama_upload)
+            ->where('created_by', $user->email)
+            ->first();
+
+        $maxSizes = [
+            'pdf' => 10240,
+            'word' => 10240,
+            'excel' => 10240,
+            'image' => 5120,
+            'video' => 51200,
+        ];
+
+        return view('kontenDinamis.upload', [
+            'judul' => $upload->nama_upload,
+            'konten' => $upload->konten,
+            'topik' => $topikData->nama_topik,
+            'uploadedFile' => $uploadedFile,
+            'maxSizes' => $maxSizes,
+            'tipe' => 'upload',
+            'prevUrl' => $prevUrl,
+            'nextUrl' => $nextUrl,
+        ]);
+    }
+
+    // ------------------------
+    // 🧭 HELPER-FUNCTIONS
+    // ------------------------
+
+    // ganti fungsi getAllSubtopik dan getPrevNextUrls dengan yang ini
+
+    private function getAllSubtopik($topikData)
+    {
+        // Ambil semua topik yang aktif dan punya token_kelas sama
+        $topiks = topikDinamis::where('status', 'on')
+            ->where('token_kelas', $topikData->token_kelas)
+            ->orderBy(DB::raw('COALESCE(urutan, 999)')) // urutan topik, fallback 999
+            ->get(['id_topik', 'nama_topik', DB::raw('COALESCE(urutan, 999) as topik_urutan')]);
+
+        $all = collect();
+
+        foreach ($topiks as $t) {
+            // Materi
+            $m = materiDinamis::where('id_topik', $t->id_topik)
+                ->where('status', 'on')
+                ->get(['nama_materi as nama', DB::raw('COALESCE(urutan, 999) as urutan')])
+                ->map(function ($item) use ($t) {
+                    return (object) [
+                        'nama' => $item->nama,
+                        'tipe' => 'materi',
+                        'urutan' => $item->urutan,
+                        'topik_nama' => $t->nama_topik,
+                        'topik_urutan' => $t->topik_urutan,
+                    ];
+                });
+
+            // Evaluasi
+            $e = evaluasiDinamis::where('id_topik', $t->id_topik)
+                ->where('status', 'on')
+                ->get(['nama_evaluasi as nama', DB::raw('COALESCE(urutan, 999) as urutan')])
+                ->map(function ($item) use ($t) {
+                    return (object) [
+                        'nama' => $item->nama,
+                        'tipe' => 'evaluasi',
+                        'urutan' => $item->urutan,
+                        'topik_nama' => $t->nama_topik,
+                        'topik_urutan' => $t->topik_urutan,
+                    ];
+                });
+
+            // Upload
+            $u = uploadDinamis::where('id_topik', $t->id_topik)
+                ->where('status', 'on')
+                ->get(['nama_upload as nama', DB::raw('COALESCE(urutan, 999) as urutan')])
+                ->map(function ($item) use ($t) {
+                    return (object) [
+                        'nama' => $item->nama,
+                        'tipe' => 'upload',
+                        'urutan' => $item->urutan,
+                        'topik_nama' => $t->nama_topik,
+                        'topik_urutan' => $t->topik_urutan,
+                    ];
+                });
+
+            $all = $all->merge($m)->merge($e)->merge($u);
+        }
+
+        // Urutkan: pertama berdasarkan topik_urutan, lalu urutan subtopik; reset index
+        return $all->sortBy(function ($item) {
+            return sprintf('%04d%04d', (int) $item->topik_urutan, (int) $item->urutan);
+        })->values();
+    }
+
+    private function getPrevNextUrls($allSubtopik, $cleanSubtopikNama, $topikData): array
+    {
+        // Cari index sekarang (samakan pembersihan nama seperti di showSubtopik)
+        $currentIndex = $allSubtopik->search(
+            fn($item) =>
+            strtolower(preg_replace('/[^\w\s]/u', '', $item->nama)) === $cleanSubtopikNama
+        );
+
+        $prevUrl = $nextUrl = null;
+        if ($currentIndex !== false) {
+            if ($currentIndex > 0) {
+                $prev = $allSubtopik[$currentIndex - 1];
+                $prevUrl = route('showSubtopik', [
+                    'topik' => Str::slug($prev->topik_nama),
+                    'subtopik' => Str::slug($prev->nama),
+                ]);
+            }
+            if ($currentIndex < $allSubtopik->count() - 1) {
+                $next = $allSubtopik[$currentIndex + 1];
+                $nextUrl = route('showSubtopik', [
+                    'topik' => Str::slug($next->topik_nama),
+                    'subtopik' => Str::slug($next->nama),
+                ]);
+            }
+        }
+
+        return [$prevUrl, $nextUrl];
+    }
+
+
 
 
     public function SimpanNilaiEvaluasi(Request $request)
