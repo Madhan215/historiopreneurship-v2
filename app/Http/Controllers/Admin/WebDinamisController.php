@@ -124,13 +124,20 @@ class WebDinamisController extends Controller
                 ->where('kategori', $upload->nama_upload)
                 ->where('created_by', $user->email)
                 ->first();
-
+            $maxSizes = [
+                'pdf' => 10240,
+                'word' => 10240,
+                'excel' => 10240,
+                'image' => 5120,
+                'video' => 51200,
+            ];
             return view('kontenDinamis.upload', [
                 'judul' => $upload->nama_upload,
                 'konten' => $upload->konten,
                 'topik' => $topikData->nama_topik,
                 'uploadedFile' => $uploadedFile,
-                'tipe' => $tipe
+                'tipe' => $tipe,
+                'maxSizes' => $maxSizes, 
             ]);
 
         }

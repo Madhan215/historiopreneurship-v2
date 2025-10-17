@@ -11,7 +11,7 @@ class uploadDinamis extends Model
     protected $table = 'uploaddinamis';
     protected $primaryKey = 'id_upload';
     public $timestamps = false;
-    protected $fillable = ['id_topik', 'nama_upload', 'konten', 'status','urutan','deskripsi'];
+    protected $fillable = ['id_topik', 'nama_upload', 'konten', 'status','urutan','deskripsi','tipeFile'];
     public function topik()
     {
         return $this->belongsTo(topikdinamis::class, 'id_topik', 'id_topik');

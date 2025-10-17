@@ -128,6 +128,7 @@ class subtopikController extends Controller
                     'konten' => $input, // ← termasuk konten dari Quill
                     'deskripsi' => $request->deskripsi_upload, // ← ringkasan biasa
                     'status' => 'on',
+                    'tipeFile' => $request->tipe_file
                 ]);
                 $namaSubtopik = $request->nama_upload;
                 break;
@@ -145,9 +146,9 @@ class subtopikController extends Controller
     }
 
 
-    public function edit($tipe, $id)
+    public function edit($tipe1, $id)
     {
-        switch ($tipe) {
+        switch ($tipe1) {
             case 'materi':
                 $data = materiDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
@@ -155,21 +156,24 @@ class subtopikController extends Controller
             case 'evaluasi':
                 $data = evaluasiDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
+               
                 break;
             case 'upload':
                 $data = uploadDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
-
+            
                 if (preg_match('/accept="([^"]+)"/', $data->konten, $matches)) {
                     $accept = str_replace('.', '', $matches[1]);
-                    $data->tipe_file = $accept;
+                    $data->tipeFile = $accept;
                 }
+                //@dd($data->tipeFile);
                 break;
             default:
                 abort(404);
         }
-
-        return view('admin.FiturKontenDinamis.subtopik.edit', compact('tipe', 'data', 'id_topik'));
+        // @dd($tipe,$data);
+        // @dd($data->konten, gettype($data->konten));
+        return view('admin.FiturKontenDinamis.subtopik.edit', compact('tipe1', 'data', 'id_topik'));
     }
 
     public function update(Request $request, $tipe, $id)
@@ -237,7 +241,7 @@ class subtopikController extends Controller
                 $data = uploadDinamis::findOrFail($id);
                 $data->update([
                     'nama_upload' => $request->nama_upload,
-                    'tipe_file' => $request->tipe_file,
+                    'tipeFile' => $request->tipe_file,
                     'konten' => $input,
                     'deskripsi' => $request->deskripsi_upload,
                 ]);
