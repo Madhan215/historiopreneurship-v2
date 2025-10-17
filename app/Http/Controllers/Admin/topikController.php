@@ -109,7 +109,7 @@ class topikController extends Controller
         ]);
 
         return redirect()->route('topik.index', ['token_kelas' => $request->token_kelas])
-            ->with('success', 'Topik berhasil ditambahkan');
+            ->with('success', "Topik {$request->nama_topik} berhasil ditambahkan");
 
     }
 
@@ -133,15 +133,16 @@ class topikController extends Controller
             'status' => 'required'
         ]);
 
-        $topik = topikDinamis::findOrFail($id);
+        $topik = TopikDinamis::findOrFail($id);
         $token_kelas = $topik->token_kelas; // simpan token_kelas
+        $namaLama = $topik->nama_topik; // simpan nama lama (opsional)
 
         $topik->update($request->only(['nama_topik', 'status']));
 
         return redirect()
             ->route('topik.index', ['token_kelas' => $token_kelas])
-            ->with('success', 'Topik berhasil diperbarui')
-            ->withFragment('topik' . $topik->id_topik); // <--- ini kuncinya
+            ->with('success', "Topik {$namaLama} berhasil diperbarui.")
+            ->withFragment('topik' . $topik->id_topik);
     }
 
 
@@ -150,11 +151,12 @@ class topikController extends Controller
     {
         $topik = topikDinamis::findOrFail($id);
         $token_kelas = $topik->token_kelas; // ambil token_kelas sebelum delete
+        $nama_topik = $topik->nama_topik; // simpan nama topik sebelum delete
 
         $topik->delete();
 
         return redirect()->route('topik.index', ['token_kelas' => $token_kelas])
-            ->with('success', 'Topik berhasil dihapus');
+            ->with('success', "Topik '{$nama_topik}' berhasil dihapus");
     }
 
 
