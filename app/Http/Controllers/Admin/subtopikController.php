@@ -156,12 +156,12 @@ class subtopikController extends Controller
             case 'evaluasi':
                 $data = evaluasiDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
-               
+
                 break;
             case 'upload':
                 $data = uploadDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
-            
+
                 if (preg_match('/accept="([^"]+)"/', $data->konten, $matches)) {
                     $accept = str_replace('.', '', $matches[1]);
                     $data->tipeFile = $accept;
@@ -231,12 +231,20 @@ class subtopikController extends Controller
                 ];
                 [$accept, $ext_info] = $fileInfo[$request->tipe_file];
 
-                $input = "
-                <div class='mb-2'><div>{$request->konten_upload}</div></div>
-                <label for='formFile1' class='form-label fw-semibold'>" . e($request->deskripsi_upload) . "</label>
-                <input class='form-control' type='file' id='formFile1' name='file' accept='{$accept}'>
-                <small>Kumpulkan dengan format <strong>{$ext_info}</strong></small>
-            ";
+                // 🧹 Ambil hanya bagian isi editor (hapus tag input, label, dan small lama)
+                $kontenBersih = preg_replace([
+                    '/<label.*?<\/label>/is',
+                    '/<input.*?>/is',
+                    '/<small.*?<\/small>/is'
+                ], '', $request->konten_upload);
+
+                // 🚀 Bangun ulang HTML upload yang bersih
+                $input = '
+    <div class="mb-2"><div>' . $kontenBersih . '</div></div>
+    <label for="formFile1" class="form-label fw-semibold">' . e($request->deskripsi_upload) . '</label>
+    <input class="form-control" type="file" id="formFile1" name="file" accept="' . $accept . '">
+    <small>Kumpulkan dengan format <strong>' . $ext_info . '</strong></small>
+    ';
 
                 $data = uploadDinamis::findOrFail($id);
                 $data->update([
@@ -247,6 +255,7 @@ class subtopikController extends Controller
                 ]);
                 $namaSubtopik = $request->nama_upload;
                 break;
+
 
             default:
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
