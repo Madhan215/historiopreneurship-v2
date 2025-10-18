@@ -213,12 +213,13 @@ class DashboardController extends Controller
             'post_test_KWU',
         ];
 
-        // Ambil badge yang diklaim
+        // Ambil badge yang diklaim sesuai kelas aktif
         $claimedBadges = userBadge::where('email', $email)
             ->join('badge', 'user_badge.id_badge', '=', 'badge.id')
+            ->whereRaw("JSON_CONTAINS(status, JSON_OBJECT('status', 'claimed'))")
+            ->whereRaw("JSON_CONTAINS(status, JSON_OBJECT('kelas', ?))", [$activeKode])
             ->select('badge.link_gambar', 'badge.deskripsi')
             ->get();
-
         // Aspek untuk nilai kesejarahan
         $nilaiHistoricalAspects = [
             'pre_test_kesejarahan',
@@ -306,10 +307,14 @@ class DashboardController extends Controller
                 )
                 ->where('peran', 'siswa');
 
-            // Subquery badge per siswa
             $badgeSub = DB::table('user_badge')
                 ->join('badge', 'user_badge.id_badge', '=', 'badge.id')
-                ->select('user_badge.email', DB::raw('GROUP_CONCAT(DISTINCT badge.link_gambar) as badges'))
+                ->select(
+                    'user_badge.email',
+                    DB::raw('GROUP_CONCAT(DISTINCT badge.link_gambar) as badges')
+                )
+                ->whereRaw("JSON_CONTAINS(user_badge.status, JSON_OBJECT('status', 'claimed'))")
+                ->whereRaw("JSON_CONTAINS(user_badge.status, JSON_OBJECT('kelas', ?))", [$activeKode])
                 ->groupBy('user_badge.email');
 
             $data['leaderboard'] = DB::table('users')

@@ -229,7 +229,6 @@ class userBadgeController extends Controller
     public function awardHighRankBadge(Request $request)
     {
         $email = Auth::user()->email;
-        // ambil kelas aktif user
         $tokens = auth()->user()->token_kelas ?? [];
         $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
@@ -238,54 +237,56 @@ class userBadgeController extends Controller
                 'email',
                 'nama_lengkap',
                 DB::raw("
-            CAST(
-                JSON_UNQUOTE(
-                    JSON_EXTRACT(
-                        poin,
-                        REPLACE(
-                            JSON_UNQUOTE(JSON_SEARCH(poin, 'one', '$activeKode', NULL, '$[*].kode')),
-                            '.kode',
-                            '.poin'
+                CAST(
+                    JSON_UNQUOTE(
+                        JSON_EXTRACT(
+                            poin,
+                            REPLACE(
+                                JSON_UNQUOTE(JSON_SEARCH(poin, 'one', '$activeKode', NULL, '$[*].kode')),
+                                '.kode',
+                                '.poin'
+                            )
                         )
-                    )
-                ) AS UNSIGNED
-            ) as nilai_poin
-        ")
+                    ) AS UNSIGNED
+                ) as nilai_poin
+            ")
             )
             ->where('peran', 'siswa')
-            ->having('nilai_poin', '>', 0) // hanya ambil user dengan poin > 0
+            ->having('nilai_poin', '>', 0)
             ->orderByDesc('nilai_poin')
             ->get();
-        // Temukan pengguna saat ini berdasarkan email
+
         $currentUser = $rankedUsers->firstWhere('email', $email);
 
-        // Jika pengguna tidak ada di daftar (karena poin nol atau tidak ditemukan), beri tahu pengguna
         if (!$currentUser) {
             return redirect()->route('dashboard')->with('error', 'You do not meet the criteria for the High Rank Badge.');
         }
 
-        // Temukan peringkat pengguna saat ini
-        $userRank = $rankedUsers->search(function ($user) use ($email) {
-            return $user->email === $email;
-        });
+        $userRank = $rankedUsers->search(fn($user) => $user->email === $email);
 
-        // Jika peringkat ditemukan, tambahkan 1 karena peringkat dimulai dari 0
         if ($userRank !== false) {
             $userRank += 1;
+            $badgeId = 1; // High Rank Badge
 
-            // Tentukan ID badge untuk High Rank
-            $badgeId = 1; // ID untuk badge "High Rank"
-
-            // Cek apakah pengguna berada di peringkat 1, 2, atau 3
             if ($userRank <= 3) {
-                // Cek apakah badge tersedia
                 $badge = Badge::find($badgeId);
 
                 if ($badge) {
-                    // Perbarui atau buat entri di tabel user_badge
+                    // bentuk JSON array untuk status
+                    $statusData = [
+                        [
+                            'status' => 'claimed',
+                            'kelas' => $activeKode,
+                        ]
+                    ];
+
                     userBadge::updateOrCreate(
                         ['email' => $email, 'id_badge' => $badge->id],
-                        ['email' => $email, 'id_badge' => $badge->id, 'status' => 'claimed']
+                        [
+                            'email' => $email,
+                            'id_badge' => $badge->id,
+                            'status' => json_encode($statusData),
+                        ]
                     );
 
                     return redirect()->route('dashboard')->with('success', 'Badge High Rank successfully claimed!');
@@ -293,9 +294,9 @@ class userBadgeController extends Controller
             }
         }
 
-        // Jika tidak memenuhi syarat, beri tahu pengguna
         return redirect()->route('dashboard')->with('error', 'You do not meet the criteria for the High Rank Badge.');
     }
+
 
 
     public function awardSiCepatBadge(Request $request)
