@@ -1,9 +1,9 @@
 @extends('layouts.main')
 
 @section('container-content')
-    <h1>Reset Password</h1>
+    <h2>Reset Password</h2>
 
-    <table class="table table-bordered" id="tableNilai">
+    <table class="table table-bordered" id="tableReset">
         <thead class="table-primary">
             <tr>
                 <th>Nama</th>
@@ -15,17 +15,15 @@
         <tbody>
             @foreach ($users as $user)
                 <tr>
-                    <td><img src="{{ $user->profilePhotoUrl }}" alt="Profile Photo"
+                    <td>
+                        <img src="{{ $user->profilePhotoUrl }}" alt="Profile Photo"
                             class="rounded-circle border border-primary ms-1" style="width: 25px; height: 25px;">
-                        {{ $user->name }}</td>
+                        {{ $user->nama_lengkap }}
+                    </td>
                     <td>{{ $user->email }}</td>
                     <td>
                         @php
                             $resetLog = $user->passwordResetsLog;
-                            if ($user->id == 3) {
-                                // dd($resetLog);
-                            }
-
                         @endphp
 
                         @if ($resetLog)
@@ -46,15 +44,74 @@
                         @endif
                     </td>
                     <td>
-                        <button onclick="confirmReset({{ $user->id }})" class="btn btn-warning"><i
-                                class="bi bi-arrow-counterclockwise"></i> Reset Password</button>
+                        <button onclick="confirmReset({{ $user->id }})" class="btn btn-warning">
+                            <i class="bi bi-arrow-counterclockwise"></i> Reset Password
+                        </button>
                     </td>
                 </tr>
             @endforeach
         </tbody>
     </table>
 
+
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.11.5/css/jquery.dataTables.min.css">
+    <script src="//cdn.datatables.net/2.1.2/js/dataTables.min.js"></script>
+
     <script>
+        $(document).ready(function() {
+            if (!$.fn.dataTable.isDataTable('#tableReset')) {
+                $('#tableReset').DataTable({
+                    scrollX: true,
+                    autoWidth: false,
+                    dom: '<"row mb-3"<"col-sm-6"l><"col-sm-6 text-end"f>>tip',
+                    pageLength: 10,
+                    language: {
+                        search: "Cari:",
+                        lengthMenu: "Tampilkan _MENU_ data per halaman",
+                        info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
+                        infoEmpty: "Tidak ada data yang tersedia",
+                        infoFiltered: "(disaring dari _MAX_ data keseluruhan)",
+                        zeroRecords: "Tidak ditemukan data yang sesuai",
+                        paginate: {
+                            first: "Pertama",
+                            last: "Terakhir",
+                            next: "Berikutnya",
+                            previous: "Sebelumnya"
+                        }
+                    },
+                    columnDefs: [{
+                        searchable: false,
+                        targets: [2, 3]
+                    }]
+                });
+            }
+        });
+    </script>
+
+
+
+    <script>
+        function copyToClipboard(id) {
+            var text = document.getElementById("pass-" + id).innerText;
+            navigator.clipboard.writeText(text).then(function() {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Berhasil!',
+                    text: 'Password ' + text + ' berhasil disalin ke clipboard.',
+                    timer: 2000,
+                    showConfirmButton: false
+                });
+            }).catch(function(err) {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Oops!',
+                    text: 'Gagal menyalin Password ' + text + '.',
+                });
+                console.error("Gagal menyalin teks", err);
+            });
+        }
+
         function confirmReset(userId) {
             Swal.fire({
                 title: "Reset Password?",
@@ -81,7 +138,7 @@
                                 icon: "success",
                                 confirmButtonText: "OK"
                             }).then(() => {
-                                location.reload(); // Reload halaman setelah sukses reset password
+                                location.reload();
                             });
                         })
                         .catch(error => {
@@ -96,60 +153,5 @@
                 }
             });
         }
-    </script>
-
-    {{-- Data Tables --}}
-    <link rel="stylesheet" href="https://cdn.datatables.net/2.2.2/css/dataTables.dataTables.css" />
-    <script src="https://cdn.datatables.net/2.2.2/js/dataTables.js"></script>
-    <script>
-        $(document).ready(function() {
-            $('#tableNilai').DataTable({
-                scrollX: true, // Tambahkan horizontal scrolling
-
-                pageLength: 10, // Jumlah data per halaman
-                language: {
-                    search: "Cari:", // Label input pencarian
-                    lengthMenu: "Tampilkan _MENU_ data per halaman",
-                    info: "Menampilkan _START_ sampai _END_ dari _TOTAL_ data",
-                    infoEmpty: "Tidak ada data yang tersedia",
-                    infoFiltered: "(disaring dari _MAX_ data keseluruhan)",
-                    zeroRecords: "Tidak ditemukan data yang sesuai",
-                    paginate: {
-                        first: "Pertama",
-                        last: "Terakhir",
-                        next: "Berikutnya",
-                        previous: "Sebelumnya"
-                    }
-                },
-                emptyTable: "Tidak ada data yang tersedia",
-                columnDefs: [{
-                        searchable: false,
-                        targets: [2, 3, 4]
-                    } // Matikan pencarian untuk kolom Peringkat (0), Poin (3), dan Tindakan (4)
-                ]
-            });
-        });
-    </script>
-    <script>
-        function copyToClipboard(id) {
-            var text = document.getElementById("pass-" + id).innerText;
-            navigator.clipboard.writeText(text).then(function() {
-                Swal.fire({
-                    icon: 'success',
-                    title: 'Berhasil!',
-                    text: 'Password ' + text + ' berhasil disalin ke clipboard.',
-                    timer: 2000,
-                    showConfirmButton: false
-                });
-            }).catch(function(err) {
-                Swal.fire({
-                    icon: 'error',
-                    title: 'Oops!',
-                    text: 'Gagal menyalin Password ' + text + '.',
-                });
-                console.error("Gagal menyalin teks", err);
-            });
-        }
-    </script>
     </script>
 @endsection
