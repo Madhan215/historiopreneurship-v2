@@ -14,7 +14,7 @@ use App\Models\Analisis_individu_kewirausahaan;
 
 class AnalisisIndividuController extends Controller
 {
-    
+
     public function tampilkanJawabanIndividu($email)
     {
         $activeMenu = 'active';
@@ -24,7 +24,7 @@ class AnalisisIndividuController extends Controller
         $jawabanKesejarahanIndividu = AnalisisIndividuKesejarahan::where('created_by', $email)
             ->whereIn('aspek', ['wisata', 'kesejarahan', 'urgensi objek kesejarahan', 'urgensi kesejarahan'])
             ->get();
-    
+
         // Mengambil jawaban dari tabel analisis_individu_kewirausahaan berdasarkan aspek yang disebutkan
         $jawabanKewirausahaanPariwisataIndividu = Analisis_individu_kewirausahaan::where('created_by', $email)
             ->whereIn('aspek', [
@@ -35,11 +35,22 @@ class AnalisisIndividuController extends Controller
                 // 'Hal yang bisa dilakukan agar proyek menjadi lebih baik atau lebih sempurna'
             ])
             ->get();
-    
-        // Mengambil file yang di-upload oleh user berdasarkan email
-        $fileUploads = UploadFile::where('created_by', $email)
-            ->orderBy('kategori')
-            ->get();
+
+        // Upload File ini harus berdasarkan kelas yang aktive di guru
+        // Ambil kelas yang aktif di guru
+
+
+        $kelas = Auth::user()->token_kelas;
+
+        $kodeAktif = collect($kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
+
+        // dd($kodeAktif);
+
+        // Ambil file berdasarkan kode kelas aktif
+        $fileUploads = UploadFile::where('token_kelas', $kodeAktif)->where('created_by', $email)->get();
+
+        // dd($fileUploads);
 
         // Ini dengan nilai
         $jawabanFormKelayakan = FormKelayakan::where('email', $email)->get();
@@ -53,14 +64,14 @@ class AnalisisIndividuController extends Controller
         $nilaiUploadAktivitas2 = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_aktivitas2')->first();
         $nilaiUploadProyekIndividu = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_proyekIndividu')->first();
         // Mengirim data ke tampilan
-        return view('latihan.jawabanIndividu', compact('email',  'jawabanIndividuII','jawabanKesejarahanIndividu', 'jawabanKewirausahaanPariwisataIndividu', 'fileUploads', 'activeMenu', 'user', 'nilaiAnalisisIndividuKWU','jawabanFormKelayakan','nilaiAnalisisIndividuKesejarahan_II','nilaiAnalisisIndividuKesejarahan','nilaiUploadKegiatanPembelajaran3','nilaiUploadAktivitas1','nilaiUploadAktivitas2','nilaiUploadProyekIndividu'));
+        return view('latihan.jawabanIndividu', compact('email', 'jawabanIndividuII', 'jawabanKesejarahanIndividu', 'jawabanKewirausahaanPariwisataIndividu', 'fileUploads', 'activeMenu', 'user', 'nilaiAnalisisIndividuKWU', 'jawabanFormKelayakan', 'nilaiAnalisisIndividuKesejarahan_II', 'nilaiAnalisisIndividuKesejarahan', 'nilaiUploadKegiatanPembelajaran3', 'nilaiUploadAktivitas1', 'nilaiUploadAktivitas2', 'nilaiUploadProyekIndividu'));
     }
-    
-    
+
+
 
     public function simpanJawabanIndividu(Request $request)
     {
-        
+
         // Validasi input
         $request->validate([
             'objekWisata' => 'required|string',
@@ -103,7 +114,7 @@ class AnalisisIndividuController extends Controller
         // Redirect setelah data berhasil disimpan
         return redirect()->back()->with('success', 'Jawaban berhasil disimpan.');
     }
-    
+
 
 
     public function simpanJawabanIndividuKewirausahaan(Request $request)

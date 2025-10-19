@@ -22,6 +22,7 @@ class nilaiController extends Controller
 
         // Get the aspek value from the request
         $aspek = $request->input('aspek');
+        $tipe = $request->input('tipe');
 
         // Check if a record with the same email and aspek exists
         $nilai = Nilai::where('email', $email)->where('aspek', $aspek)->first();
@@ -34,6 +35,7 @@ class nilaiController extends Controller
                 'data_jawaban_penilai' => $validatedData['data_jawaban_penilai'],
                 'nilai_akhir' => $validatedData['nilai_akhir'],
                 'waktu_selesai' => now(),  // Update completion time
+                'tipe' => $tipe
             ]);
         } else {
             // If no record exists, create a new one
@@ -46,6 +48,7 @@ class nilaiController extends Controller
                 'percobaan_ke' => null,  // Populate as needed
                 'lama_waktu_pengerjaan' => null,  // Populate as needed
                 'waktu_selesai' => now(),  // Set the completion time to the current time
+                'tipe' => $tipe
             ]);
         }
 

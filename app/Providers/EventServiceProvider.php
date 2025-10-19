@@ -10,12 +10,12 @@ class EventServiceProvider extends ServiceProvider
      * Register services.
      */
 
-     protected $listen = [
+    protected $listen = [
         'App\Events\PoinUpdated' => [
             'App\Listeners\HitungPoinListener',
         ],
     ];
-    
+
     public function register(): void
     {
         //

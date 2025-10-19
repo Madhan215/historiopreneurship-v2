@@ -25,7 +25,7 @@ class DosenController extends Controller
         $idGuru = auth()->user()->id;
 
         // Daftar Kode kelas
-        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
+        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('nama_kelas', 'kode_kelas');
 
         return view('lamanDosen.dataMahasiswa', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));
     }
@@ -125,11 +125,15 @@ class DosenController extends Controller
         // Mengambil data mahasiswa berdasarkan peran 'siswa'
         $Mahasiswas = User::where('peran', 'siswa')->get();
 
+        $nilai = Nilai::get();
+
+        dd($nilai);
+
         // Ambil ID Guru
         $idGuru = auth()->user()->id;
 
-        // Daftar Kode kelas yang hanya dibuat oleh user tersebut
-        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('kode_kelas');
+        // Daftar Kode kelas
+        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('nama_kelas', 'kode_kelas');
 
         // Mengirimkan kedua variabel ke view
         return view('lamanDosen.dataNilai', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));

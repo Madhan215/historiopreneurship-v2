@@ -11,6 +11,13 @@ class uploadFileController extends Controller
 {
     public function uploadFile(Request $request)
     {
+        $kelas = Auth::user()->token_kelas;
+
+        $kodeAktif = collect($kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
+
+        dd($kodeAktif);
+
         // Validasi file
         $request->validate([
             'file' => 'required|file|mimes:pdf|max:10240', // Hanya PDF, max 10MB

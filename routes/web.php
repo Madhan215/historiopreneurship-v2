@@ -236,7 +236,7 @@ Route::post('/DND2', [PoinController::class, 'DND2'])->name('DND2');
 // Export Data
 Route::get('/export-evaluasi', [dataExportController::class, 'exportEvaluasi'])->name('export.evaluasi');
 Route::get('/export-kelas', [dataExportController::class, 'exportKelas'])->name('export.kelas');
-Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
+// Route::get('/export-nilai', [dataExportController::class, 'exportNilai'])->name('export.nilai');
 
 // Sistem Kelas
 Route::resource('kelas', KelasController::class);
@@ -292,3 +292,11 @@ Route::get('/{topik}/{subtopik}', [WebDinamisController::class, 'showSubtopik'])
 
 Route::post('/SimpanNilaiEvaluasi', action: [WebDinamisController::class, 'SimpanNilaiEvaluasi'])->name('SimpanNilaiEvaluasi');
 Route::post('/SimpanUpload', [WebDinamisController::class, 'uploadFileDinamis'])->name('uploadFileDinamis');
+
+
+use App\Exports\NilaiExport;
+use Maatwebsite\Excel\Facades\Excel;
+
+Route::get('/export-nilai/{kodeKelas}', function ($kodeKelas) {
+    return Excel::download(new NilaiExport($kodeKelas), 'nilai_' . $kodeKelas . '.xlsx');
+})->name('exportNilai');

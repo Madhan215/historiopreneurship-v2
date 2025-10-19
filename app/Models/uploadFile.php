@@ -21,6 +21,7 @@ class uploadFile extends Model
         'size',
         'created_by',
         'kategori', // Nilai default null akan dikelola di migrasi atau controller
+        'token_kelas'
     ];
 
     // Default attributes

@@ -12,12 +12,13 @@
 
 
                 <!-- Dropdown untuk filter kelas dengan ukuran lebih kecil -->
-                <label for="filterKelas">Filter Kode Kelas: </label>
+                <label for="filterKelas">Filter Kelas: </label>
                 <select id="filterKelas" class="form-control form-control-sm mb-3" style="width: 150px;">
                     <option value="">Semua</option>
-                    @foreach ($kelasGuru as $token)
-                        <option value="{{ $token }}">{{ $token }}</option>
+                    @foreach ($kelasGuru as $kode => $nama)
+                        <option value="{{ $kode }}">{{ $kode }} - {{ $nama }}</option>
                     @endforeach
+
                 </select>
 
                 <!-- Nav Tabs -->
@@ -48,19 +49,19 @@
                         aria-labelledby="aturKelompok-tab">
                         <div class="d-flex justify-content-between mb-3">
                             <h4>Daftar Mahasiswa</h4>
-                            <form action="{{ route('dataMahasiswa.autoAssignGroup') }}" method="POST">
+                            {{-- <form action="{{ route('dataMahasiswa.autoAssignGroup') }}" method="POST">
                                 @csrf
                                 <button type="submit" class="btn btn-success">Masukkan Kelompok Otomatis</button>
-                            </form>
+                            </form> --}}
                         </div>
                         <table class="table text-center mt-3" id="tabelMahasiswa">
                             <thead>
                                 <tr>
                                     <th scope="col">Nomor</th>
                                     <th scope="col">Nama Mahasiswa</th>
-                                    <th scope="col">Kode Kelas</th>
+                                    <th scope="col">Kelas</th>
                                     <th scope="col">Email</th>
-                                    <th scope="col">Tindakan</th>
+                                    {{-- <th scope="col">Tindakan</th> --}}
                                 </tr>
                             </thead>
                             <tbody>
@@ -83,7 +84,7 @@
 
                                         </td>
                                         <td>{{ $Mahasiswa->email }}</td>
-                                        <td>
+                                        {{-- <td>
                                             @if ($kelompok && !is_null($kelompok->id_kelompok))
                                                 <!-- Jika mahasiswa sudah memiliki kelompok, tampilkan info kelompok -->
                                                 <span>Kelompok {{ $kelompok->id_kelompok }}</span>
@@ -112,7 +113,7 @@
                                                     </ul>
                                                 </div>
                                             @endif
-                                        </td>
+                                        </td> --}}
                                     </tr>
                                     @php
                                         $no++;

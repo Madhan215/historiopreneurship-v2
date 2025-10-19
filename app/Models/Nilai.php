@@ -9,6 +9,7 @@ class Nilai extends Model
 {
     use HasFactory;
     protected $table = 'nilai';
+    protected $primaryKey = 'id_tabel_nilai';
     // protected $primaryKey = 'id_soal';
 
     protected $fillable = [
@@ -20,6 +21,7 @@ class Nilai extends Model
         'percobaan_ke',
         'lama_waktu_pengerjaan',
         'waktu_selesai',
+        'tipe'
     ];
 
     public $timestamps = false;

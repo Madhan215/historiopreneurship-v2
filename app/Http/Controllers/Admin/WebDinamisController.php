@@ -163,6 +163,14 @@ class WebDinamisController extends Controller
     }
     public function uploadFileDinamis(Request $request)
     {
+
+        $kelas = Auth::user()->token_kelas;
+
+        $kodeAktif = collect($kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
+
+        // dd($kodeAktif);
+
         $file = $request->file('file');
         $createdBy = Auth::user()->email;
         $kategoriInput = $request->input('category');
@@ -248,7 +256,8 @@ class WebDinamisController extends Controller
                 'mime_type' => $file->getClientMimeType(),
                 'size' => $file->getSize(),
                 'created_by' => $createdBy,
-                'kategori' => $kategoriInput, // ✅ dari input form
+                'kategori' => $kategoriInput,
+                'token_kelas' => $kodeAktif
             ]);
         }
 
