@@ -4,6 +4,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Kelas;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Nilai;
@@ -163,5 +164,80 @@ class dataExportController extends Controller
 
         // Kirim file sebagai respon download dan hapus setelah dikirim
         return response()->download(storage_path('app/' . $filePath))->deleteFileAfterSend(true);
+    }
+
+
+    public function exportMahasiswa()
+    {
+        $guru = auth()->user();
+        $tokensGuru = $guru->token_kelas;
+
+        $kodeKelasAktifGuru = collect($tokensGuru)
+            ->where('status', 'aktif')
+            ->pluck('kode')
+            ->toArray();
+
+        if (empty($kodeKelasAktifGuru)) {
+            return redirect()->back()->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
+        }
+
+        // Ambil nama kelas dari tabel kelas
+        $kelasData = Kelas::whereIn('kode_kelas', $kodeKelasAktifGuru)
+            ->pluck('nama_kelas')
+            ->toArray();
+        $namaKelas = implode('_', $kelasData) ?: 'TanpaNamaKelas';
+
+        // Ambil semua mahasiswa dalam kelas aktif
+        $Mahasiswas = User::where('peran', 'siswa')
+            ->whereNotNull('token_kelas')
+            ->get()
+            ->filter(function ($siswa) use ($kodeKelasAktifGuru) {
+                $tokensSiswa = $siswa->token_kelas;
+                if (!is_array($tokensSiswa))
+                    return false;
+
+                foreach ($tokensSiswa as $token) {
+                    if (in_array($token['kode'], $kodeKelasAktifGuru)) {
+                        return true;
+                    }
+                }
+                return false;
+            })
+            ->sortBy(function ($item) {
+                return strtolower($item->nama_lengkap ?? '');
+            }); // urutkan A-Z berdasarkan nama_lengkap
+
+        // === Buat Spreadsheet ===
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+
+        // Header kolom
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Nama');
+        $sheet->setCellValue('C1', 'Email');
+
+        // Isi data mahasiswa
+        $row = 2;
+        $no = 1;
+        foreach ($Mahasiswas as $mhs) {
+            $sheet->setCellValue("A{$row}", $no++);
+            $sheet->setCellValue("B{$row}", $mhs->nama_lengkap ?? '-');
+            $sheet->setCellValue("C{$row}", $mhs->email ?? '-');
+            $row++;
+        }
+
+        // Autofit kolom agar rapi
+        foreach (range('A', 'C') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // === Outputkan ke browser ===
+        $writer = new Xlsx($spreadsheet);
+        $fileName = "data_mahasiswa_{$namaKelas}.xlsx";
+
+        $temp_file = tempnam(sys_get_temp_dir(), 'excel_');
+        $writer->save($temp_file);
+
+        return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
     }
 }

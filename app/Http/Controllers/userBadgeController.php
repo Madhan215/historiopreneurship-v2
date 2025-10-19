@@ -11,6 +11,7 @@ use App\Models\evaluasiDinamis;
 use App\Models\Nilai;
 use App\Models\Refleksi;
 use App\Models\topikdinamis;
+use App\Models\uploadDinamis;
 use App\Models\uploadFile;
 use App\Models\User;
 use App\Models\userBadge;
@@ -149,83 +150,84 @@ class userBadgeController extends Controller
     {
         $email = Auth::user()->email;
 
-        // Aspek untuk nilai kesejarahan
-        $nilaiHistoricalAspects = [
-            'pre_test_kesejarahan',
-            'poin_DND_kesejarahan',
-            'post_test_kesejarahan',
-        ];
+        // 🔹 Ambil token kelas aktif
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        // Aspek untuk nilai kewirausahaan
-        $nilaiEntrepreneurialAspects = [
-            'pre_test_KWU',
-            'poin_DND_KWU',
-            'post_test_KWU',
-        ];
+        if (!$activeKode) {
+            return redirect()->route('dashboard')->with('error', 'No active class token found.');
+        }
 
-        // Kategori terkait untuk kondisi tambahan
-        $requiredConditions = [
-            'analisis_individu_kesejarahanii',
-            'analisis_individu_kesejarahan',
-            'analisis_kelompok_kewirausahaan' => ['kategori' => ['aktivitas 1', 'aktivitas 2', 'aktivitas 3']],
-            'upload_file_tugas' => ['kategori' => ['kegiatan pembelajaran 3', 'praktik lapangan 1', 'praktik lapangan 2', 'proyek individu']],
-            'jawaban_refleksi' => ['kategori' => ['refleksi kesejarahan', 'refleksi kewirausahaan', 'refleksi kepariwisataan']],
-        ];
+        // 🔹 Ambil id_topik dari topik dinamis berdasarkan kelas aktif dan status "on"
+        $topikIds = topikdinamis::where('token_kelas', $activeKode)
+            ->where('status', 'on')
+            ->pluck('id_topik');
 
-        // Cek tabel nilai untuk kesejarahan
-        $nilaiHistoricalFulfilled = Nilai::where('email', $email)
-            ->whereIn('aspek', $nilaiHistoricalAspects)
-            ->distinct('aspek')
-            ->count() === count($nilaiHistoricalAspects);
+        if ($topikIds->isEmpty()) {
+            return redirect()->route('dashboard')->with('error', 'No active topics found for your active class token.');
+        }
 
-        // Cek tabel nilai untuk kewirausahaan
-        $nilaiEntrepreneurialFulfilled = Nilai::where('email', $email)
-            ->whereIn('aspek', $nilaiEntrepreneurialAspects)
-            ->distinct('aspek')
-            ->count() === count($nilaiEntrepreneurialAspects);
+        // 🔹 Ambil semua evaluasi dan upload aktif dari topik terkait
+        $evaluasiAspek = evaluasiDinamis::whereIn('id_topik', $topikIds)
+            ->where('status', 'on')
+            ->pluck('nama_evaluasi')
+            ->toArray();
 
-        // Cek analisis individu kesejarahan
-        $historicalAnalysisFulfilled = AnalisisIndividuKesejeranhanII::where('created_by', $email)->exists() &&
-            AnalisisIndividuKesejarahan::where('created_by', $email)->exists();
+        $uploadAspek = uploadDinamis::whereIn('id_topik', $topikIds)
+            ->where('status', 'on')
+            ->pluck('nama_upload')
+            ->toArray();
 
-        // Cek analisis kelompok kewirausahaan
-        $entrepreneurialGroupAnalysisFulfilled = AnalisisKelompokKewirausahaan::where('created_by', $email)
-            ->whereIn('kategori', $requiredConditions['analisis_kelompok_kewirausahaan']['kategori'])
-            ->exists();
+        // Gabungkan semua aspek wajib (hanya yang status "on")
+        $requiredAspects = array_merge($evaluasiAspek, $uploadAspek);
 
-        // Cek upload file tugas
-        $uploadFulfilled = uploadFile::where('created_by', $email)
-            ->whereIn('kategori', $requiredConditions['upload_file_tugas']['kategori'])
-            ->exists();
+        if (empty($requiredAspects)) {
+            return redirect()->route('dashboard')->with('error', 'No active evaluation or upload aspects found for your class.');
+        }
 
-        // Cek jawaban refleksi
-        $reflectionFulfilled = Refleksi::where('created_by', $email)
-            ->whereIn('kategori', $requiredConditions['jawaban_refleksi']['kategori'])
-            ->exists();
+        // 🔹 Ambil semua aspek yang sudah memiliki nilai
+        $completedAspects = Nilai::where('email', $email)
+            ->whereIn('aspek', $requiredAspects)
+            ->whereNotNull('nilai_akhir')
+            ->pluck('aspek')
+            ->toArray();
 
-        // Tentukan apakah semua kriteria terpenuhi
-        $allConditionsFulfilled = $nilaiHistoricalFulfilled
-            && $nilaiEntrepreneurialFulfilled
-            && $historicalAnalysisFulfilled
-            && $entrepreneurialGroupAnalysisFulfilled
-            && $uploadFulfilled
-            && $reflectionFulfilled;
+        // 🔹 Cek apakah semua aspek aktif sudah dinilai
+        $allFulfilled = count(array_intersect($requiredAspects, $completedAspects)) === count($requiredAspects);
 
-        if ($allConditionsFulfilled) {
-            $badge = Badge::find(5); // Asumsikan badge gabungan memiliki ID 5
+        if ($allFulfilled) {
+            // 🔹 Ambil badge gabungan (misal ID = 5)
+            $badge = Badge::find(5);
 
             if ($badge) {
-                UserBadge::updateOrCreate(
+                $statusData = [
+                    [
+                        'status' => 'claimed',
+                        'kelas' => $activeKode,
+                    ]
+                ];
+
+                userBadge::updateOrCreate(
                     ['email' => $email, 'id_badge' => $badge->id],
-                    ['email' => $email, 'id_badge' => $badge->id, 'status' => 'claimed'] // Status klaim diatur ke 'claimed'
+                    [
+                        'email' => $email,
+                        'id_badge' => $badge->id,
+                        'status' => json_encode($statusData),
+                    ]
                 );
+
                 return redirect()->route('dashboard')->with('success', 'Combined Badge successfully claimed!');
+            } else {
+                return redirect()->route('dashboard')->with('error', 'Badge not found in the system.');
             }
         }
 
-        // Jika tidak memenuhi syarat, beri tahu pengguna
-        return redirect()->route('dashboard')->with('error', 'You do not meet the criteria for the Combined Badge.');
+        // Jika belum memenuhi semua aspek aktif
+        return redirect()->route('dashboard')->with('error', 'You have not completed all required active evaluations and uploads for the Combined Badge.');
     }
+
+
+
 
 
     public function awardHighRankBadge(Request $request)

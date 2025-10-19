@@ -295,35 +295,6 @@
                                     </form>
                                 </div>
                             </div>
-                            <!-- <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <img src="{{ asset('img/masterkesejarahan.png') }}" alt="Master Badge" width="100px">
-                                </div>
-                                <div class="col-md-6 d-flex align-items-center button-container">
-                                    <form action="{{ route('awardHistoricalBadge') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success" id="claimButton" {{ $badgeKesejarahanClaimed || !$eligibleForBadgeKesejarahan ? 'disabled' : '' }}>
-                                            Klaim Badge
-                                        </button>
-                                        <div class="hover-text">Selesaikan Bab Kesejarahan</div>
-                                    </form>
-                                </div>
-                            </div> -->
-                            <!-- <div class="row mb-3">
-                                <div class="col-md-6">
-                                    <img src="{{ asset('img/masterkewirausahaan.png') }}" alt="Master of Material Badge"
-                                        width="100px">
-                                </div>
-                                <div class="col-md-6 d-flex align-items-center button-container">
-                                    <form action="{{ route('awardEntrepreneurialBadge') }}" method="POST">
-                                        @csrf
-                                        <button type="submit" class="btn btn-success" id="claimButton" {{ $badgeKwuClaimed || !$eligibleForBadgeKWU ? 'disabled' : '' }}>
-                                            Klaim Badge
-                                        </button>
-                                        <div class="hover-text">Selesaikan Bab KWU</div>
-                                    </form>
-                                </div>
-                            </div> -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <img src="{{ asset('img/masterhistorio.png') }}" alt="Master of Material Badge"

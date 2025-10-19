@@ -7,6 +7,7 @@ $baseDir = dirname($vendorDir);
 
 return array(
     'App\\Events\\PoinUpdated' => $baseDir . '/app/Events/PoinUpdated.php',
+    'App\\Exports\\NilaiExport' => $baseDir . '/app/Exports/NilaiExport.php',
     'App\\Http\\Controllers\\Admin\\AuthController' => $baseDir . '/app/Http/Controllers/Admin/AuthController.php',
     'App\\Http\\Controllers\\Admin\\ManajemenKontenController' => $baseDir . '/app/Http/Controllers/Admin/ManajemenKontenController.php',
     'App\\Http\\Controllers\\Admin\\ResetPasswordController' => $baseDir . '/app/Http/Controllers/Admin/ResetPasswordController.php',

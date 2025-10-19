@@ -27,8 +27,6 @@ class nilaiController extends Controller
         // Check if a record with the same email and aspek exists
         $nilai = Nilai::where('email', $email)->where('aspek', $aspek)->first();
 
-
-
         if ($nilai) {
             // If the record exists, update only specified fields
             $nilai->update([

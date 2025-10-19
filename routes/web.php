@@ -199,6 +199,8 @@ Route::get('/data-export-nilai', [DosenController::class, 'dataExportNilai'])->n
 Route::post('/dataMahasiswa/save', [DosenController::class, 'saveGroup'])->name('dataMahasiswa.saveGroup');
 Route::post('/dataMahasiswa/remove', [DosenController::class, 'removeFromGroup'])->name('dataMahasiswa.removeFromGroup');
 Route::post('/dataMahasiswa/autoAssignGroup', [DosenController::class, 'autoAssignGroup'])->name('dataMahasiswa.autoAssignGroup');
+Route::get('/export-mahasiswa', [dataExportController::class, 'exportMahasiswa'])->name('exportMahasiswa');
+
 
 Route::get('/Data-Nilai', [DosenController::class, 'dataNilai'])->name('data-nilai');
 Route::get('/Data-Nilai-Test', [DosenController::class, 'dataNilaiTest'])->name('data-hasil-test');

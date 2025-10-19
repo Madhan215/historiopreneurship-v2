@@ -16,19 +16,95 @@ class DosenController extends Controller
     public function dataMahasiswa()
     {
         $activeMenu = 'active';
-        // Mengambil semua data kelompok beserta pengguna yang ada di dalamnya
-        $Kelompoks = Kelompok::with('users')->get();
 
-        $Mahasiswas = User::where('peran', 'siswa')->get(); // Filter users based on role
+        // Ambil user guru yang sedang login
+        $guru = auth()->user();
 
-        // Ambil ID Guru
-        $idGuru = auth()->user()->id;
+        // Decode JSON token_kelas milik guru
+        $tokensGuru = $guru->token_kelas;
 
-        // Daftar Kode kelas
-        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('nama_kelas', 'kode_kelas');
+        // Ambil semua kode kelas yang statusnya aktif
+        $kodeKelasAktifGuru = collect($tokensGuru)
+            ->where('status', 'aktif')
+            ->pluck('kode')
+            ->toArray();
 
-        return view('lamanDosen.dataMahasiswa', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));
+        // Jika tidak ada kelas aktif, tampilkan pesan
+        if (empty($kodeKelasAktifGuru)) {
+            return view('lamanDosen.dataMahasiswa', [
+                'Mahasiswas' => collect(),
+                'activeMenu' => $activeMenu,
+                'kelasGuru' => null,
+                'tokenKelasAktif' => [],
+            ])->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
+        }
+
+        // Ambil semua siswa yang token_kelas-nya berisi kode aktif dari guru
+        $Mahasiswas = User::where('peran', 'siswa')
+            ->whereNotNull('token_kelas')
+            ->get()
+            ->filter(function ($siswa) use ($kodeKelasAktifGuru) {
+                $tokensSiswa = $siswa->token_kelas;
+                if (!is_array($tokensSiswa))
+                    return false;
+
+                // cek apakah salah satu kode di siswa sama dengan milik guru
+                foreach ($tokensSiswa as $token) {
+                    if (in_array($token['kode'], $kodeKelasAktifGuru)) {
+                        return true;
+                    }
+                }
+                return false;
+            });
+
+        return view('lamanDosen.dataMahasiswa', compact('Mahasiswas', 'activeMenu', 'kodeKelasAktifGuru'));
     }
+
+    public function dataNilai()
+    {
+        $activeMenu = 'active';
+        $guru = auth()->user();
+
+        // Ambil token kelas milik guru
+        $tokensGuru = $guru->token_kelas;
+
+        // Ambil semua kode kelas aktif
+        $kodeKelasAktifGuru = collect($tokensGuru)
+            ->where('status', 'aktif')
+            ->pluck('kode')
+            ->toArray();
+
+        // Jika tidak ada kelas aktif
+        if (empty($kodeKelasAktifGuru)) {
+            return view('lamanDosen.dataNilai', [
+                'Mahasiswas' => collect(),
+                'activeMenu' => $activeMenu,
+            ])->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
+        }
+
+        // Ambil semua siswa yang token_kelas-nya cocok dengan kelas aktif guru
+        $Mahasiswas = User::where('peran', 'siswa')
+            ->whereNotNull('token_kelas')
+            ->get()
+            ->filter(function ($siswa) use ($kodeKelasAktifGuru) {
+                $tokensSiswa = $siswa->token_kelas;
+                if (!is_array($tokensSiswa))
+                    return false;
+
+                foreach ($tokensSiswa as $token) {
+                    if (in_array($token['kode'], $kodeKelasAktifGuru)) {
+                        return true;
+                    }
+                }
+                return false;
+            })
+            ->sortBy('nama_lengkap')
+            ->values();
+
+        return view('lamanDosen.dataNilai', compact('Mahasiswas', 'activeMenu'));
+    }
+
+
 
     public function saveGroup(Request $request)
     {
@@ -117,27 +193,7 @@ class DosenController extends Controller
     }
 
 
-    public function dataNilai()
-    {
-        $activeMenu = 'active';
-        // Mengambil semua data kelompok beserta pengguna yang ada di dalamnya
-        $Kelompoks = Kelompok::with('users')->orderBy('id_kelompok', 'asc')->get();
-        // Mengambil data mahasiswa berdasarkan peran 'siswa'
-        $Mahasiswas = User::where('peran', 'siswa')->get();
 
-        $nilai = Nilai::get();
-
-        dd($nilai);
-
-        // Ambil ID Guru
-        $idGuru = auth()->user()->id;
-
-        // Daftar Kode kelas
-        $kelasGuru = Kelas::where('created_by', $idGuru)->pluck('nama_kelas', 'kode_kelas');
-
-        // Mengirimkan kedua variabel ke view
-        return view('lamanDosen.dataNilai', compact('Mahasiswas', 'Kelompoks', 'activeMenu', 'kelasGuru'));
-    }
 
     public function dataNilaiTest()
     {

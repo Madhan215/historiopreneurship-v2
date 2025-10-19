@@ -19,53 +19,54 @@ class AnalisisIndividuController extends Controller
     {
         $activeMenu = 'active';
         $user = User::where('email', $email)->first();
-        $jawabanIndividuII = AnalisisIndividuKesejeranhanII::where('created_by', $email)->get();
-        // Mengambil jawaban dari tabel analisis_individu_kesejarahan berdasarkan aspek yang disebutkan
-        $jawabanKesejarahanIndividu = AnalisisIndividuKesejarahan::where('created_by', $email)
-            ->whereIn('aspek', ['wisata', 'kesejarahan', 'urgensi objek kesejarahan', 'urgensi kesejarahan'])
-            ->get();
-
-        // Mengambil jawaban dari tabel analisis_individu_kewirausahaan berdasarkan aspek yang disebutkan
-        $jawabanKewirausahaanPariwisataIndividu = Analisis_individu_kewirausahaan::where('created_by', $email)
-            ->whereIn('aspek', [
-                'produk atau jasa yang akan dirancang',
-                'Analisa produk atau jasa yang digunakan',
-                'langkah kerja',
-                // 'pendapat tentang hasil proyek yang telah dibuat',
-                // 'Hal yang bisa dilakukan agar proyek menjadi lebih baik atau lebih sempurna'
-            ])
-            ->get();
-
-        // Upload File ini harus berdasarkan kelas yang aktive di guru
-        // Ambil kelas yang aktif di guru
-
-
         $kelas = Auth::user()->token_kelas;
 
+        // 🔹 Ambil kode kelas aktif
         $kodeAktif = collect($kelas)
             ->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        // dd($kodeAktif);
+        if (!$kodeAktif) {
+            return redirect()->route('dashboard')->with('error', 'Tidak ada kelas aktif yang ditemukan.');
+        }
 
-        // Ambil file berdasarkan kode kelas aktif
-        $fileUploads = UploadFile::where('token_kelas', $kodeAktif)->where('created_by', $email)->get();
+        // 🔹 Ambil semua id_topik dari topikdinamis berdasarkan token_kelas aktif
+        $idTopikList = DB::table('topikdinamis')
+            ->where('token_kelas', $kodeAktif)
+            ->pluck('id_topik');
 
-        // dd($fileUploads);
+        // 🔹 Ambil semua upload dinamis berdasarkan id_topik terkait kelas aktif
+        $uploadDinamisList = DB::table('uploaddinamis')
+            ->whereIn('id_topik', $idTopikList)
+            ->select('id_upload', 'id_topik', 'nama_upload')
+            ->get();
 
-        // Ini dengan nilai
-        $jawabanFormKelayakan = FormKelayakan::where('email', $email)->get();
-        // dd($jawabanFormKelayakan[0]->aspect,$jawabanFormKelayakan[0]->sub_aspect,$jawabanFormKelayakan[0]->score);
+        // 🔹 Ambil file upload (file yang dikumpulkan siswa)
+        $fileUploads = DB::table('upload_file_tugas')
+            ->where('token_kelas', $kodeAktif)
+            ->where('created_by', $email)
+            ->get();
 
-        $nilaiAnalisisIndividuKWU = DB::table('nilai')->where('email', $email)->where('aspek', 'analisa_individu_kewirausahaan')->first();
-        $nilaiAnalisisIndividuKesejarahan_II = DB::table('nilai')->where('email', $email)->where('aspek', 'analisa_individu_kesejarahan_II')->first();
-        $nilaiAnalisisIndividuKesejarahan = DB::table('nilai')->where('email', $email)->where('aspek', 'analisa_individu_kesejarahan')->first();
-        $nilaiUploadKegiatanPembelajaran3 = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_pembelajaran3')->first();
-        $nilaiUploadAktivitas1 = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_aktivitas1')->first();
-        $nilaiUploadAktivitas2 = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_aktivitas2')->first();
-        $nilaiUploadProyekIndividu = DB::table('nilai')->where('email', $email)->where('aspek', 'upload_file_proyekIndividu')->first();
-        // Mengirim data ke tampilan
-        return view('latihan.jawabanIndividu', compact('email', 'jawabanIndividuII', 'jawabanKesejarahanIndividu', 'jawabanKewirausahaanPariwisataIndividu', 'fileUploads', 'activeMenu', 'user', 'nilaiAnalisisIndividuKWU', 'jawabanFormKelayakan', 'nilaiAnalisisIndividuKesejarahan_II', 'nilaiAnalisisIndividuKesejarahan', 'nilaiUploadKegiatanPembelajaran3', 'nilaiUploadAktivitas1', 'nilaiUploadAktivitas2', 'nilaiUploadProyekIndividu'));
+        // 🔹 Ambil nilai dan feedback berdasarkan aspek (nama_upload)
+        $nilaiMap = DB::table('nilai')
+            ->where('email', $email)
+            ->pluck('nilai_akhir', 'aspek');
+
+        $feedbackMap = DB::table('nilai')
+            ->where('email', $email)
+            ->pluck('data_jawaban_penilai', 'aspek');
+
+        return view('latihan.jawabanIndividu', compact(
+            'email',
+            'user',
+            'activeMenu',
+            'uploadDinamisList',
+            'fileUploads',
+            'nilaiMap',
+            'feedbackMap'
+        ));
     }
+
+
 
 
 

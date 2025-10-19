@@ -197,8 +197,8 @@ class ComposerStaticInit6d04b18425aa62412e1557614288f3ca
         ),
         'phpDocumentor\\Reflection\\' => 
         array (
-            0 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
-            1 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            0 => __DIR__ . '/..' . '/phpdocumentor/type-resolver/src',
+            1 => __DIR__ . '/..' . '/phpdocumentor/reflection-common/src',
         ),
         'ZipStream\\' => 
         array (
@@ -594,6 +594,7 @@ class ComposerStaticInit6d04b18425aa62412e1557614288f3ca
 
     public static $classMap = array (
         'App\\Events\\PoinUpdated' => __DIR__ . '/../..' . '/app/Events/PoinUpdated.php',
+        'App\\Exports\\NilaiExport' => __DIR__ . '/../..' . '/app/Exports/NilaiExport.php',
         'App\\Http\\Controllers\\Admin\\AuthController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/AuthController.php',
         'App\\Http\\Controllers\\Admin\\ManajemenKontenController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ManajemenKontenController.php',
         'App\\Http\\Controllers\\Admin\\ResetPasswordController' => __DIR__ . '/../..' . '/app/Http/Controllers/Admin/ResetPasswordController.php',

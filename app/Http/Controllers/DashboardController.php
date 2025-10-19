@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Badge;
 use App\Models\evaluasiDinamis;
 use App\Models\topikdinamis;
+use App\Models\uploadDinamis;
 use App\Models\User;
 use App\Models\Kelas;
 use App\Models\Nilai;
@@ -109,11 +110,68 @@ class DashboardController extends Controller
         // Tentukan apakah pengguna memenuhi semua kriteria
         $data['eligibleForBadgeKWU'] = $nilaiFulfilledKWU && $groupAnalysisFulfilled && $uploadFulfilledKWU && $reflectionFulfilledKWU;
 
-        // Badge Kesejarahan
-        $badgeTamat = 5; // ID untuk badge "tamat"
-        $userTamat = userBadge::where('email', $email)->where('id_badge', $badgeTamat)->first();
-        $data['badgeTamatClaimed'] = $userTamat ? $userTamat->status === 'claimed' : false;
-        $data['eligibleForTamat'] = $data['eligibleForBadgeKesejarahan'] && $data['eligibleForBadgeKWU'];
+        $data = [
+            'badgeTamatClaimed' => false,
+            'eligibleForTamat' => false,
+        ];
+
+        if ($activeKode) {
+            // 🔹 Ambil id_topik dari topik dinamis yang aktif dan status = 'on'
+            $topikIds = topikdinamis::where('token_kelas', $activeKode)
+                ->where('status', 'on')
+                ->pluck('id_topik');
+
+            if ($topikIds->isNotEmpty()) {
+                // 🔹 Ambil semua nama evaluasi & upload dari topik yang statusnya 'on'
+                $evaluasiAspek = evaluasiDinamis::whereIn('id_topik', $topikIds)
+                    ->where('status', 'on')
+                    ->pluck('nama_evaluasi')
+                    ->toArray();
+
+                $uploadAspek = uploadDinamis::whereIn('id_topik', $topikIds)
+                    ->where('status', 'on')
+                    ->pluck('nama_upload')
+                    ->toArray();
+
+                // 🔹 Gabungkan aspek wajib
+                $requiredAspects = array_merge($evaluasiAspek, $uploadAspek);
+
+           
+
+                if (!empty($requiredAspects)) {
+                    // 🔹 Ambil aspek yang sudah memiliki nilai
+                    $completedAspects = Nilai::where('email', $email)
+                        ->whereIn('aspek', $requiredAspects)
+                        ->whereNotNull('nilai_akhir')
+                        ->pluck('aspek')
+                        ->toArray();
+
+                    // 🔹 Cek apakah semua aspek sudah terpenuhi
+                    $allFulfilled = count(array_intersect($requiredAspects, $completedAspects)) === count($requiredAspects);
+
+                    // 🔹 Simpan ke data dashboard
+                    $data['eligibleForTamat'] = $allFulfilled;
+                }
+            }
+        }
+
+        // 🔹 Cek apakah badge tamat sudah diklaim
+        $badgeTamat = 5; // ID badge tamat
+        $userTamat = userBadge::where('email', $email)
+            ->where('id_badge', $badgeTamat)
+            ->first();
+
+        if ($userTamat) {
+            // Jika status disimpan sebagai JSON
+            $statusDecoded = json_decode($userTamat->status, true);
+            if (is_array($statusDecoded)) {
+                $data['badgeTamatClaimed'] = collect($statusDecoded)->contains(fn($s) => $s['status'] === 'claimed');
+            } else {
+                // Jika masih string biasa
+                $data['badgeTamatClaimed'] = $userTamat->status === 'claimed';
+            }
+        }
+
 
         // Badge High Rank
         $highRankBadgeId = 1; // ID untuk badge "High Rank"
