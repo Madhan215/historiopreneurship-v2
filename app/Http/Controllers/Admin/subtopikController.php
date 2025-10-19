@@ -31,6 +31,7 @@ class subtopikController extends Controller
         ]);
 
         $topik = topikdinamis::find($request->id_topik);
+        $namaSubtopik = '';
 
         switch ($tipe) {
             case 'materi':
@@ -48,6 +49,7 @@ class subtopikController extends Controller
                     'konten' => $request->konten_materi,
                     'status' => 'on',
                 ]);
+                $namaSubtopik = $request->nama_materi;
                 break;
 
             case 'evaluasi':
@@ -66,6 +68,7 @@ class subtopikController extends Controller
                     'konten' => $request->soal_json,
                     'status' => 'on',
                 ]);
+                $namaSubtopik = $request->nama_evaluasi;
                 break;
 
             case 'upload':
@@ -125,7 +128,9 @@ class subtopikController extends Controller
                     'konten' => $input, // ← termasuk konten dari Quill
                     'deskripsi' => $request->deskripsi_upload, // ← ringkasan biasa
                     'status' => 'on',
+                    'tipeFile' => $request->tipe_file
                 ]);
+                $namaSubtopik = $request->nama_upload;
                 break;
 
 
@@ -133,14 +138,17 @@ class subtopikController extends Controller
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
         }
 
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil ditambahkan');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', "Subtopik {$namaSubtopik} berhasil ditambahkan.")
+            ->withFragment('topik' . $topik->id_topik);
+
     }
 
 
-    public function edit($tipe, $id)
+    public function edit($tipe1, $id)
     {
-        switch ($tipe) {
+        switch ($tipe1) {
             case 'materi':
                 $data = materiDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
@@ -148,6 +156,7 @@ class subtopikController extends Controller
             case 'evaluasi':
                 $data = evaluasiDinamis::findOrFail($id);
                 $id_topik = $data->id_topik;
+
                 break;
             case 'upload':
                 $data = uploadDinamis::findOrFail($id);
@@ -155,14 +164,16 @@ class subtopikController extends Controller
 
                 if (preg_match('/accept="([^"]+)"/', $data->konten, $matches)) {
                     $accept = str_replace('.', '', $matches[1]);
-                    $data->tipe_file = $accept;
+                    $data->tipeFile = $accept;
                 }
+                //@dd($data->tipeFile);
                 break;
             default:
                 abort(404);
         }
-
-        return view('admin.FiturKontenDinamis.subtopik.edit', compact('tipe', 'data', 'id_topik'));
+        // @dd($tipe,$data);
+        // @dd($data->konten, gettype($data->konten));
+        return view('admin.FiturKontenDinamis.subtopik.edit', compact('tipe1', 'data', 'id_topik'));
     }
 
     public function update(Request $request, $tipe, $id)
@@ -172,7 +183,7 @@ class subtopikController extends Controller
         ]);
 
         $topik = topikdinamis::findOrFail($request->id_topik);
-
+        $namaSubtopik = '';
         switch ($tipe) {
             case 'materi':
                 $request->validate([
@@ -185,6 +196,7 @@ class subtopikController extends Controller
                     'nama_materi' => $request->nama_materi,
                     'konten' => $request->konten_materi,
                 ]);
+                $namaSubtopik = $request->nama_materi;
                 break;
 
             case 'evaluasi':
@@ -198,6 +210,7 @@ class subtopikController extends Controller
                     'nama_evaluasi' => $request->nama_evaluasi,
                     'konten' => $request->soal_json,
                 ]);
+                $namaSubtopik = $request->nama_evaluasi;
                 break;
 
             case 'upload':
@@ -218,66 +231,84 @@ class subtopikController extends Controller
                 ];
                 [$accept, $ext_info] = $fileInfo[$request->tipe_file];
 
-                $input = "
-                <div class='mb-2'><div>{$request->konten_upload}</div></div>
-                <label for='formFile1' class='form-label fw-semibold'>" . e($request->deskripsi_upload) . "</label>
-                <input class='form-control' type='file' id='formFile1' name='file' accept='{$accept}'>
-                <small>Kumpulkan dengan format <strong>{$ext_info}</strong></small>
-            ";
+                // 🧹 Ambil hanya bagian isi editor (hapus tag input, label, dan small lama)
+                $kontenBersih = preg_replace([
+                    '/<label.*?<\/label>/is',
+                    '/<input.*?>/is',
+                    '/<small.*?<\/small>/is'
+                ], '', $request->konten_upload);
+
+                // 🚀 Bangun ulang HTML upload yang bersih
+                $input = '
+    <div class="mb-2"><div>' . $kontenBersih . '</div></div>
+    <label for="formFile1" class="form-label fw-semibold">' . e($request->deskripsi_upload) . '</label>
+    <input class="form-control" type="file" id="formFile1" name="file" accept="' . $accept . '">
+    <small>Kumpulkan dengan format <strong>' . $ext_info . '</strong></small>
+    ';
 
                 $data = uploadDinamis::findOrFail($id);
                 $data->update([
                     'nama_upload' => $request->nama_upload,
-                    'tipe_file' => $request->tipe_file,
+                    'tipeFile' => $request->tipe_file,
                     'konten' => $input,
                     'deskripsi' => $request->deskripsi_upload,
                 ]);
+                $namaSubtopik = $request->nama_upload;
                 break;
+
 
             default:
                 return back()->with('error', 'Jenis subtopik tidak dikenali.');
         }
 
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil diperbarui');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', "Subtopik {$namaSubtopik} berhasil diperbarui.")
+            ->withFragment('topik' . $topik->id_topik);
     }
 
     public function destroy(Request $request, $tipe, $id)
     {
-        // Validasi dulu apakah id_topik ada dalam request
-        if (!$request->has('id_topik')) {
-            abort(400, 'ID Topik tidak ditemukan dalam permintaan.');
-        }
+        // Validasi bahwa request mengandung id_topik
+        $request->validate([
+            'id_topik' => 'required|exists:topikdinamis,id_topik',
+        ]);
 
-        // Ambil topik berdasarkan ID dari request
-        $topik = TopikDinamis::find($request->id_topik);
+        // Ambil topik terkait
+        $topik = TopikDinamis::findOrFail($request->id_topik);
 
-        // Cek apakah topik ditemukan
-        if (!$topik) {
-            abort(404, 'Topik tidak ditemukan.');
-        }
+        // Inisialisasi nama subtopik
+        $namaSubtopik = '';
 
-        // Ambil data subtopik berdasarkan tipe
+        // Tentukan model berdasarkan tipe
         switch ($tipe) {
             case 'materi':
                 $data = MateriDinamis::findOrFail($id);
+                $namaSubtopik = $data->nama_materi;
                 break;
+
             case 'evaluasi':
                 $data = EvaluasiDinamis::findOrFail($id);
+                $namaSubtopik = $data->nama_evaluasi;
                 break;
+
             case 'upload':
                 $data = UploadDinamis::findOrFail($id);
+                $namaSubtopik = $data->nama_upload;
                 break;
+
             default:
                 abort(404, 'Tipe subtopik tidak dikenali.');
         }
 
-        // Hapus subtopik
+        // Hapus data
         $data->delete();
 
-        // Redirect ke halaman topik dengan token_kelas
-        return redirect()->route('topik.index', ['token_kelas' => $topik->token_kelas])
-            ->with('success', 'Subtopik berhasil dihapus.');
+        // Redirect dengan pesan sukses yang lebih jelas
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $topik->token_kelas])
+            ->with('success', "Subtopik {$namaSubtopik} berhasil dihapus.")
+            ->withFragment('topik' . $topik->id_topik);
     }
 
 }

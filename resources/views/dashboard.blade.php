@@ -238,8 +238,8 @@
                     <div class="row">
                         @foreach ($claimedBadges as $badge)
                             <div class="col-md-4 mb-3">
-                                <img src="{{ asset($badge->link_gambar) }}" alt="{{ $badge->deskripsi }}"
-                                    class="img-fluid" style="max-width: 100px;">
+                                <img src="{{ asset($badge->link_gambar) }}" alt="{{ $badge->deskripsi }}" class="img-fluid"
+                                    style="max-width: 100px;">
                                 <p class="text-center">{{ $badge->nama }}</p>
                             </div>
                         @endforeach
@@ -272,14 +272,14 @@
                                 <div class="col-md-6 d-flex align-items-center button-container">
                                     <form action="{{ route('awardHighRankBadge') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-success button" id="claimButton"
-                                            {{ $highRankBadgeClaimed || !$eligibleForHighRankBadge ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-success button" id="claimButton" {{ ($highRankBadgeClaimed ?? false) || !($eligibleForHighRankBadge ?? false) ? 'disabled' : '' }}>
                                             Klaim Badge
                                         </button>
                                         <div class="hover-text">Rebut posisi 3 besar untuk mendapatkan</div>
                                     </form>
                                 </div>
                             </div>
+
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <img src="{{ asset('img/pembelajar_cepat.png') }}" alt="Fast Learner Badge"
@@ -288,31 +288,28 @@
                                 <div class="col-md-6 d-flex align-items-center button-container">
                                     <form action="{{ route('awardSiCepatBadge') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-success button" id="claimButton"
-                                            {{ $siCepatBadgeClaimed || !$eligibleForCepat ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-success button" id="claimButton" {{ $siCepatBadgeClaimed || !$eligibleForCepat ? 'disabled' : '' }}>
                                             Klaim Badge
                                         </button>
                                         <div class="hover-text">Selesaikan test dibawah 15 menit</div>
                                     </form>
                                 </div>
                             </div>
-                            <div class="row mb-3">
+                            <!-- <div class="row mb-3">
                                 <div class="col-md-6">
-                                    <img src="{{ asset('img/masterkesejarahan.png') }}" alt="Master Badge"
-                                        width="100px">
+                                    <img src="{{ asset('img/masterkesejarahan.png') }}" alt="Master Badge" width="100px">
                                 </div>
                                 <div class="col-md-6 d-flex align-items-center button-container">
                                     <form action="{{ route('awardHistoricalBadge') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-success" id="claimButton"
-                                            {{ $badgeKesejarahanClaimed || !$eligibleForBadgeKesejarahan ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-success" id="claimButton" {{ $badgeKesejarahanClaimed || !$eligibleForBadgeKesejarahan ? 'disabled' : '' }}>
                                             Klaim Badge
                                         </button>
                                         <div class="hover-text">Selesaikan Bab Kesejarahan</div>
                                     </form>
                                 </div>
-                            </div>
-                            <div class="row mb-3">
+                            </div> -->
+                            <!-- <div class="row mb-3">
                                 <div class="col-md-6">
                                     <img src="{{ asset('img/masterkewirausahaan.png') }}" alt="Master of Material Badge"
                                         width="100px">
@@ -320,14 +317,13 @@
                                 <div class="col-md-6 d-flex align-items-center button-container">
                                     <form action="{{ route('awardEntrepreneurialBadge') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-success" id="claimButton"
-                                            {{ $badgeKwuClaimed || !$eligibleForBadgeKWU ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-success" id="claimButton" {{ $badgeKwuClaimed || !$eligibleForBadgeKWU ? 'disabled' : '' }}>
                                             Klaim Badge
                                         </button>
                                         <div class="hover-text">Selesaikan Bab KWU</div>
                                     </form>
                                 </div>
-                            </div>
+                            </div> -->
                             <div class="row mb-3">
                                 <div class="col-md-6">
                                     <img src="{{ asset('img/masterhistorio.png') }}" alt="Master of Material Badge"
@@ -336,8 +332,7 @@
                                 <div class="col-md-6 d-flex align-items-center button-container">
                                     <form action="{{ route('awardCombinedBadge') }}" method="POST">
                                         @csrf
-                                        <button type="submit" class="btn btn-success" id="claimButton"
-                                            {{ $badgeTamatClaimed || !$eligibleForTamat ? 'disabled' : '' }}>
+                                        <button type="submit" class="btn btn-success" id="claimButton" {{ $badgeTamatClaimed || !$eligibleForTamat ? 'disabled' : '' }}>
                                             Klaim Badge
                                         </button>
                                         <div class="hover-text">Selesaikan Semua Bab</div>

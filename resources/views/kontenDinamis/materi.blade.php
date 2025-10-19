@@ -8,5 +8,18 @@
     <div class="konten">
         {!! $konten !!} {{-- Pastikan ini hanya untuk trusted content --}}
     </div>
+
+    {{-- 🔹 Tombol Navigasi --}}
+    <div class="d-flex justify-content-between mt-4">
+        @if($prevUrl)
+            <a href="{{ $prevUrl }}" class="btn btn-outline-primary">&laquo; Sebelumnya</a>
+        @else
+            <div></div>
+        @endif
+
+        @if($nextUrl)
+            <a href="{{ $nextUrl }}" class="btn btn-primary">Selanjutnya &raquo;</a>
+        @endif
+    </div>
 </div>
 @endsection

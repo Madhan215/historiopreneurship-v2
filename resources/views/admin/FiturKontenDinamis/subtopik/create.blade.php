@@ -125,6 +125,9 @@
         let quillUpload;
 
         document.addEventListener("DOMContentLoaded", function () {
+            
+            const AlignAttributor = Quill.import('attributors/style/align');
+            Quill.register(AlignAttributor, true);
             // Inisialisasi Quill editor untuk materi
             quill = new Quill('#editor', {
                 theme: 'snow',
@@ -133,6 +136,7 @@
                     toolbar: [
                         ['bold', 'italic', 'underline'],
                         [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+                        [{ 'align': [] }],
                         ['link', 'image', 'video'],
                         ['clean']
                     ],
@@ -233,24 +237,24 @@
 
             for (let i = 0; i < jumlah; i++) {
                 container.innerHTML += `
-                        <div class="border rounded p-3 mb-3">
-                            <h6>Soal ${i + 1}</h6>
-                            <label>Pertanyaan</label>
-                            <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
-                            <label class="mt-2">Pilihan</label>
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
-                            <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
-                            <label class="mt-2">Jawaban Benar</label>
-                            <select class="form-select correct" data-index="${i}">
-                                <option value="0">Pilihan A</option>
-                                <option value="1">Pilihan B</option>
-                                <option value="2">Pilihan C</option>
-                                <option value="3">Pilihan D</option>
-                            </select>
-                        </div>
-                    `;
+                                    <div class="border rounded p-3 mb-3">
+                                        <h6>Soal ${i + 1}</h6>
+                                        <label>Pertanyaan</label>
+                                        <textarea class="form-control question" data-index="${i}" rows="2"></textarea>
+                                        <label class="mt-2">Pilihan</label>
+                                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan A">
+                                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan B">
+                                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan C">
+                                        <input type="text" class="form-control option my-1" data-index="${i}" placeholder="Pilihan D">
+                                        <label class="mt-2">Jawaban Benar</label>
+                                        <select class="form-select correct" data-index="${i}">
+                                            <option value="0">Pilihan A</option>
+                                            <option value="1">Pilihan B</option>
+                                            <option value="2">Pilihan C</option>
+                                            <option value="3">Pilihan D</option>
+                                        </select>
+                                    </div>
+                                `;
             }
 
             updateSoalPreview(); // otomatis tampilkan preview setelah generate
@@ -265,6 +269,7 @@
 
         function updateMateriPreview() {
             const preview = document.getElementById('live-preview');
+            if (preview) preview.classList.add('ql-editor'); // ✅ tambahkan class Quill editor
             if (preview) preview.innerHTML = quill.root.innerHTML;
         }
 
@@ -278,13 +283,13 @@
                 const options = Array.from(document.querySelectorAll(`.option[data-index="${i}"]`)).map(opt => opt.value || '');
 
                 const html = `
-                        <div class="mb-3">
-                            <p><strong>Soal ${i + 1}:</strong> ${question}</p>
-                            <ol type="A">
-                                ${options.map(o => `<li>${o}</li>`).join("")}
-                            </ol>
-                        </div>
-                    `;
+                                    <div class="mb-3">
+                                        <p><strong>Soal ${i + 1}:</strong> ${question}</p>
+                                        <ol type="A">
+                                            ${options.map(o => `<li>${o}</li>`).join("")}
+                                        </ol>
+                                    </div>
+                                `;
                 preview.innerHTML += html;
             }
         }
@@ -298,12 +303,12 @@
             const preview = document.getElementById('live-preview');
             if (preview) {
                 preview.innerHTML = `
-                        <p><strong>Nama:</strong> ${nama}</p>
-                        <p><strong>Tipe File:</strong> ${tipe}</p>
-                        <p><strong>Deskripsi Singkat:</strong> ${deskripsiSingkat}</p>
-                        <p><strong>Instruksi:</strong></p>
-                        <div>${deskripsi}</div>
-                    `;
+                                    <p><strong>Nama:</strong> ${nama}</p>
+                                    <p><strong>Tipe File:</strong> ${tipe}</p>
+                                    <p><strong>Deskripsi Singkat:</strong> ${deskripsiSingkat}</p>
+                                    <p><strong>Instruksi:</strong></p>
+                                    <div>${deskripsi}</div>
+                                `;
             }
         }
     </script>

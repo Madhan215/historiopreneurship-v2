@@ -22,6 +22,19 @@
     <!-- Fancybox JS -->
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
     <style>
+        .number-icon {
+            width: 1.5em;
+            height: 1.5em;
+            text-align: center;
+            line-height: 1.5em;
+            font-size: 0.8rem;
+        }
+
+        .number-icon .fa-square {
+            border-radius: 0.25rem;
+            /* sudut agak melengkung */
+        }
+
         .feedback.correct {
             background-color: #d4edda;
             color: #155724;
@@ -299,7 +312,7 @@
 
         function startCountdown() {
             const checkBtn = document.getElementById("checkBtn");
-            countdown = setInterval(function() {
+            countdown = setInterval(function () {
                 if (minutes === 0 && seconds === 0) {
                     clearInterval(countdown); // Timer selesai
                     alert("Waktu habis!");
@@ -405,7 +418,7 @@
                 checkBtn.innerText = "Berikutnya";
             }
 
-            checkBtn.onclick = function() {
+            checkBtn.onclick = function () {
                 nextQuestion(namaTest);
             };
             disableAllRadios();
@@ -457,9 +470,9 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
@@ -467,7 +480,7 @@
 
     <script>
         // Hilangkan Alert Otomatis
-        document.addEventListener("DOMContentLoaded", function() {
+        document.addEventListener("DOMContentLoaded", function () {
             const alert = document.querySelector(".floating-alert");
             if (alert) {
                 setTimeout(() => {
@@ -479,6 +492,7 @@
             }
         });
     </script>
+    
 
 </body>
 

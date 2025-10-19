@@ -66,9 +66,11 @@
                         class="border rounded py-3 d-flex align-items-center justify-content-between small bg-primary-light text-primary-dark false list-group-item {{ Route::is('sumber') ? 'active' : '' }}">
                         <span class=""><i class="bi bi-book"></i> Bahan Bacaan</span></a>
                 </div>
+
+
                 @if ($showMateriMenu)
                     <h5 class="active text-primary text-center p-3 mb-0">MATERI</h5>
-                    <div class="accordion vh-100 overflow-auto" id="sidebarAccordion">
+                    <div class="accordion overflow-auto" id="sidebarAccordion">
                         <div class="accordion-item" id="menuHeading1">
                             <h2 class="accordion-header">
                                 @php
@@ -214,7 +216,7 @@
                         </div>
                     </div>
                 @endif
-                <div id="sidebarAccordion">
+                <div class="accordion overflow-auto" id="sidebarAccordion">
                     @foreach ($topiks as $index => $topik)
                         @php
                             // Pastikan ID benar-benar unik
@@ -224,6 +226,7 @@
                             // Gunakan slug agar lebih aman dari spasi atau karakter khusus
                             $slugTopik = Str::slug($topik->nama_topik);
                             $isActive = request()->is($slugTopik . '/*');
+
                         @endphp
 
                         <div class="accordion-item">

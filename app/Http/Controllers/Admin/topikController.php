@@ -109,7 +109,7 @@ class topikController extends Controller
         ]);
 
         return redirect()->route('topik.index', ['token_kelas' => $request->token_kelas])
-            ->with('success', 'Topik berhasil ditambahkan');
+            ->with('success', "Topik {$request->nama_topik} berhasil ditambahkan");
 
     }
 
@@ -133,25 +133,30 @@ class topikController extends Controller
             'status' => 'required'
         ]);
 
-        $topik = topikDinamis::findOrFail($id);
-        $token_kelas = $topik->token_kelas; // ambil token_kelas
+        $topik = TopikDinamis::findOrFail($id);
+        $token_kelas = $topik->token_kelas; // simpan token_kelas
+        $namaLama = $topik->nama_topik; // simpan nama lama (opsional)
 
-        $topik->update($request->all());
+        $topik->update($request->only(['nama_topik', 'status']));
 
-        return redirect()->route('topik.index', ['token_kelas' => $token_kelas])
-            ->with('success', 'Topik berhasil diperbarui');
+        return redirect()
+            ->route('topik.index', ['token_kelas' => $token_kelas])
+            ->with('success', "Topik {$namaLama} berhasil diperbarui.")
+            ->withFragment('topik' . $topik->id_topik);
     }
+
 
 
     public function destroy($id)
     {
         $topik = topikDinamis::findOrFail($id);
         $token_kelas = $topik->token_kelas; // ambil token_kelas sebelum delete
+        $nama_topik = $topik->nama_topik; // simpan nama topik sebelum delete
 
         $topik->delete();
 
         return redirect()->route('topik.index', ['token_kelas' => $token_kelas])
-            ->with('success', 'Topik berhasil dihapus');
+            ->with('success', "Topik '{$nama_topik}' berhasil dihapus");
     }
 
 
@@ -167,8 +172,47 @@ class topikController extends Controller
         // Array topik default
         $defaultTopik = ['Pembukaan', 'Kesejarahan', 'Kewirausahaan'];
 
-        return view('admin.FiturKontenDinamis.topik.aturUrutan', compact('topiks', 'token_kelas', 'defaultTopik'));
+        // Isi default untuk setiap topik default
+        $defaultIsi = [
+            'Pembukaan' => [
+                'CPL',
+                'CPMK',
+                'Peran Dosen',
+                'Sarana dan Prasarana',
+                'Kolaborasi Narasumber',
+                'Cara Penggunaan',
+                'Tahapan'
+            ],
+            'Kesejarahan' => [
+                'Pre-Test',
+                'Kegiatan Pembelajaran 1',
+                'Kuis Kesejarahan',
+                'Kegiatan Pembelajaran 2',
+                'Analisis Individu 1',
+                'Analisis Individu 2',
+                'Kegiatan Pembelajaran 3',
+                'Post-Test',
+                'Refleksi'
+            ],
+            'Kewirausahaan' => [
+                'Pre-Test',
+                'KWU dan Kepariwisataan',
+                'Kuis KWU & Kepariwisataan',
+                'Analisis Kelompok 1',
+                'Analisis Kelompok 2',
+                'Diskusi Kelompok',
+                'Proyek Individu',
+                'Refleksi 1',
+                'Praktek Lapangan 1',
+                'Praktek Lapangan 2',
+                'Post-Test',
+                'Refleksi 2'
+            ]
+        ];
+
+        return view('admin.FiturKontenDinamis.topik.aturUrutan', compact('topiks', 'token_kelas', 'defaultTopik', 'defaultIsi'));
     }
+
 
     public function simpanUrutan(Request $request)
     {
