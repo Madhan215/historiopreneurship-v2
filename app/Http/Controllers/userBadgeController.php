@@ -7,8 +7,10 @@ use App\Models\AnalisisIndividuKesejarahan;
 use App\Models\AnalisisIndividuKesejeranhanII;
 use App\Models\AnalisisKelompokKewirausahaan;
 use App\Models\Badge;
+use App\Models\evaluasiDinamis;
 use App\Models\Nilai;
 use App\Models\Refleksi;
+use App\Models\topikdinamis;
 use App\Models\uploadFile;
 use App\Models\User;
 use App\Models\userBadge;
@@ -302,47 +304,71 @@ class userBadgeController extends Controller
     public function awardSiCepatBadge(Request $request)
     {
         $email = Auth::user()->email;
+        $tokens = auth()->user()->token_kelas ?? [];
+        $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        // Aspek yang harus dicek
-        $requiredAspects = [
-            'pre_test_kesejarahan',
-            'post_test_kesejarahan',
-            'pre_test_KWU',
-            'post_test_KWU',
-        ];
+        // Pastikan user punya token kelas aktif
+        if (!$activeKode) {
+            return redirect()->route('dashboard')->with('error', 'No active class token found.');
+        }
 
-        // Ambil semua nilai lama_waktu_pengerjaan untuk aspek yang relevan
+        // 🔹 Ambil semua topik berdasarkan token kelas aktif
+        $topikIds = topikdinamis::where('token_kelas', $activeKode)->pluck('id_topik');
+
+        if ($topikIds->isEmpty()) {
+            return redirect()->route('dashboard')->with('error', 'No topics found for your active class token.');
+        }
+
+        // 🔹 Ambil nama evaluasi dari topik-topik tersebut
+        $requiredAspects = evaluasiDinamis::whereIn('id_topik', $topikIds)
+            ->pluck('nama_evaluasi')
+            ->toArray();
+
+        if (empty($requiredAspects)) {
+            return redirect()->route('dashboard')->with('error', 'No evaluation aspects found for your active class.');
+        }
+
+        // 🔹 Ambil lama waktu pengerjaan dari tabel nilai berdasarkan aspek-aspek di atas
         $lamaWaktuPengerjaan = Nilai::where('email', $email)
             ->whereIn('aspek', $requiredAspects)
-            ->whereNotNull('lama_waktu_pengerjaan') // Pastikan hanya mengambil data yang memiliki nilai
+            ->whereNotNull('lama_waktu_pengerjaan')
             ->pluck('lama_waktu_pengerjaan', 'aspek');
 
-        // Periksa apakah ada data pada kolom lama_waktu_pengerjaan
         if ($lamaWaktuPengerjaan->isEmpty()) {
             return redirect()->route('dashboard')->with('error', 'No valid completion times found for siCepat Badge.');
         }
 
-        // Periksa apakah ada salah satu lama_waktu_pengerjaan kurang dari 900
+        // 🔹 Cek apakah ada waktu pengerjaan kurang dari 900 detik (15 menit)
         $eligibleForBadge = $lamaWaktuPengerjaan->filter(fn($value) => $value < 900)->isNotEmpty();
 
         if (!$eligibleForBadge) {
             return redirect()->route('dashboard')->with('error', 'You do not meet the criteria for the siCepat Badge.');
         }
 
-        // Tentukan ID badge untuk siCepat
-        $badgeId = 3; // ID untuk badge "siCepat"
-
-        // Cek apakah badge tersedia
+        // 🔹 Ambil data badge siCepat
+        $badgeId = 3; // ID badge siCepat
         $badge = Badge::find($badgeId);
 
         if (!$badge) {
             return redirect()->route('dashboard')->with('error', 'Badge siCepat not found.');
         }
 
-        // Perbarui atau buat entri di tabel user_badge
+        // 🔹 Bentuk status JSON untuk mencatat kelas tempat badge diklaim
+        $statusData = [
+            [
+                'status' => 'claimed',
+                'kelas' => $activeKode,
+            ]
+        ];
+
+        // 🔹 Update atau buat entri baru di tabel user_badge
         UserBadge::updateOrCreate(
             ['email' => $email, 'id_badge' => $badge->id],
-            ['status' => 'claimed']
+            [
+                'email' => $email,
+                'id_badge' => $badge->id,
+                'status' => json_encode($statusData),
+            ]
         );
 
         return redirect()->route('dashboard')->with('success', 'Badge siCepat successfully claimed!');

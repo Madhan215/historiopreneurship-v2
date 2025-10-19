@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Badge;
+use App\Models\evaluasiDinamis;
+use App\Models\topikdinamis;
 use App\Models\User;
 use App\Models\Kelas;
 use App\Models\Nilai;
@@ -144,63 +147,76 @@ class DashboardController extends Controller
         // Temukan pengguna saat ini berdasarkan email
         $currentUser = $rankedUsers->firstWhere('email', $email);
 
-        // Default eligibility dan klaim badge
-        $data['eligibleForHighRankBadge'] = false;
-        $data['highRankBadgeClaimed'] = false;
-
-        //@dd($currentUser);
-
         // Jika pengguna ditemukan di daftar ranking
         if ($currentUser) {
             // Cari peringkat pengguna
-            $userRank = $rankedUsers->search(function ($user) use ($email) {
-                return $user->email === $email;
-            });
+            $userRank = $rankedUsers->search(fn($user) => $user->email === $email);
 
-
-            // dd($currentUser);
-
-            // Jika peringkat ditemukan, tambahkan 1 karena peringkat dimulai dari 0
             if ($userRank !== false) {
                 $userRank += 1;
 
                 // Periksa apakah pengguna berada di peringkat 1, 2, atau 3
                 $data['eligibleForHighRankBadge'] = $userRank <= 3;
 
-                // Cek status badge High Rank
+                // Cek apakah user sudah klaim badge High Rank untuk kelas aktif
                 $userBadgeHighRank = UserBadge::where('email', $email)
                     ->where('id_badge', $highRankBadgeId)
-                    ->first();
+                    ->whereRaw("JSON_CONTAINS(status, JSON_OBJECT('status', 'claimed'))")
+                    ->whereRaw("JSON_CONTAINS(status, JSON_OBJECT('kelas', ?))", [$activeKode])
+                    ->exists();
 
-                // Periksa apakah badge sudah diklaim
-                $data['highRankBadgeClaimed'] = $userBadgeHighRank ? $userBadgeHighRank->status === 'claimed' : false;
+                // Tandai jika sudah diklaim
+                $data['highRankBadgeClaimed'] = $userBadgeHighRank;
             }
         }
+        $data['eligibleForCepat'] = false;
+        $data['siCepatBadgeClaimed'] = false;
 
-        // Ambil lama waktu pengerjaan dari tabel nilai
-        $lamaWaktuPengerjaan = Nilai::where('email', $email)
-            ->whereIn('aspek', [
-                'pre_test_kesejarahan',
-                'post_test_kesejarahan',
-                'pre_test_KWU',
-                'post_test_KWU',
-            ])
-            ->whereNotNull('lama_waktu_pengerjaan') // Pastikan hanya mengambil data yang memiliki nilai
-            ->pluck('lama_waktu_pengerjaan', 'aspek');
+        if ($activeKode) {
+            // 🔹 Ambil semua topik berdasarkan token kelas aktif
+            $topikIds = topikdinamis::where('token_kelas', $activeKode)->pluck('id_topik');
 
-        // Tentukan eligibility untuk siCepat Badge
-        $data['eligibleForCepat'] = $lamaWaktuPengerjaan->filter(fn($value) => $value < 900)->isNotEmpty();
+            if ($topikIds->isNotEmpty()) {
+                // 🔹 Ambil nama evaluasi dari topik-topik tersebut
+                $requiredAspects = evaluasiDinamis::whereIn('id_topik', $topikIds)
+                    ->pluck('nama_evaluasi')
+                    ->toArray();
 
-        // Badge siCepat
-        $siCepatBadgeId = 3; // ID untuk badge "siCepat"
+                if (!empty($requiredAspects)) {
+                    // 🔹 Ambil lama waktu pengerjaan berdasarkan aspek-aspek di atas
+                    $lamaWaktuPengerjaan = Nilai::where('email', $email)
+                        ->whereIn('aspek', $requiredAspects)
+                        ->whereNotNull('lama_waktu_pengerjaan')
+                        ->pluck('lama_waktu_pengerjaan', 'aspek');
 
-        // Pastikan lamaWaktuPengerjaan tidak null dan memenuhi syarat
-        if ($lamaWaktuPengerjaan->isNotEmpty() && $data['eligibleForCepat']) {
-            // Cek apakah user sudah memiliki badge siCepat
-            $userBadgeSiCepat = UserBadge::where('email', $email)->where('id_badge', $siCepatBadgeId)->first();
-            $data['siCepatBadgeClaimed'] = $userBadgeSiCepat && $userBadgeSiCepat->status === 'claimed';
-        } else {
-            $data['siCepatBadgeClaimed'] = false;
+                    // 🔹 Tentukan eligibility
+                    $data['eligibleForCepat'] = $lamaWaktuPengerjaan
+                        ->filter(fn($value) => $value < 900)
+                        ->isNotEmpty();
+
+                    // 🔹 Ambil badge siCepat
+                    $siCepatBadgeId = 3;
+                    $badgeSiCepat = Badge::find($siCepatBadgeId);
+
+                    if ($badgeSiCepat && $lamaWaktuPengerjaan->isNotEmpty() && $data['eligibleForCepat']) {
+                        // 🔹 Cek apakah user sudah punya badge di kelas aktif
+                        $userBadgeSiCepat = UserBadge::where('email', $email)
+                            ->where('id_badge', $siCepatBadgeId)
+                            ->first();
+
+                        if ($userBadgeSiCepat) {
+                            // Decode status JSON
+                            $statusData = json_decode($userBadgeSiCepat->status, true) ?? [];
+
+                            // Cek apakah sudah diklaim di kelas ini
+                            $alreadyClaimedInClass = collect($statusData)
+                                ->contains(fn($item) => ($item['kelas'] ?? null) === $activeKode && $item['status'] === 'claimed');
+
+                            $data['siCepatBadgeClaimed'] = $alreadyClaimedInClass;
+                        }
+                    }
+                }
+            }
         }
 
         // Aspek untuk nilai aspek
@@ -220,6 +236,7 @@ class DashboardController extends Controller
             ->whereRaw("JSON_CONTAINS(status, JSON_OBJECT('kelas', ?))", [$activeKode])
             ->select('badge.link_gambar', 'badge.deskripsi')
             ->get();
+
         // Aspek untuk nilai kesejarahan
         $nilaiHistoricalAspects = [
             'pre_test_kesejarahan',
