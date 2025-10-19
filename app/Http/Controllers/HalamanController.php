@@ -131,14 +131,40 @@ class HalamanController extends Controller
         return view('pages.materi');
     }
 
-    function review()
+    public function review()
     {
         $activeMenu = 'active';
         $email = Auth::user()->email;
-        $dataNilai = Nilai::where('email', $email)->get(['aspek', 'data_jawaban_penilai', 'nilai_akhir', 'tipe']);
 
+        // 🔹 Ambil daftar aspek dari evaluasi dan upload yang statusnya 'on'
+        $aspekEvaluasiOn = DB::table('evaluasidinamis')
+            ->where('status', 'on')
+            ->pluck('nama_evaluasi')
+            ->toArray();
+
+        $aspekUploadOn = DB::table('uploaddinamis')
+            ->where('status', 'on')
+            ->pluck('nama_upload')
+            ->toArray();
+
+        // 🔹 Gabungkan keduanya
+        $aspekAktif = array_merge($aspekEvaluasiOn, $aspekUploadOn);
+
+        // 🔹 Ambil nilai user hanya untuk aspek yang aktif
+        $dataNilai = DB::table('nilai')
+            ->where('email', $email)
+            ->whereIn('aspek', $aspekAktif)
+            ->select('aspek', 'data_jawaban_penilai', 'nilai_akhir', 'tipe')
+            ->get();
+
+        // 🔹 Cek apakah ada data
         $hasData = $dataNilai->isNotEmpty();
 
-        return view('pages.reviewGuru', compact('dataNilai', 'hasData', 'activeMenu'));
+        return view('pages.reviewGuru', compact(
+            'dataNilai',
+            'hasData',
+            'activeMenu'
+        ));
     }
+
 }

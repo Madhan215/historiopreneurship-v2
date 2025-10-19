@@ -34,9 +34,10 @@ class AnalisisIndividuController extends Controller
             ->where('token_kelas', $kodeAktif)
             ->pluck('id_topik');
 
-        // 🔹 Ambil semua upload dinamis berdasarkan id_topik terkait kelas aktif
+        // 🔹 Ambil semua upload dinamis dengan status 'on' berdasarkan id_topik terkait kelas aktif
         $uploadDinamisList = DB::table('uploaddinamis')
             ->whereIn('id_topik', $idTopikList)
+            ->where('status', 'on')
             ->select('id_upload', 'id_topik', 'nama_upload')
             ->get();
 
@@ -65,10 +66,6 @@ class AnalisisIndividuController extends Controller
             'feedbackMap'
         ));
     }
-
-
-
-
 
     public function simpanJawabanIndividu(Request $request)
     {

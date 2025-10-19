@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\evaluasiDinamis;
+use App\Models\uploadDinamis;
 use App\Models\User;
 use App\Models\Kelas;
 use App\Models\Nilai;
@@ -78,11 +80,14 @@ class DosenController extends Controller
         if (empty($kodeKelasAktifGuru)) {
             return view('lamanDosen.dataNilai', [
                 'Mahasiswas' => collect(),
+                'dataNilai' => collect(),
                 'activeMenu' => $activeMenu,
+                'evaluasiAktif' => collect(),
+                'uploadAktif' => collect(),
             ])->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
         }
 
-        // Ambil semua siswa yang token_kelas-nya cocok dengan kelas aktif guru
+        // Ambil semua siswa yang tergabung dalam kelas aktif guru
         $Mahasiswas = User::where('peran', 'siswa')
             ->whereNotNull('token_kelas')
             ->get()
@@ -90,19 +95,43 @@ class DosenController extends Controller
                 $tokensSiswa = $siswa->token_kelas;
                 if (!is_array($tokensSiswa))
                     return false;
-
                 foreach ($tokensSiswa as $token) {
-                    if (in_array($token['kode'], $kodeKelasAktifGuru)) {
+                    if (in_array($token['kode'], $kodeKelasAktifGuru))
                         return true;
-                    }
                 }
                 return false;
             })
             ->sortBy('nama_lengkap')
             ->values();
 
-        return view('lamanDosen.dataNilai', compact('Mahasiswas', 'activeMenu'));
+        // 🔹 Ambil data evaluasiDinamis dan uploadDinamis yang aktif
+        $evaluasiAktif = EvaluasiDinamis::where('status', 'on')->get();
+        $uploadAktif = UploadDinamis::where('status', 'on')->get();
+
+        // 🔹 Ambil nilai mahasiswa hanya untuk aspek yang aktif (evaluasi + upload)
+        $aspekAktif = collect()
+            ->merge($evaluasiAktif->pluck('nama_evaluasi'))
+            ->merge($uploadAktif->pluck('nama_upload'))
+            ->toArray();
+
+        $dataNilai = DB::table('nilai')
+            ->join('users', 'users.email', '=', 'nilai.email')
+            ->whereIn('nilai.aspek', $aspekAktif)
+            ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
+            ->orderBy('users.nama_lengkap', 'asc')
+            ->get();
+
+        // 🔹 Kirim semua data ke view
+        return view('lamanDosen.dataNilai', compact(
+            'Mahasiswas',
+            'dataNilai',
+            'activeMenu',
+            'evaluasiAktif',
+            'uploadAktif'
+        ));
     }
+
+
 
 
 

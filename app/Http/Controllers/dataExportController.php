@@ -4,13 +4,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\evaluasiDinamis;
 use App\Models\Kelas;
+use App\Models\uploadDinamis;
 use Illuminate\Http\Request;
 use App\Models\User;
 use App\Models\Nilai;
+use Illuminate\Support\Facades\DB;
 use PhpOffice\PhpSpreadsheet\Spreadsheet;
 use PhpOffice\PhpSpreadsheet\Writer\Xlsx;
 use Illuminate\Support\Facades\Storage;
+use Symfony\Component\HttpFoundation\StreamedResponse;
 
 class dataExportController extends Controller
 {
@@ -239,5 +243,127 @@ class dataExportController extends Controller
         $writer->save($temp_file);
 
         return response()->download($temp_file, $fileName)->deleteFileAfterSend(true);
+    }
+
+    public function exportNilaiExcel(Request $request)
+    {
+        $guru = auth()->user();
+
+        // Ambil filter tipe dari request (bisa kosong, evaluasi, atau upload)
+        $filterTipe = $request->input('tipe');
+
+        // Ambil token kelas milik guru
+        $tokensGuru = $guru->token_kelas;
+
+        // Ambil semua kode kelas aktif
+        $kodeKelasAktifGuru = collect($tokensGuru)
+            ->where('status', 'aktif')
+            ->pluck('kode')
+            ->toArray();
+
+        // Jika tidak ada kelas aktif
+        if (empty($kodeKelasAktifGuru)) {
+            return back()->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
+        }
+
+        // Ambil semua siswa yang tergabung dalam kelas aktif guru
+        $Mahasiswas = User::where('peran', 'siswa')
+            ->whereNotNull('token_kelas')
+            ->get()
+            ->filter(function ($siswa) use ($kodeKelasAktifGuru) {
+                $tokensSiswa = $siswa->token_kelas;
+                if (!is_array($tokensSiswa))
+                    return false;
+                foreach ($tokensSiswa as $token) {
+                    if (in_array($token['kode'], $kodeKelasAktifGuru))
+                        return true;
+                }
+                return false;
+            })
+            ->pluck('email')
+            ->toArray();
+
+        // Ambil data evaluasiDinamis dan uploadDinamis yang aktif
+        $evaluasiAktif = evaluasiDinamis::where('status', 'on')->get();
+        $uploadAktif = uploadDinamis::where('status', 'on')->get();
+
+        // Gabungkan aspek aktif
+        $aspekAktif = collect()
+            ->merge($evaluasiAktif->pluck('nama_evaluasi'))
+            ->merge($uploadAktif->pluck('nama_upload'))
+            ->toArray();
+
+        // Ambil nilai mahasiswa hanya dari siswa dan aspek yang aktif
+        $query = DB::table('nilai')
+            ->join('users', 'users.email', '=', 'nilai.email')
+            ->whereIn('nilai.aspek', $aspekAktif)
+            ->whereIn('nilai.email', $Mahasiswas)
+            ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
+            ->orderBy('users.nama_lengkap', 'asc');
+
+        // Jika ada filter tipe, tambahkan
+        if (!empty($filterTipe)) {
+            $query->where('nilai.tipe', $filterTipe);
+        }
+
+        $dataNilai = $query->get();
+
+        // === Membuat spreadsheet ===
+        $spreadsheet = new Spreadsheet();
+        $sheet = $spreadsheet->getActiveSheet();
+        $sheet->setTitle('Data Nilai');
+
+        // Header
+        $sheet->setCellValue('A1', 'No');
+        $sheet->setCellValue('B1', 'Nama Lengkap');
+        $sheet->setCellValue('C1', 'Email');
+        $sheet->setCellValue('D1', 'Aspek');
+        $sheet->setCellValue('E1', 'Nilai Akhir');
+        $sheet->setCellValue('F1', 'Tipe');
+
+        // Gaya header
+        $headerStyle = [
+            'font' => ['bold' => true],
+            'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+            'fill' => [
+                'fillType' => \PhpOffice\PhpSpreadsheet\Style\Fill::FILL_SOLID,
+                'startColor' => ['rgb' => 'E0E0E0'],
+            ],
+        ];
+        $sheet->getStyle('A1:F1')->applyFromArray($headerStyle);
+
+        // Isi data
+        $row = 2;
+        foreach ($dataNilai as $index => $item) {
+            $sheet->setCellValue('A' . $row, $index + 1);
+            $sheet->setCellValue('B' . $row, $item->nama_lengkap ?? '-');
+            $sheet->setCellValue('C' . $row, $item->email ?? '-');
+            $sheet->setCellValue('D' . $row, $item->aspek ?? '-');
+            $sheet->setCellValue('E' . $row, $item->nilai_akhir ?? '-');
+            $sheet->setCellValue('F' . $row, $item->tipe ?? '-');
+            $row++;
+        }
+
+        // Auto width kolom
+        foreach (range('A', 'F') as $col) {
+            $sheet->getColumnDimension($col)->setAutoSize(true);
+        }
+
+        // Border semua data
+        $sheet->getStyle('A1:F' . ($row - 1))->applyFromArray([
+            'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
+        ]);
+
+        // Output file
+        $writer = new Xlsx($spreadsheet);
+        $filename = 'Data_Nilai_' . ($filterTipe ? ucfirst($filterTipe) . '_' : '') . now()->format('Y-m-d_H-i-s') . '.xlsx';
+
+        return new StreamedResponse(function () use ($writer) {
+            $writer->save('php://output');
+        }, 200, [
+            'Content-Type' => 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'Content-Disposition' => "attachment; filename=\"{$filename}\"",
+        ]);
     }
 }

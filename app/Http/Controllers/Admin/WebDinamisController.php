@@ -72,10 +72,6 @@ class WebDinamisController extends Controller
         abort(404, 'Subtopik tidak ditemukan atau belum aktif.');
     }
 
-    // ------------------------
-    // 🧱 HANDLER-FUNCTIONS
-    // ------------------------
-
     private function handleMateri($materi, $topikData, $prevUrl, $nextUrl)
     {
         return view('kontenDinamis.materi', [
@@ -92,18 +88,29 @@ class WebDinamisController extends Controller
     {
         $aspek = $evaluasi->nama_evaluasi;
 
+        // Ambil nilai terakhir user (tanpa waktu_selesai)
         $nilaiTerakhir = Nilai::where('email', $user->email)
             ->where('aspek', $aspek)
-            ->orderByDesc('waktu_selesai')
             ->first();
 
-        $batasPercobaan = 1; // ubah jika ingin lebih dari sekali
-        $jumlahPercobaan = Nilai::where('email', $user->email)
+        // Ambil percobaan terakhir (jika ada)
+        $percobaanTerakhir = Nilai::where('email', $user->email)
             ->where('aspek', $aspek)
-            ->count();
+            ->max('percobaan_ke') ?? 0;
 
-        $bisaMengerjakan = $jumlahPercobaan < $batasPercobaan;
+        // Jumlah percobaan saat ini
+        $jumlahPercobaan = $percobaanTerakhir;
 
+        // Batas maksimal percobaan
+        $batasMaksPercobaan = 3;
+
+        // Hitung sisa percobaan
+        $batasPercobaan = max(0, $batasMaksPercobaan - $jumlahPercobaan);
+
+        // Cek apakah user masih bisa mengerjakan
+        $bisaMengerjakan = $batasPercobaan > 0;
+
+        // Ambil daftar soal
         $questions = json_decode($evaluasi->konten, true) ?? [];
         $jumlahSoal = count($questions);
 
@@ -116,11 +123,14 @@ class WebDinamisController extends Controller
             'skor_test_value' => $nilaiTerakhir->nilai_akhir ?? '-',
             'jumlahPercobaan' => $jumlahPercobaan,
             'bisaMengerjakan' => $bisaMengerjakan,
+            'batas_test_value' => $batasPercobaan,
             'tipe' => 'evaluasi',
             'prevUrl' => $prevUrl,
             'nextUrl' => $nextUrl,
         ]);
     }
+
+
 
     private function handleUpload($upload, $topikData, $user, $prevUrl, $nextUrl)
     {
@@ -148,12 +158,6 @@ class WebDinamisController extends Controller
             'nextUrl' => $nextUrl,
         ]);
     }
-
-    // ------------------------
-    // 🧭 HELPER-FUNCTIONS
-    // ------------------------
-
-    // ganti fungsi getAllSubtopik dan getPrevNextUrls dengan yang ini
 
     private function getAllSubtopik($topikData)
     {
@@ -251,26 +255,70 @@ class WebDinamisController extends Controller
 
     public function SimpanNilaiEvaluasi(Request $request)
     {
-
+        $email = $request->email;
         $aspek = $request->aspek;
+        $nilaiAkhirBaru = $request->nilai_akhir;
+        $lamaWaktu = $request->lama_waktu_pengerjaan;
 
-        $affected = DB::table('nilai')
-            ->where('email', $request->email)
+        // Hitung jumlah percobaan user untuk aspek ini
+        $jumlahPercobaan = DB::table('nilai')
+            ->where('email', $email)
             ->where('aspek', $aspek)
-            ->update(['nilai_akhir' => $request->nilai_akhir]);
+            ->count();
 
-        if ($affected === 0) {
-            DB::table('nilai')->insert([
-                'email' => $request->email,
-                'nilai_akhir' => $request->nilai_akhir,
-                'lama_waktu_pengerjaan' => $request->lama_waktu_pengerjaan,
-                'aspek' => $aspek
-            ]);
+        // Batas percobaan (harus sama dengan handleEvaluasi)
+        $batasPercobaan = 3;
+
+        // Jika sudah mencapai batas percobaan
+        if ($jumlahPercobaan >= $batasPercobaan) {
+            return redirect()->back()->with('error', 'Anda telah mencapai batas maksimum percobaan 3 kali');
         }
-        event(new PoinUpdated($request->email));
 
-        return redirect()->back()->with('success', 'Nilai berhasil disimpan');
+        // Ambil nilai terakhir (jika ada)
+        $nilaiTerakhir = DB::table('nilai')
+            ->where('email', $email)
+            ->where('aspek', $aspek)
+            ->orderByDesc('percobaan_ke')
+            ->first();
+
+        // Cek apakah data sudah ada
+        if ($nilaiTerakhir) {
+            // Jika nilai baru lebih tinggi atau sama, update
+            if ($nilaiAkhirBaru >= $nilaiTerakhir->nilai_akhir) {
+                DB::table('nilai')->where('email', $email)
+                    ->where('aspek', $aspek)
+                    ->update([
+                        'nilai_akhir' => $nilaiAkhirBaru,
+                        'lama_waktu_pengerjaan' => $lamaWaktu,
+                        'percobaan_ke' => $nilaiTerakhir->percobaan_ke + 1,
+                        'tipe' => 'evaluasi',
+                    ]);
+
+                event(new PoinUpdated($email));
+
+                return redirect()->back()->with('success', 'Nilai diperbarui (percobaan ke-' . ($nilaiTerakhir->percobaan_ke + 1) . ').');
+            } else {
+                // Nilai baru lebih rendah, tidak disimpan
+                return redirect()->back()->with('warning', 'Nilai baru (' . $nilaiAkhirBaru . ') lebih rendah dari nilai sebelumnya (' . $nilaiTerakhir->nilai_akhir . '), tidak diperbarui.');
+            }
+        } else {
+            // Jika belum ada data sama sekali → insert baru
+            DB::table('nilai')->insert([
+                'email' => $email,
+                'aspek' => $aspek,
+                'nilai_akhir' => $nilaiAkhirBaru,
+                'lama_waktu_pengerjaan' => $lamaWaktu,
+                'percobaan_ke' => 1,
+                'tipe' => 'evaluasi',
+            ]);
+
+            event(new PoinUpdated($email));
+
+            return redirect()->back()->with('success', 'Nilai percobaan ke-1 berhasil disimpan.');
+        }
     }
+
+
     public function uploadFileDinamis(Request $request)
     {
 
