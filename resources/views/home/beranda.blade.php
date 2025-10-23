@@ -49,7 +49,7 @@
 
     .scroll-down {
         position: absolute;
-        bottom: 30px;
+        bottom: 80px;
         left: 50%;
         transform: translateX(-50%);
         animation: bounce 1.8s infinite;
@@ -99,52 +99,44 @@
 
 
     <!-- ========== 1️⃣ SECTION: WELCOME ========== -->
-    <section id="welcome" data-aos="fade-up" class="position-relative py-5 mt-5">
-        <div class="container">
-            <div class="d-md-flex align-items-center text-md-start text-center">
-                {{-- Gambar Ornamen (dapat diberi opacity di CSS) --}}
-                {{-- <img src="{{ asset('img/histoprener.gif') }}" 
-                alt="Landing Page Illustration"
-                class="img-fluid p-3" width="500" height="500"> --}}
+    <section id="welcome" data-aos="fade-up"
+        class="position-relative d-flex align-items-center justify-content-center text-center vh-100">
+        <div class="container position-relative z-1">
+            <div class="d-flex flex-column gap-3 justify-content-center align-items-center">
+                <div>
+                    <h1 class="fw-semibold text-primary mb-2">SELAMAT DATANG DI</h1>
+                    <h2 class="fw-bold" style="color: var(--secondary);">
+                        MEDIA PEMBELAJARAN INTERAKTIF HISTORIOPRENEURSHIP
+                    </h2>
+                </div>
 
-                <div class="d-flex flex-column gap-3">
-                    <div>
-                        <h1 class="fw-semibold text-primary mb-2">SELAMAT DATANG DI</h1>
-                        <h2 class="fw-bold" style="color: var(--secondary);">
-                            MEDIA PEMBELAJARAN INTERAKTIF HISTORIOPRENEURSHIP
-                        </h2>
-                    </div>
+                <p class="fw-semibold lead">
+                    “Menggabungkan Sejarah dan Kewirausahaan dalam Pengalaman Belajar yang Seru dan Interaktif”
+                </p>
 
-                    <p class="fw-semibold lead">
-                        “Menggabungkan Sejarah dan Kewirausahaan dalam Pengalaman Belajar yang Seru dan Interaktif”
-                    </p>
-
-                    <div class="d-flex flex-column flex-md-row gap-3 mt-3">
-                        @if (Auth::check())
-                            @if (auth()->user()->peran == 'siswa')
-                                <a href="/dashboard" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
-                            @elseif(auth()->user()->peran == 'guru')
-                                <a href="/guru/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN GURU</a>
-                            @else
-                                <a href="/admin/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN ADMIN</a>
-                            @endif
+                <div class="d-flex flex-column flex-md-row gap-3 mt-1">
+                    @if (Auth::check())
+                        @if (auth()->user()->peran == 'siswa')
+                            <a href="/dashboard" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
+                        @elseif(auth()->user()->peran == 'guru')
+                            <a href="/guru/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN GURU</a>
                         @else
-                            <a href="/masuk" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
+                            <a href="/admin/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN ADMIN</a>
                         @endif
-                    </div>
+                    @else
+                        <a href="/masuk" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
+                    @endif
                 </div>
             </div>
         </div>
 
-        {{-- Chevron Scroll Indicator --}}
-        {{-- 
-    <div class="scroll-down text-center mt-4">
-        <a href="#fitur" class="scroll-link text-decoration-none">
-            <i class="bi bi-chevron-down fs-3 text-primary"></i>
-        </a>
-    </div>
-    --}}
+        <div class="scroll-down text-center mb-3">
+            <a href="#fitur" class="scroll-link text-decoration-none">
+                <i class="bi bi-chevron-down fs-3 text-primary"></i>
+            </a>
+        </div>
     </section>
+
 
 
 
@@ -159,7 +151,8 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in">
-                        <h4 class="fw-semibold text-secondary">📚 Sistem Kelas</h4>
+                        <h4>📚</h4>
+                        <h4 class="fw-semibold text-secondary">Sistem Kelas</h4>
                         <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Mendukung pengelolaan pembelajaran dengan kelas yang terstruktur
                             antara guru dan siswa.</p>
@@ -167,7 +160,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
-                        <h4 class="fw-semibold text-secondary">⚙️ Pengaturan Konten Dinamis</h4>
+                        <h4>⚙️</h4>
+                        <h4 class="fw-semibold text-secondary">Pengaturan Konten Dinamis</h4>
                         <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Guru dapat menambahkan dan memperbarui materi pembelajaran sesuai
                             kebutuhan.</p>
@@ -175,7 +169,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in" data-aos-delay="400">
-                        <h4 class="fw-semibold text-secondary">📈 Monitoring Progress</h4>
+                        <h4>📈</h4>
+                        <h4 class="fw-semibold text-secondary">Monitoring Progress</h4>
                         <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Pantau perkembangan belajar siswa melalui grafik dan laporan
                             interaktif.</p>
@@ -195,7 +190,8 @@
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left">
-                        <h4 class="fw-semibold text-primary">⭐ Poin</h4>
+                        <h4>⭐</h4>
+                        <h4 class="fw-semibold text-primary">Poin</h4>
                         <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Kumpulkan poin dari setiap aktivitas pembelajaran dan naikkan
                             levelmu!</p>
@@ -203,7 +199,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left" data-aos-delay="200">
-                        <h4 class="fw-semibold text-primary">🏆 Papan Peringkat</h4>
+                        <h4>🏆</h4>
+                        <h4 class="fw-semibold text-primary">Papan Peringkat</h4>
                         <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Bersaing secara sehat dengan teman-temanmu di leaderboard pembelajar
                             terbaik.</p>
@@ -211,7 +208,8 @@
                 </div>
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left" data-aos-delay="400">
-                        <h4 class="fw-semibold text-primary">🎖️ Lencana</h4>
+                        <h4>🎖️</h4>
+                        <h4 class="fw-semibold text-primary">Lencana</h4>
                         <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Dapatkan lencana prestasi untuk setiap pencapaian yang kamu raih.</p>
                     </div>
@@ -222,7 +220,7 @@
 
 
     <!-- ========== 4️⃣ SECTION: KONTAK & LOKASI ========== -->
-    <footer id="kontak" class="bg-primary rounded shadow" data-aos="fade-up">
+    <footer id="kontak" class="bg-primary rounded shadow mb-5" data-aos="fade-up">
 
         <div class="container">
 

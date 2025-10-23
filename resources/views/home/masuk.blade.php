@@ -1,6 +1,7 @@
 @extends('layouts.home')
 
 @section('container')
+    <div class="mb-3">.</div>
     <div class="p-5 p-sm-5 mb-5 mb-sm-0 flex-grow-1 container">
         <div class="d-md-flex gap-5 align-items-center">
             <img src="{{ asset('img/login.png') }}" alt="Ilustrasi Login" class="img-fluid p-3 d-none d-sm-block" width="360"

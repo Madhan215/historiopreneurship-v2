@@ -23,8 +23,8 @@
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
     <style>
         nav.navbar {
-            position: relative;
-            z-index: 9999;
+            /* position: relative; */
+            /* z-index: 9999; */
             /* pastikan lebih besar dari elemen lain */
         }
 
@@ -209,7 +209,7 @@
                         content: "";
                         position: absolute;
                         inset: 0;
-                        background-color: rgba(255, 255, 255, 0.6);
+                        background-color: rgba(255, 255, 255, 0.7);
                         /* ubah nilai 0.6 sesuai kebutuhan */
                         z-index: 0;
                     }
@@ -249,13 +249,13 @@
                     }
                 </style>
 
-                <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
+                <section class=" text-dark mb-5 mb-sm-0 flex-grow-1">
                     <div class="container">
                         @yield('container')
                     </div>
                 </section>
             @else
-                <section>
+                <section class="mt-3">
                     <div>
                         @yield('container-base')
                     </div>

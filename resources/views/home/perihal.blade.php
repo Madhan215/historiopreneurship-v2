@@ -39,8 +39,9 @@
             }
         </style>
     </head>
-    <h1>Perihal</h1>
-    <div class="mt-4 row">
+    <div class="mb-3">.</div>
+    <h1 class="mt-5">Perihal</h1>
+    <div class="mt-3 row">
         <div class="mb-5 col-lg-12">
             <div class="card">
                 <div class="p-4 d-flex align-items-center card-header">
@@ -136,12 +137,12 @@
                                             target="_blank">Scopus</a>
                                     </div>
                                     <!-- <div class="social-buttons">
-                                        <a href="https://scholar.google.com" target="_blank" class="btn primary-gsholar btn-sm">G.
-                                            Scholar</a>
-                                        <a href="https://sinta.kemdikbud.go.id" target="_blank"
-                                            class="btn btn-success btn-sm">SINTA</a>
-                                        <a href="https://www.scopus.com" target="_blank" class="btn btn-info btn-sm">Scopus</a>
-                                    </div> -->
+                                                                        <a href="https://scholar.google.com" target="_blank" class="btn primary-gsholar btn-sm">G.
+                                                                            Scholar</a>
+                                                                        <a href="https://sinta.kemdikbud.go.id" target="_blank"
+                                                                            class="btn btn-success btn-sm">SINTA</a>
+                                                                        <a href="https://www.scopus.com" target="_blank" class="btn btn-info btn-sm">Scopus</a>
+                                                                    </div> -->
                                 </div>
                             </div>
                         </div>
@@ -203,7 +204,7 @@
                                         <a type="button" class="btn primary-gsholar" href="#"
                                             target="_blank">G.Scholar</a>
                                         <!-- <a type="button" class="btn btn-success" href="#" target="_blank">SINTA</a>
-                                        <a type="button" class="btn btn-warning" href="#" target="_blank">Scopus</a> -->
+                                                                        <a type="button" class="btn btn-warning" href="#" target="_blank">Scopus</a> -->
                                     </div>
                                 </div>
                             </div>
@@ -225,12 +226,12 @@
                                         <!-- <a type="button" class="btn btn-warning" href="#" target="_blank">Scopus</a> -->
                                     </div>
                                     <!-- <div class="social-buttons">
-                                        <a href="https://scholar.google.com" target="_blank" class="btn primary-gsholar btn-sm">G.
-                                            Scholar</a>
-                                        <a href="https://sinta.kemdikbud.go.id" target="_blank"
-                                            class="btn btn-success btn-sm">SINTA</a>
-                                        <a href="https://www.scopus.com" target="_blank" class="btn btn-info btn-sm">Scopus</a>
-                                    </div> -->
+                                                                        <a href="https://scholar.google.com" target="_blank" class="btn primary-gsholar btn-sm">G.
+                                                                            Scholar</a>
+                                                                        <a href="https://sinta.kemdikbud.go.id" target="_blank"
+                                                                            class="btn btn-success btn-sm">SINTA</a>
+                                                                        <a href="https://www.scopus.com" target="_blank" class="btn btn-info btn-sm">Scopus</a>
+                                                                    </div> -->
                                 </div>
                             </div>
                         </div>
