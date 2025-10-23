@@ -92,61 +92,75 @@
         }
     }
 </style>
+
 @section('container')
 
     <link href="https://unpkg.com/aos@2.3.1/dist/aos.css" rel="stylesheet">
 
 
     <!-- ========== 1️⃣ SECTION: WELCOME ========== -->
-    <section id="welcome" data-aos="fade-up">
+    <section id="welcome" data-aos="fade-up" class="position-relative py-5 mt-5">
         <div class="container">
-            <div class="d-md-flex flex-md-row-reverse text-center text-md-start align-items-center justify-content-between">
-                <img src="{{ asset('img/histoprener.gif') }}" alt="Landing Page Illustration" width="500" height="500"
-                    decoding="async" class="img-fluid p-3">
+            <div class="d-md-flex align-items-center text-md-start text-center">
+                {{-- Gambar Ornamen (dapat diberi opacity di CSS) --}}
+                {{-- <img src="{{ asset('img/histoprener.gif') }}" 
+                alt="Landing Page Illustration"
+                class="img-fluid p-3" width="500" height="500"> --}}
+
                 <div class="d-flex flex-column gap-3">
                     <div>
-                        <h2 class="fw-semibold text-primary">SELAMAT DATANG DI</h2>
-                        <h3 class="fw-bold" style="color: var(--secondary);">MEDIA PEMBELAJARAN INTERAKTIF
-                            HISTORIOPRENEURSHIP</h3>
+                        <h1 class="fw-semibold text-primary mb-2">SELAMAT DATANG DI</h1>
+                        <h2 class="fw-bold" style="color: var(--secondary);">
+                            MEDIA PEMBELAJARAN INTERAKTIF HISTORIOPRENEURSHIP
+                        </h2>
                     </div>
-                    <p class="text-muted lead">"Menggabungkan Sejarah dan Kewirausahaan dalam Pengalaman Belajar yang
-                        Seru dan Interaktif"</p>
-                    <div class="d-flex flex-column flex-md-row gap-3">
+
+                    <p class="fw-semibold lead">
+                        “Menggabungkan Sejarah dan Kewirausahaan dalam Pengalaman Belajar yang Seru dan Interaktif”
+                    </p>
+
+                    <div class="d-flex flex-column flex-md-row gap-3 mt-3">
                         @if (Auth::check())
                             @if (auth()->user()->peran == 'siswa')
-                                <a role="button" class="btn btn-primary btn-lg" href="/dashboard">MULAI BELAJAR</a>
+                                <a href="/dashboard" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
                             @elseif(auth()->user()->peran == 'guru')
-                                <a role="button" class="btn btn-outline-primary btn-lg" href="/guru/dashboard">HALAMAN
-                                    GURU</a>
+                                <a href="/guru/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN GURU</a>
                             @else
-                                <a role="button" class="btn btn-outline-primary btn-lg" href="/admin/dashboard">HALAMAN
-                                    ADMIN</a>
+                                <a href="/admin/dashboard" class="btn btn-primary btn-lg btn-shadow-white">HALAMAN ADMIN</a>
                             @endif
                         @else
-                            <a role="button" class="btn btn-primary btn-lg" href="/masuk">MULAI BELAJAR</a>
+                            <a href="/masuk" class="btn btn-primary btn-lg btn-shadow-white">MULAI BELAJAR</a>
                         @endif
                     </div>
                 </div>
             </div>
         </div>
-        <!-- 👇 Chevron Scroll Indicator -->
-        <div class="scroll-down text-center">
-            <a href="#fitur" class="scroll-link">
-                <i class="bi bi-chevron-down"></i>
-            </a>
-        </div>
+
+        {{-- Chevron Scroll Indicator --}}
+        {{-- 
+    <div class="scroll-down text-center mt-4">
+        <a href="#fitur" class="scroll-link text-decoration-none">
+            <i class="bi bi-chevron-down fs-3 text-primary"></i>
+        </a>
+    </div>
+    --}}
     </section>
+
 
 
 
     <!-- ========== 2️⃣ SECTION: FITUR UTAMA ========== -->
     <section id="fitur" class="bg-accent py-5" data-aos="fade-up">
+
         <div class="container text-center">
-            <h2 class="fw-bold mb-5">FITUR UTAMA</h2>
+            <img src="{{ asset('img/ornamen/2.png') }}" alt="Ornamn"style="width: 300px; ">
+            <h2 class="fw-bold text-primary">FITUR UTAMA</h2>
+            <img src="{{ asset('img/ornamen/3.png') }}" class="mb-3" alt="Ornamn"style="width: 300px; ">
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in">
                         <h4 class="fw-semibold text-secondary">📚 Sistem Kelas</h4>
+                        <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Mendukung pengelolaan pembelajaran dengan kelas yang terstruktur
                             antara guru dan siswa.</p>
                     </div>
@@ -154,13 +168,15 @@
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in" data-aos-delay="200">
                         <h4 class="fw-semibold text-secondary">⚙️ Pengaturan Konten Dinamis</h4>
-                        <p class="mt-3 text-muted">Guru dapat menambahkan dan memperbarui materi pembelajaran dengan
-                            mudah sesuai kebutuhan.</p>
+                        <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
+                        <p class="mt-3 text-muted">Guru dapat menambahkan dan memperbarui materi pembelajaran sesuai
+                            kebutuhan.</p>
                     </div>
                 </div>
                 <div class="col-md-4">
                     <div class="feature-card" data-aos="zoom-in" data-aos-delay="400">
                         <h4 class="fw-semibold text-secondary">📈 Monitoring Progress</h4>
+                        <img src="{{ asset('img/ornamen/5.png') }}" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Pantau perkembangan belajar siswa melalui grafik dan laporan
                             interaktif.</p>
                     </div>
@@ -170,13 +186,17 @@
     </section>
 
     <!-- ========== 3️⃣ SECTION: GAMIFIKASI ========== -->
-    <section id="gamifikasi" class="py-5 bg-white" data-aos="fade-up">
+    <section id="gamifikasi" class="py-5" data-aos="fade-up">
         <div class="container text-center">
-            <h2 class="fw-bold mb-5">ELEMEN GAMIFIKASI</h2>
+
+            <img src="{{ asset('img/ornamen/2.png') }}" alt="Ornamn"style="width: 300px; ">
+            <h2 class="fw-bold text-primary">ELEMEN GAMIFIKASI</h2>
+            <img src="{{ asset('img/ornamen/3.png') }}" class="mb-3" alt="Ornamn"style="width: 300px; ">
             <div class="row g-4">
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left">
                         <h4 class="fw-semibold text-primary">⭐ Poin</h4>
+                        <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Kumpulkan poin dari setiap aktivitas pembelajaran dan naikkan
                             levelmu!</p>
                     </div>
@@ -184,6 +204,7 @@
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left" data-aos-delay="200">
                         <h4 class="fw-semibold text-primary">🏆 Papan Peringkat</h4>
+                        <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Bersaing secara sehat dengan teman-temanmu di leaderboard pembelajar
                             terbaik.</p>
                     </div>
@@ -191,6 +212,7 @@
                 <div class="col-md-4">
                     <div class="gamification-card" data-aos="flip-left" data-aos-delay="400">
                         <h4 class="fw-semibold text-primary">🎖️ Lencana</h4>
+                        <img src="{{ asset('img/ornamen/6.png') }}" class="mt-2" alt="Ornamn"style="width: 200px; ">
                         <p class="mt-3 text-muted">Dapatkan lencana prestasi untuk setiap pencapaian yang kamu raih.</p>
                     </div>
                 </div>
@@ -198,13 +220,17 @@
         </div>
     </section>
 
+
     <!-- ========== 4️⃣ SECTION: KONTAK & LOKASI ========== -->
     <footer id="kontak" class="bg-primary rounded shadow" data-aos="fade-up">
+
         <div class="container">
+
             <div class="row g-4">
                 <!-- Kolom 1 -->
                 <div class="col-md-6 px-4">
-                    <h3 class="fw-bold">Historiopreneurship</h3>
+                    <h2 class="fw-bold">Historiopreneurship</h2>
+                    <img src="{{ asset('img/ornamen/4.png') }}" class="mb-2" alt="Ornamn"style="width: 200px; ">
                     <p class="mb-1">Jurusan Pendidikan Ekonomi</p>
                     <p class="mb-1">Fakultas Keguruan dan Ilmu Pendidikan</p>
                     <p class="mb-3">Universitas Lambung Mangkurat</p>
@@ -218,7 +244,8 @@
                 <!-- Kolom 2 -->
                 <div class="col-md-6">
                     <iframe src="https://www.google.com/maps?q=Jurusan+Pendidikan+Ekonomi+ULM&output=embed" width="100%"
-                        height="250" style="border:0; border-radius:1rem;" allowfullscreen="" loading="lazy">
+                        height="250" style="border:0; border-radius:1rem;" class="px-5" allowfullscreen=""
+                        loading="lazy">
                     </iframe>
                 </div>
             </div>

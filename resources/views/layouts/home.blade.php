@@ -22,6 +22,12 @@
     <!-- Fancybox JS -->
     <script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox.umd.js"></script>
     <style>
+        nav.navbar {
+            position: relative;
+            z-index: 9999;
+            /* pastikan lebih besar dari elemen lain */
+        }
+
         .number-icon {
             width: 1.5em;
             height: 1.5em;
@@ -129,124 +135,120 @@
         @yield('container-kuis')
     @else
         <div class="min-vh-100 d-flex flex-column">
-            <nav class="navbar navbar-expand-md bg-white">
-                <div class="py-2 mx-2 mx-sm-auto container">
-                    <a class="navbar-brand" href="/"><span
-                            class="fw-bold text-primary">HISTORIOPRENEURSHIP</span></a>
-                    <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+            <nav class="navbar navbar-expand-md bg-white shadow-sm fixed-top">
+                <div class="container">
+                    <!-- Brand -->
+                    <a class="navbar-brand fw-bold text-primary" href="/">
+                        HISTORIOPRENEURSHIP
+                    </a>
+
+                    <!-- Tombol Hamburger -->
+                    <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse"
                         data-bs-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false"
                         aria-label="Toggle navigation">
                         <span class="navbar-toggler-icon"></span>
                     </button>
+
+                    <!-- Menu Navigasi -->
                     <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
-                        <div class="mx-auto navbar-nav">
+                        <!-- Menu Tengah -->
+                        <div class="navbar-nav mx-auto text-center">
                             <a class="nav-link {{ Route::is('beranda') ? 'active fw-semibold' : '' }}"
-                                aria-current="page" href="/">Beranda</a>
-                            <a class="nav-link {{ Route::is('materi') ? 'active fw-semibold' : '' }}"
-                                href="/materi">Materi</a>
+                                href="/">Beranda</a>
                             <a class="nav-link {{ Route::is('perihal') ? 'active fw-semibold' : '' }}"
                                 href="/perihal">Perihal</a>
                         </div>
-                        @php
-                            $tokens = auth()->user()->token_kelas ?? [];
-                            $activeKode = collect($tokens)->firstWhere('status', 'aktif')['kode'] ?? null;
-                            $activeKelas = $activeKode
-                                ? \App\Models\Kelas::where('kode_kelas', $activeKode)->first()
-                                : null;
-                        @endphp
 
-                        @if ($activeKelas)
-                            <!-- Tombol Toggle -->
-                            <button class="btn btn-primary kelas-toggle-btn" type="button" data-bs-toggle="collapse"
-                                data-bs-target="#kelasCard" aria-expanded="false" aria-controls="kelasCard">
-                                <i class="bi bi-mortarboard-fill fs-4"></i>
-                            </button>
-
-                            <!-- Card Info -->
-                            <div class="collapse" id="kelasCard">
-                                <div class="card kelas-card">
-                                    <div
-                                        class="card-header bg-primary text-white d-flex justify-content-between align-items-center">
-                                        <span><i class="bi bi-mortarboard"></i> Kelas Aktif</span>
-                                        <button class="btn-close btn-close-white btn-sm" data-bs-toggle="collapse"
-                                            data-bs-target="#kelasCard"></button>
-                                    </div>
-                                    <div class="card-body">
-                                        <p class="mb-2"><strong>Nama:</strong> {{ $activeKelas->nama_kelas }}</p>
-                                        <p class="mb-0"><strong>Kode:</strong> {{ $activeKelas->kode_kelas }}</p>
-                                    </div>
-                                </div>
-                            </div>
-                        @endif
-
-                        <div class="gap-2 navbar-nav">
+                        <!-- Menu Kanan -->
+                        <div class="navbar-nav gap-2 align-items-center text-center">
                             @auth
-                                <li class="nav-item dropdown" id="MenuKanan">
-                                    <a class="nav-link dropdown-toggle" href="#" id="navbarScrollingDropdown"
-                                        role="button" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Selamat datang {{ auth()->user()->nama_lengkap }}
+                                <li class="nav-item dropdown">
+                                    <a class="nav-link dropdown-toggle d-flex align-items-center justify-content-center"
+                                        href="#" id="navbarScrollingDropdown" role="button" data-bs-toggle="dropdown"
+                                        aria-expanded="false">
+                                        <span class="me-1">Halo, {{ auth()->user()->nama_lengkap }}</span>
                                         <img src="{{ auth()->user()->profilePhotoUrl }}" alt="Profile Photo"
-                                            class="rounded-circle border border-primary ms-1"
-                                            style="width: 25px; height: 25px;">
+                                            class="rounded-circle border border-primary" style="width: 25px; height: 25px;">
                                     </a>
-                                    <ul class="dropdown-menu" aria-labelledby="navbarScrollingDropdown">
+                                    <ul class="dropdown-menu dropdown-menu-end" aria-labelledby="navbarScrollingDropdown">
                                         <li>
-                                            @if (auth()->user()->peran === 'siswa' || auth()->user()->peran === 'guru')
-                                                <form action="{{ route('dashboard') }}" method="GET">
-                                                    <button type="submit" class="dropdown-item">
-                                                        <i class="bi bi-speedometer"></i> Dashboard
-                                                    </button>
-                                                </form>
-                                            @else
-                                                <form action="{{ route('admin.dashboard') }}" method="GET">
-                                                    <button type="submit" class="dropdown-item">
-                                                        <i class="bi bi-speedometer"></i> Dashboard
-                                                    </button>
-                                                </form>
-                                            @endif
-
+                                            <a class="dropdown-item" href="{{ route('dashboard') }}">
+                                                <i class="bi bi-speedometer"></i> Dashboard
+                                            </a>
                                         </li>
-                                        <li>
-                                            <form action="{{ route('change.profile') }}" method="GET">
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-person-circle"></i> Ubah Foto Profil
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <form action="{{ route('change.name') }}" method="GET">
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-tag"></i> Ubah Nama
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <form action="{{ route('reset.password') }}" method="GET">
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-key"></i> Ubah Password
-                                                </button>
-                                            </form>
-                                        </li>
-                                        <li>
-                                            <form action="{{ route('login.logout') }}" method="get">
-                                                @csrf
-                                                <button type="submit" class="dropdown-item">
-                                                    <i class="bi bi-box-arrow-right"></i> Logout
-                                                </button>
-                                            </form>
-                                        </li>
+                                        <li><a class="dropdown-item" href="{{ route('change.profile') }}"><i
+                                                    class="bi bi-person-circle"></i> Ubah Foto Profil</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('change.name') }}"><i
+                                                    class="bi bi-tag"></i> Ubah Nama</a></li>
+                                        <li><a class="dropdown-item" href="{{ route('reset.password') }}"><i
+                                                    class="bi bi-key"></i> Ubah Password</a></li>
+                                        <li><a class="dropdown-item text-danger" href="{{ route('login.logout') }}"><i
+                                                    class="bi bi-box-arrow-right"></i> Logout</a></li>
                                     </ul>
                                 </li>
                             @else
-                                <a role="button" tabindex="0" class="btn btn-outline-primary"
-                                    href="/daftar">DAFTAR</a>
-                                <a role="button" tabindex="0" class="btn btn-primary" href="/masuk">MASUK</a>
+                                <a class="btn btn-sm btn-outline-primary" href="/daftar">DAFTAR</a>
+                                <a class="btn btn-sm btn-primary" href="/masuk">MASUK</a>
                             @endauth
                         </div>
                     </div>
                 </div>
             </nav>
+
             @if (View::hasSection('container'))
+                <style>
+                    body {
+                        position: relative;
+                        background: url('{{ asset('img/Background Landing Page.png') }}') no-repeat center center;
+                        background-size: cover;
+                        background-attachment: fixed;
+                    }
+
+                    /* Tambahkan overlay untuk menurunkan kecerahan gambar */
+                    body::before {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        background-color: rgba(255, 255, 255, 0.6);
+                        /* ubah nilai 0.6 sesuai kebutuhan */
+                        z-index: 0;
+                    }
+
+                    /* Pastikan konten utama tetap di atas overlay */
+                    body * {
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    /* Overlay transparan (biarkan kosong atau ubah sesuai kebutuhan) */
+                    #welcome::before {
+                        content: "";
+                        position: absolute;
+                        inset: 0;
+                        z-index: 0;
+                    }
+
+                    #welcome .container {
+                        position: relative;
+                        z-index: 1;
+                    }
+
+                    /* 🌟 Tambahkan efek bayangan putih di teks judul dan paragraf */
+
+                    .btn-shadow-white {
+                        box-shadow: 0 0 15px rgba(255, 255, 255, 0.7);
+                        /* putih lembut */
+                        transition: all 0.3s ease;
+                    }
+
+                    .btn-shadow-white:hover {
+                        box-shadow: 0 0 25px rgba(255, 255, 255, 0.9);
+                        /* lebih terang saat hover */
+                        transform: translateY(-2px);
+                        /* efek melayang ringan */
+                    }
+                </style>
+
                 <section class=" text-dark p-3 p-sm-5 mb-5 mb-sm-0 flex-grow-1">
                     <div class="container">
                         @yield('container')
@@ -260,7 +262,7 @@
                 </section>
             @endif
         </div>
-        <footer class="d-flex justify-content-center align-items-center py-2 border">
+        <footer class="d-flex bg-white justify-content-center align-items-center py-2 border">
             <div class="d-flex align-items-center">
                 <span class="fw-bold text-primary me-2">HISTORIOPRENEURSHIP</span>
                 <span class="text-muted">© 2025</span>
@@ -312,7 +314,7 @@
 
         function startCountdown() {
             const checkBtn = document.getElementById("checkBtn");
-            countdown = setInterval(function () {
+            countdown = setInterval(function() {
                 if (minutes === 0 && seconds === 0) {
                     clearInterval(countdown); // Timer selesai
                     alert("Waktu habis!");
@@ -418,7 +420,7 @@
                 checkBtn.innerText = "Berikutnya";
             }
 
-            checkBtn.onclick = function () {
+            checkBtn.onclick = function() {
                 nextQuestion(namaTest);
             };
             disableAllRadios();
@@ -470,9 +472,9 @@
     </script>
 
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'));
-            var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+            var tooltipList = tooltipTriggerList.map(function(tooltipTriggerEl) {
                 return new bootstrap.Tooltip(tooltipTriggerEl);
             });
         });
@@ -480,7 +482,7 @@
 
     <script>
         // Hilangkan Alert Otomatis
-        document.addEventListener("DOMContentLoaded", function () {
+        document.addEventListener("DOMContentLoaded", function() {
             const alert = document.querySelector(".floating-alert");
             if (alert) {
                 setTimeout(() => {
@@ -492,7 +494,7 @@
             }
         });
     </script>
-    
+
 
 </body>
 
