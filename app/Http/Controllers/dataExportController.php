@@ -249,7 +249,7 @@ class dataExportController extends Controller
     {
         $guru = auth()->user();
 
-        // Ambil filter tipe dari request (evaluasi / upload / proyek_individu / dll)
+        // Ambil filter tipe dari request
         $filterTipe = $request->input('tipe');
 
         // Ambil token kelas milik guru
@@ -273,14 +273,17 @@ class dataExportController extends Controller
                 $tokensSiswa = $siswa->token_kelas;
                 if (!is_array($tokensSiswa))
                     return false;
+
                 foreach ($tokensSiswa as $token) {
-                    if (in_array($token['kode'], $kodeKelasAktifGuru))
+                    if (in_array($token['kode'], $kodeKelasAktifGuru)) {
                         return true;
+                    }
                 }
                 return false;
-            })
-            ->pluck('email')
-            ->toArray();
+            });
+
+        // Ambil email siswa aktif
+        $emailSiswaAktif = $Mahasiswas->pluck('email')->toArray();
 
         // -------------------------
         //   ASPEK DEFAULT
@@ -306,21 +309,27 @@ class dataExportController extends Controller
         $uploadAktif = UploadDinamis::where('status', 'on')->pluck('nama_upload')->toArray();
 
         // -------------------------
-        //   GABUNGKAN SEMUA ASPEK
+        //  GABUNG + FLATTEN + UNIQUE
         // -------------------------
-        $aspekAktifFinal = array_merge($defaultIsi, $evaluasiAktif, $uploadAktif);
+        $aspekAktifFinal = array_unique(
+            collect($defaultIsi)
+                ->merge($evaluasiAktif)
+                ->merge($uploadAktif)
+                ->flatten()
+                ->toArray()
+        );
 
         // -------------------------
-        //   QUERY NILAI
+        //   QUERY NILAI (SAMA DENGAN dataNilai)
         // -------------------------
         $query = DB::table('nilai')
             ->join('users', 'users.email', '=', 'nilai.email')
             ->whereIn('nilai.aspek', $aspekAktifFinal)
-            ->whereIn('nilai.email', $Mahasiswas)
+            ->whereIn('nilai.email', $emailSiswaAktif)
             ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
             ->orderBy('users.nama_lengkap', 'asc');
 
-        // Jika ada filter tipe → apply
+        // Filter tipe
         if (!empty($filterTipe)) {
             $query->where('nilai.tipe', $filterTipe);
         }
@@ -328,7 +337,7 @@ class dataExportController extends Controller
         $dataNilai = $query->get();
 
         // -------------------------
-        //   EXPORT SPREADSHEET
+        //   EXPORT EXCEL
         // -------------------------
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
@@ -342,7 +351,7 @@ class dataExportController extends Controller
         $sheet->setCellValue('E1', 'Nilai Akhir');
         $sheet->setCellValue('F1', 'Tipe');
 
-        // Gaya header
+        // Style header
         $headerStyle = [
             'font' => ['bold' => true],
             'alignment' => ['horizontal' => \PhpOffice\PhpSpreadsheet\Style\Alignment::HORIZONTAL_CENTER],
@@ -370,6 +379,7 @@ class dataExportController extends Controller
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
+        // Border seluruh tabel
         $sheet->getStyle('A1:F' . ($row - 1))->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ]);
@@ -385,5 +395,6 @@ class dataExportController extends Controller
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
     }
+
 
 }
