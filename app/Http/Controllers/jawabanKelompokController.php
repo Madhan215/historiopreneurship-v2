@@ -13,33 +13,102 @@ use App\Models\AnalisisIndividuKesejeranhanII;
 
 class jawabanKelompokController extends Controller
 {
-    public function lihatJawaban($id_kelompok)
-    {
-        $activeMenu = 'active';
-        // Mengambil jawaban dari tabel analisis_kelompok_kewirausahaan berdasarkan id_kelompok dan kategori
-        $jawabanKewirausahaan1 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
-            ->where('kategori', 'aktivitas 1')
-            ->whereIn('aspek', ['Pengalaman yang didapat', 'kelebihan e-commerce', 'kekurangan e-commerce'])
-            ->get();
+public function lihatJawaban($kode_kelas = null, $id_kelompok = null)
+{
+    $activeMenu = 'active';
 
-        $jawabanKewirausahaan2 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
-            ->where('kategori', 'aktivitas 2')
-            ->whereIn('aspek', ['Jenis-jenis teknologi', 'Pengaruh Teknologi', 'Kelebihan dan Kekurangan penggunaan teknologi', 'kondisi proses sebelum dan sesudah'])
-            ->get();
+    // Ambil token_kelas guru
+    $kelasGuru = Auth::user()->token_kelas;
 
-        $jawabanKewirausahaan3 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
-            ->where('kategori', 'aktivitas 3')
-            ->where('aspek', 'Hasil analisa kelompok')
-            ->get();
-
-        // Mengambil nilai Aktivitas
-        $nilaiAktivitas1 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')->first();
-        $nilaiAktivitas2 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')->first();
-        $nilaiAktivitas3 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')->first();
-
-        // Mengembalikan tampilan dengan data
-        return view('latihan.jawabanKelompok', compact('id_kelompok', 'jawabanKewirausahaan1', 'jawabanKewirausahaan2', 'jawabanKewirausahaan3', 'activeMenu', 'nilaiAktivitas1', 'nilaiAktivitas2', 'nilaiAktivitas3'));
+    if (is_string($kelasGuru)) {
+        $kelasGuru = json_decode($kelasGuru, true);
     }
+
+    if (!is_array($kelasGuru)) {
+        return back()->with('error', 'Format token_kelas guru tidak valid.');
+    }
+
+    // Ambil hanya kelas aktif
+    $kelasAktifGuru = collect($kelasGuru)
+        ->where('status', 'aktif')
+        ->pluck('kode')
+        ->values()
+        ->all();
+
+    if (empty($kelasAktifGuru)) {
+        return back()->with('error', 'Tidak ada kelas aktif.');
+    }
+
+    // Jika kelas belum dipilih → pilih kelas aktif pertama
+    if (!$kode_kelas) {
+        $kode_kelas = $kelasAktifGuru[0];
+    }
+
+    // Ambil kelompok dalam kelas yang dipilih
+    $kelompokList = Kelompok::where('token_kelas', $kode_kelas)->get();
+
+    if ($kelompokList->isEmpty()) {
+        return back()->with('error', 'Tidak ada kelompok pada kelas ini.');
+    }
+
+    // Jika kelompok belum dipilih → pilih kelompok pertama
+    if (!$id_kelompok) {
+        $id_kelompok = $kelompokList->first()->id_kelompok;
+    }
+
+    // ----------------------------
+    // AMBIL JAWABAN PER AKTIVITAS
+    // ----------------------------
+
+    $jawabanKewirausahaan1 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
+        ->where('kategori', 'aktivitas 1')
+        ->get();
+
+    $jawabanKewirausahaan2 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
+        ->where('kategori', 'aktivitas 2')
+        ->get();
+
+    $jawabanKewirausahaan3 = AnalisisKelompokKewirausahaan::where('id_kelompok', $id_kelompok)
+        ->where('kategori', 'aktivitas 3')
+        ->get();
+
+    // ----------------------------
+    // AMBIL NILAI (SELALU NILAI TERBARU)
+    // ----------------------------
+
+    $nilaiAktivitas1 = DB::table('nilai')
+        ->where('percobaan_ke', $id_kelompok)
+        ->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')
+
+        ->first();
+
+    $nilaiAktivitas2 = DB::table('nilai')
+        ->where('percobaan_ke', $id_kelompok)
+        ->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')
+
+        ->first();
+
+    $nilaiAktivitas3 = DB::table('nilai')
+        ->where('percobaan_ke', $id_kelompok)
+        ->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')
+
+        ->first();
+
+    return view('latihan.jawabanKelompok', compact(
+        'kode_kelas',
+        'kelasAktifGuru',
+        'kelompokList',
+        'id_kelompok',
+        'jawabanKewirausahaan1',
+        'jawabanKewirausahaan2',
+        'jawabanKewirausahaan3',
+        'nilaiAktivitas1',
+        'nilaiAktivitas2',
+        'nilaiAktivitas3',
+        'activeMenu'
+    ));
+}
+
 
 
     public function simpanAktivitas(Request $request)
