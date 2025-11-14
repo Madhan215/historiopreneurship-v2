@@ -130,9 +130,11 @@ class DosenController extends Controller
         $dataNilai = DB::table('nilai')
             ->join('users', 'users.email', '=', 'nilai.email')
             ->whereIn('nilai.aspek', $aspekAktifFinal)
+            ->whereIn('nilai.email', $Mahasiswas) // ⬅️ filter siswa sesuai kelas
             ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
             ->orderBy('users.nama_lengkap', 'asc')
             ->get();
+
 
         return view('lamanDosen.dataNilai', compact(
             'Mahasiswas',
