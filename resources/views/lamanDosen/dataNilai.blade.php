@@ -137,16 +137,21 @@
 
                             <div class="filter-container">
                                 <label for="filterTipe" class="fw-semibold mb-0">Filter tipe:</label>
+
                                 <select id="filterTipe" class="form-select form-select-sm" style="width:180px;">
                                     <option value="">Semua</option>
                                     <option value="evaluasi">Evaluasi</option>
                                     <option value="upload">Upload</option>
+
+                                    <!-- Tambahan baru -->
+                                    <option value="proyek_individu">proyek_individu_kewirausahaan</option>
                                 </select>
 
                                 <button id="exportExcelBtn" class="btn btn-success btn-sm">
                                     <i class="fas fa-file-excel me-1"></i> Export Nilai
                                 </button>
                             </div>
+
                         </div>
 
                         @if ($dataNilai->isEmpty())

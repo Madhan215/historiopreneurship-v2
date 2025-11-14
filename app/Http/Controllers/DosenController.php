@@ -87,7 +87,7 @@ class DosenController extends Controller
             ])->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
         }
 
-        // Ambil semua siswa yang tergabung dalam kelas aktif guru
+        // Ambil siswa pada kelas aktif
         $Mahasiswas = User::where('peran', 'siswa')
             ->whereNotNull('token_kelas')
             ->get()
@@ -104,24 +104,36 @@ class DosenController extends Controller
             ->sortBy('nama_lengkap')
             ->values();
 
-        // 🔹 Ambil data evaluasiDinamis dan uploadDinamis yang aktif
-        $evaluasiAktif = EvaluasiDinamis::where('status', 'on')->get();
-        $uploadAktif = UploadDinamis::where('status', 'on')->get();
+        // 🔹 Default aspek
+        $defaultIsi = [
+            'pre_test_kesejarahan',
+            'post_test_kesejarahan',
+            'pre_test_kwu',
+            'post_test_kwu',
+            'poin_DND_Kesejarahan',
+            'poin_DND_KWU',
+            'praktik lapangan 1',
+            'praktik lapangan 2',
+            'proyek_individu_kewirausahaan',
+            'proyek individu',
+            'kegiatan pembelajaran 3'
+        ];
 
-        // 🔹 Ambil nilai mahasiswa hanya untuk aspek yang aktif (evaluasi + upload)
-        $aspekAktif = collect()
-            ->merge($evaluasiAktif->pluck('nama_evaluasi'))
-            ->merge($uploadAktif->pluck('nama_upload'))
-            ->toArray();
+        // 🔹 Ambil aspek aktif dari tabel dinamis
+        $evaluasiAktif = EvaluasiDinamis::where('status', 'on')->pluck('nama_evaluasi')->toArray();
+        $uploadAktif = UploadDinamis::where('status', 'on')->pluck('nama_upload')->toArray();
 
+        // 🔹 Gabungkan semua aspek aktif (default + dinamis)
+        $aspekAktifFinal = array_merge($defaultIsi, $evaluasiAktif, $uploadAktif);
+
+        // 🔹 Ambil semua nilai berdasarkan aspek aktif
         $dataNilai = DB::table('nilai')
             ->join('users', 'users.email', '=', 'nilai.email')
-            ->whereIn('nilai.aspek', $aspekAktif)
+            ->whereIn('nilai.aspek', $aspekAktifFinal)
             ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
             ->orderBy('users.nama_lengkap', 'asc')
             ->get();
 
-        // 🔹 Kirim semua data ke view
         return view('lamanDosen.dataNilai', compact(
             'Mahasiswas',
             'dataNilai',
@@ -130,6 +142,7 @@ class DosenController extends Controller
             'uploadAktif'
         ));
     }
+
 
 
 

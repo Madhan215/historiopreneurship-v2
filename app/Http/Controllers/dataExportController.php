@@ -249,7 +249,7 @@ class dataExportController extends Controller
     {
         $guru = auth()->user();
 
-        // Ambil filter tipe dari request (bisa kosong, evaluasi, atau upload)
+        // Ambil filter tipe dari request (evaluasi / upload / proyek_individu / dll)
         $filterTipe = $request->input('tipe');
 
         // Ambil token kelas milik guru
@@ -261,7 +261,6 @@ class dataExportController extends Controller
             ->pluck('kode')
             ->toArray();
 
-        // Jika tidak ada kelas aktif
         if (empty($kodeKelasAktifGuru)) {
             return back()->with('warning', 'Tidak ada kelas aktif ditemukan untuk guru ini.');
         }
@@ -283,32 +282,54 @@ class dataExportController extends Controller
             ->pluck('email')
             ->toArray();
 
-        // Ambil data evaluasiDinamis dan uploadDinamis yang aktif
-        $evaluasiAktif = evaluasiDinamis::where('status', 'on')->get();
-        $uploadAktif = uploadDinamis::where('status', 'on')->get();
+        // -------------------------
+        //   ASPEK DEFAULT
+        // -------------------------
+        $defaultIsi = [
+            'pre_test_kesejarahan',
+            'post_test_kesejarahan',
+            'pre_test_kwu',
+            'post_test_kwu',
+            'poin_DND_Kesejarahan',
+            'poin_DND_KWU',
+            'praktik lapangan 1',
+            'praktik lapangan 2',
+            'proyek_individu_kewirausahaan',
+            'proyek individu',
+            'kegiatan pembelajaran 3'
+        ];
 
-        // Gabungkan aspek aktif
-        $aspekAktif = collect()
-            ->merge($evaluasiAktif->pluck('nama_evaluasi'))
-            ->merge($uploadAktif->pluck('nama_upload'))
-            ->toArray();
+        // -------------------------
+        //   ASPEK DINAMIS AKTIF
+        // -------------------------
+        $evaluasiAktif = EvaluasiDinamis::where('status', 'on')->pluck('nama_evaluasi')->toArray();
+        $uploadAktif = UploadDinamis::where('status', 'on')->pluck('nama_upload')->toArray();
 
-        // Ambil nilai mahasiswa hanya dari siswa dan aspek yang aktif
+        // -------------------------
+        //   GABUNGKAN SEMUA ASPEK
+        // -------------------------
+        $aspekAktifFinal = array_merge($defaultIsi, $evaluasiAktif, $uploadAktif);
+
+        // -------------------------
+        //   QUERY NILAI
+        // -------------------------
         $query = DB::table('nilai')
             ->join('users', 'users.email', '=', 'nilai.email')
-            ->whereIn('nilai.aspek', $aspekAktif)
+            ->whereIn('nilai.aspek', $aspekAktifFinal)
             ->whereIn('nilai.email', $Mahasiswas)
             ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
             ->orderBy('users.nama_lengkap', 'asc');
 
-        // Jika ada filter tipe, tambahkan
+        // Jika ada filter tipe → apply
         if (!empty($filterTipe)) {
             $query->where('nilai.tipe', $filterTipe);
         }
 
         $dataNilai = $query->get();
 
-        // === Membuat spreadsheet ===
+        // -------------------------
+        //   EXPORT SPREADSHEET
+        // -------------------------
         $spreadsheet = new Spreadsheet();
         $sheet = $spreadsheet->getActiveSheet();
         $sheet->setTitle('Data Nilai');
@@ -345,12 +366,10 @@ class dataExportController extends Controller
             $row++;
         }
 
-        // Auto width kolom
         foreach (range('A', 'F') as $col) {
             $sheet->getColumnDimension($col)->setAutoSize(true);
         }
 
-        // Border semua data
         $sheet->getStyle('A1:F' . ($row - 1))->applyFromArray([
             'borders' => ['allBorders' => ['borderStyle' => \PhpOffice\PhpSpreadsheet\Style\Border::BORDER_THIN]],
         ]);
@@ -366,4 +385,5 @@ class dataExportController extends Controller
             'Content-Disposition' => "attachment; filename=\"{$filename}\"",
         ]);
     }
+
 }
