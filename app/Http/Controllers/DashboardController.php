@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Badge;
 use App\Models\evaluasiDinamis;
-use App\Models\topikdinamis;
+use App\Models\topikDinamis;
 use App\Models\uploadDinamis;
 use App\Models\User;
 use App\Models\Kelas;
@@ -117,7 +117,7 @@ class DashboardController extends Controller
 
         if ($activeKode) {
             // 🔹 Ambil id_topik dari topik dinamis yang aktif dan status = 'on'
-            $topikIds = topikdinamis::where('token_kelas', $activeKode)
+            $topikIds = topikDinamis::where('token_kelas', $activeKode)
                 ->where('status', 'on')
                 ->pluck('id_topik');
 
@@ -232,7 +232,7 @@ class DashboardController extends Controller
 
         if ($activeKode) {
             // 🔹 Ambil semua topik berdasarkan token kelas aktif
-            $topikIds = topikdinamis::where('token_kelas', $activeKode)->pluck('id_topik');
+            $topikIds = topikDinamis::where('token_kelas', $activeKode)->pluck('id_topik');
 
             if ($topikIds->isNotEmpty()) {
                 // 🔹 Ambil nama evaluasi dari topik-topik tersebut
