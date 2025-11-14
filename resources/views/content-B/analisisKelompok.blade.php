@@ -62,7 +62,7 @@
             <div class="mt-4">
                 <button type="submit" class="me-2 btn btn-primary" {{ $isDisabled ? 'hidden' : '' }}>SIMPAN JAWABAN</button>
             </div>
-            @if (!empty($jawabanValue))
+            @if (!empty($jawabanValue) && $user->peran === 'guru')
 
                 <div class="card-body mt-3">
                     <label for="nilaiIndividu" class="mb-2">Nilai diperoleh</label>

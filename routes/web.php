@@ -8,6 +8,7 @@ use App\Http\Controllers\Admin\subtopikController;
 use App\Http\Controllers\Admin\topikController;
 use App\Http\Controllers\Admin\uploadController;
 use App\Http\Controllers\Admin\WebDinamisController;
+use App\Http\Controllers\kelompokController;
 use Illuminate\Support\Facades\Route;
 use App\Http\Middleware\GuruMiddleware;
 use App\Http\Controllers\FileController;
@@ -305,3 +306,11 @@ use Maatwebsite\Excel\Facades\Excel;
 Route::get('/export-nilai/{kodeKelas}', function ($kodeKelas) {
     return Excel::download(new NilaiExport($kodeKelas), 'nilai_' . $kodeKelas . '.xlsx');
 })->name('exportNilai');
+
+Route::get('/dataKelompok', [kelompokController::class, 'dataKelompok'])
+    ->name('dataKelompok');
+Route::post('/atur-kelompok-otomatis', [KelompokController::class, 'autoKelompok'])
+    ->name('autoKelompok');
+
+Route::post('/update-kelompok', [KelompokController::class, 'updateKelompok'])
+    ->name('updateKelompok');

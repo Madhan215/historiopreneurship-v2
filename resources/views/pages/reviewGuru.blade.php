@@ -10,7 +10,7 @@
         </div>
 
         @php
-            $dataBelajar = $dataNilai->where('tipe', null);
+            $dataBelajar = $dataNilai->where('tipe', 'evaluasi');
             $dataUpload = $dataNilai->where('tipe', 'file_upload');
         @endphp
 

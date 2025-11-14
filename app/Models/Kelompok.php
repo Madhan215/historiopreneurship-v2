@@ -11,7 +11,7 @@ class Kelompok extends Model
     protected $table = 'kelompok';
     protected $primaryKey = 'id_tabel_kelompok';
     public $timestamps = false;
-    protected $fillable = ['email', 'id_kelompok'];
+    protected $fillable = ['email', 'id_kelompok','token_kelas'];
 
     public function users()
     {

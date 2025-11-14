@@ -147,8 +147,16 @@ class HalamanController extends Controller
             ->pluck('nama_upload')
             ->toArray();
 
+        $defaultIsi = [
+            'pre_test_kesejarahan',
+            'post_test_kesejarahan',
+            'pre_test_kwu',
+            'post_test_kwu',
+            'poin_DND_Kesejarahan',
+            'poin_DND_KWU'
+        ];
         // 🔹 Gabungkan keduanya
-        $aspekAktif = array_merge($aspekEvaluasiOn, $aspekUploadOn);
+        $aspekAktif = array_merge($aspekEvaluasiOn, $aspekUploadOn, $defaultIsi);
 
         // 🔹 Ambil nilai user hanya untuk aspek yang aktif
         $dataNilai = DB::table('nilai')
@@ -159,6 +167,7 @@ class HalamanController extends Controller
 
         // 🔹 Cek apakah ada data
         $hasData = $dataNilai->isNotEmpty();
+
 
         return view('pages.reviewGuru', compact(
             'dataNilai',

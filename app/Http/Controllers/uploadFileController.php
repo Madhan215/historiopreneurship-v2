@@ -16,7 +16,7 @@ class uploadFileController extends Controller
         $kodeAktif = collect($kelas)
             ->firstWhere('status', 'aktif')['kode'] ?? null;
 
-        dd($kodeAktif);
+  
 
         // Validasi file
         $request->validate([
@@ -58,6 +58,7 @@ class uploadFileController extends Controller
                 'mime_type' => $file->getClientMimeType(),
                 'size' => $file->getSize(),
                 'created_by' => $createdBy,
+                'token_kelas'=>$kodeAktif,
                 'kategori' => $category,
             ]);
 

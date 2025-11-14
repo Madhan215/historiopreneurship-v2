@@ -111,27 +111,38 @@ class ContentBController extends Controller
 
     public function analisisKelompok()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/Kesejarahan/Kegiatan-Pembelajaran-2";
         $nextUrl = "/Kesejarahan/Analisi-Individu";
         $activeMenu = 'menu2';
 
-        // Retrieve individual answers from AnalisisIndividuKesejarahanII
-        $jawabanIndividuII = AnalisisIndividuKesejeranhanII::where('created_by', $user)->get();
-        $nilaiJawabanIndividuKesejarahan = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_individu_kesejarahan_II')->first();
+        $jawabanIndividuII = AnalisisIndividuKesejeranhanII::where('created_by', $user->email)->get();
 
-        return view('content-B.analisisKelompok', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'jawabanIndividuII', 'nilaiJawabanIndividuKesejarahan'));
+        $nilaiJawabanIndividuKesejarahan = DB::table('nilai')
+            ->where('email', $user->email)
+            ->where('aspek', 'analisa_individu_kesejarahan_II')
+            ->first();
+
+        return view('content-B.analisisKelompok', compact(
+            'activeMenu',
+            'prevUrl',
+            'nextUrl',
+            'user',
+            'jawabanIndividuII',
+            'nilaiJawabanIndividuKesejarahan'
+        ));
     }
+
 
     public function analisisIndividu()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/Kesejarahan/Analisis-Kelompok";
         $nextUrl = "/Kesejarahan/Kegiatan-Pembelajaran-3";
         $activeMenu = 'menu2';
 
-        $jawabanIndividu = AnalisisIndividuKesejarahan::where('created_by', $user)->get();
-        $nilaiJawabanIndividuKesejarahanII = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_individu_kesejarahan')->first();
+        $jawabanIndividu = AnalisisIndividuKesejarahan::where('created_by', $user->email)->get();
+        $nilaiJawabanIndividuKesejarahanII = DB::table('nilai')->where('email', $user->email)->where('aspek', 'analisa_individu_kesejarahan')->first();
 
         if (!$jawabanIndividu->isEmpty()) {
 
@@ -155,10 +166,10 @@ class ContentBController extends Controller
         $isDisabled = !empty($objekWisata) || !empty($objekKesejarahan) || !empty($urgensiObjekKesejarahan) || !empty($urgensiKesejarahan);
 
         // Form Kelayakan
-        $formKelayakanDayaTarik = FormKelayakan::where('email', $user)->where('aspect', 'Daya Tarik')->get();
-        $formKelayakanAksesbilitas = FormKelayakan::where('email', $user)->where('aspect', 'Aksesbilitas')->get();
-        $formKelayakanSaranaDanPrasarana = FormKelayakan::where('email', $user)->where('aspect', 'Sarana dan Prasarana')->get();
-        $formKelayakanPartisipasiMasyarakat = FormKelayakan::where('email', $user)->where('aspect', 'Partisipasi Masyarakat')->get();
+        $formKelayakanDayaTarik = FormKelayakan::where('email', $user->email)->where('aspect', 'Daya Tarik')->get();
+        $formKelayakanAksesbilitas = FormKelayakan::where('email', $user->email)->where('aspect', 'Aksesbilitas')->get();
+        $formKelayakanSaranaDanPrasarana = FormKelayakan::where('email', $user->email)->where('aspect', 'Sarana dan Prasarana')->get();
+        $formKelayakanPartisipasiMasyarakat = FormKelayakan::where('email', $user->email)->where('aspect', 'Partisipasi Masyarakat')->get();
 
         if (!$formKelayakanDayaTarik->isEmpty()) {
             $statusFormKelayakan = "Selesai";
@@ -391,15 +402,15 @@ class ContentBController extends Controller
 
     public function kegiatanPembelajaran3()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/Kesejarahan/Analisi-Individu";
         $nextUrl = "/Kesejarahan/Post-Test";
         $activeMenu = 'menu2';
         $uploadedFile = \DB::table('upload_file_tugas')
             ->where('kategori', 'kegiatan pembelajaran 3')
-            ->where('created_by', $user)
+            ->where('created_by', $user->email)
             ->first();
-        $nilaiUploadKegiatanPembelajaran3 = DB::table('nilai')->where('email', $user)->where('aspek', 'upload_file_pembelajaran3')->first();
+        $nilaiUploadKegiatanPembelajaran3 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'upload_file_pembelajaran3')->first();
         return view('content-B.kegiatanPembelajaran3', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'uploadedFile', 'nilaiUploadKegiatanPembelajaran3'));
     }
 

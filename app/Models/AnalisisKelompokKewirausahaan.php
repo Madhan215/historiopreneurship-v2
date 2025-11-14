@@ -11,5 +11,5 @@ class AnalisisKelompokKewirausahaan extends Model
     protected $table = 'analisis_kelompok_kewirausahaan';
     protected $primaryKey = 'id_tabel_kelompok';
     public $timestamps = false; // Nonaktifkan penggunaan timestamps
-    protected $fillable = ['id_kelompok','kategori','aspek','jawaban','created_at','created_by'];
+    protected $fillable = ['id_kelompok','kategori','aspek','jawaban','token_kelas','created_at','created_by'];
 }

@@ -34,12 +34,33 @@ class AnalisisIndividuController extends Controller
             ->where('token_kelas', $kodeAktif)
             ->pluck('id_topik');
 
+        //konten default
+        $default = [
+            'praktik lapangan 1',
+            'praktik lapangan 2',
+            'proyek individu',
+            'kegiatan pembelajaran 3'
+        ];
+
         // 🔹 Ambil semua upload dinamis dengan status 'on' berdasarkan id_topik terkait kelas aktif
         $uploadDinamisList = DB::table('uploaddinamis')
             ->whereIn('id_topik', $idTopikList)
             ->where('status', 'on')
             ->select('id_upload', 'id_topik', 'nama_upload')
             ->get();
+
+        // 🔹 Konversi default ke daftar seperti uploaddinamis
+        $defaultUploads = collect($default)->map(function ($nama) use ($idTopikList) {
+            return (object) [
+                'id_upload' => null,        // tidak ada di DB
+                'id_topik' => $idTopikList->first(), // kasih id_topik pertama kelas aktif
+                'nama_upload' => $nama
+            ];
+        });
+
+        // 🔹 Gabungkan default + upload dinamis database
+        $uploadDinamisList = $uploadDinamisList->merge($defaultUploads);
+
 
         // 🔹 Ambil file upload (file yang dikumpulkan siswa)
         $fileUploads = DB::table('upload_file_tugas')
@@ -56,11 +77,18 @@ class AnalisisIndividuController extends Controller
             ->where('email', $email)
             ->pluck('data_jawaban_penilai', 'aspek');
 
+        $jawabanIndividuText = DB::table('analisis_individu_kewirausahaan')
+            ->where('created_by', $email)
+            ->where('token_kelas', $kodeAktif)
+            ->get();
+
+
         return view('latihan.jawabanIndividu', compact(
             'email',
             'user',
             'activeMenu',
             'uploadDinamisList',
+            'jawabanIndividuText',
             'fileUploads',
             'nilaiMap',
             'feedbackMap'
@@ -119,6 +147,10 @@ class AnalisisIndividuController extends Controller
     {
         // dd($request);
         // Validasi input
+        $kelas = Auth::user()->token_kelas;
+
+        $kodeAktif = collect($kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
         $request->validate([
             'produkJasa' => 'required|string',
             'analisaProduk' => 'required|string',
@@ -154,6 +186,7 @@ class AnalisisIndividuController extends Controller
                 Analisis_individu_kewirausahaan::create([
                     'aspek' => $aspek,
                     'jawaban' => $jawaban,
+                    'token_kelas' => $kodeAktif,
                     'created_at' => now(),
                     'created_by' => $userEmail,
                 ]);

@@ -89,9 +89,9 @@ class ViewServiceProvider extends ServiceProvider
 
             // --- Cek apakah menu materi default perlu ditampilkan ---
             $showMateriMenu = topikDinamis::whereIn('nama_topik', [
-                'pembukaan',
-                'kesejarahan',
-                'kewirausahaan'
+                'Pembukaan',
+                'Kesejarahan',
+                'Kewirausahaan'
             ])
                 ->where('status', 'on') // hanya yang on
                 ->whereIn('token_kelas', $tokenKelas)

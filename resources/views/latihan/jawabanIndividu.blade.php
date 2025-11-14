@@ -173,6 +173,105 @@
                     </tbody>
                 </table>
             </div>
+            <h4 class="fw-bold mt-5 mb-3">Jawaban Analisis / Uraian</h4>
+
+            @if ($jawabanIndividuText->isEmpty())
+                <div class="alert alert-warning text-center">
+                    <i class="fas fa-exclamation-circle me-2"></i>Tidak ada jawaban uraian.
+                </div>
+            @else
+                <div class="table-responsive">
+                    <table class="table table-bordered table-striped align-middle shadow-sm">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="width: 60px;">No</th>
+                                <th>Aspek</th>
+                                <th>Jawaban</th>
+                            </tr>
+                        </thead>
+
+                        <tbody>
+
+                            @foreach ($jawabanIndividuText as $i => $row)
+                                <tr>
+                                    <td>{{ $i + 1 }}</td>
+                                    <td>{{ $row->aspek }}</td>
+                                    <td>{{ $row->jawaban }}</td>
+                                </tr>
+                            @endforeach
+
+                            {{-- 🔵 ROW KHUSUS TOMBOL NILAI (Hanya 1 kali) --}}
+                            <tr>
+                                <td colspan="3" class="text-center">
+                                    <button type="button" class="btn btn-primary fw-bold px-4" data-bs-toggle="modal"
+                                        data-bs-target="#modalNilaiSemua">
+                                        <i class="fas fa-pen me-1"></i> Nilai Semua Jawaban
+                                    </button>
+                                </td>
+                            </tr>
+
+                        </tbody>
+                    </table>
+                </div>
+            @endif
+
+            {{-- 🔵 Modal Tunggal Untuk Semua Penilaian --}}
+            <div class="modal fade" id="modalNilaiSemua" tabindex="-1">
+                <div class="modal-dialog modal-lg modal-dialog-centered">
+                    <div class="modal-content shadow">
+
+                        <div class="modal-header bg-primary text-white">
+                            <h5 class="modal-title">Penilaian Semua Jawaban</h5>
+                            <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+                        </div>
+
+                        @php
+                            $nilaiProyek = $nilaiMap['proyek_individu_kewirausahaan'] ?? null;
+                            $feedbackProyek = $feedbackMap['proyek_individu_kewirausahaan'] ?? null;
+                        @endphp
+
+                        <div class="modal-body">
+                            <form action="{{ route('kirimJawabanIndividu', ['email' => $email]) }}" method="POST">
+                                @csrf
+
+                                {{-- Kirim semua aspek --}}
+                                @foreach ($jawabanIndividuText as $row)
+                                    <input type="hidden" name="aspek_list[]" value="{{ $row->aspek }}">
+                                @endforeach
+
+                                <input type="hidden" name="aspek" value="proyek_individu_kewirausahaan">
+                                <input type="hidden" name="tipe" value="proyek_individu">
+
+                                {{-- Nilai --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Nilai</label>
+                                    <input type="number" class="form-control" name="nilai_akhir" min="0" max="100"
+                                        value="{{ $nilaiProyek }}" {{ $nilaiProyek !== null ? 'readonly' : '' }} required>
+                                </div>
+
+                                {{-- Feedback --}}
+                                <div class="mb-3">
+                                    <label class="form-label">Feedback</label>
+                                    <textarea class="form-control" name="data_jawaban_penilai" rows="4" {{ $feedbackProyek !== null ? 'readonly' : '' }}>{{ $feedbackProyek }}</textarea>
+                                </div>
+
+                                @if ($nilaiProyek === null)
+                                    <div class="text-end">
+                                        <button type="submit" class="btn btn-primary">
+                                            <i class="fas fa-paper-plane me-1"></i> Kirim Nilai
+                                        </button>
+                                    </div>
+                                @else
+                                    <div class="alert alert-info mb-0">
+                                        Jawaban proyek individu ini sudah dinilai.
+                                    </div>
+                                @endif
+                            </form>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
         @endif
     </div>
 @endsection

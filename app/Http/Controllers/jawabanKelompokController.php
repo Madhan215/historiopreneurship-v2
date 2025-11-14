@@ -33,12 +33,12 @@ class jawabanKelompokController extends Controller
             ->get();
 
         // Mengambil nilai Aktivitas
-        $nilaiAktivitas1= DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')->first();
-        $nilaiAktivitas2= DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')->first();
-        $nilaiAktivitas3= DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')->first();
+        $nilaiAktivitas1 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')->first();
+        $nilaiAktivitas2 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')->first();
+        $nilaiAktivitas3 = DB::table('nilai')->where('percobaan_ke', $id_kelompok)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')->first();
 
         // Mengembalikan tampilan dengan data
-        return view('latihan.jawabanKelompok', compact('id_kelompok', 'jawabanKewirausahaan1', 'jawabanKewirausahaan2', 'jawabanKewirausahaan3','activeMenu', 'nilaiAktivitas1', 'nilaiAktivitas2', 'nilaiAktivitas3'));
+        return view('latihan.jawabanKelompok', compact('id_kelompok', 'jawabanKewirausahaan1', 'jawabanKewirausahaan2', 'jawabanKewirausahaan3', 'activeMenu', 'nilaiAktivitas1', 'nilaiAktivitas2', 'nilaiAktivitas3'));
     }
 
 
@@ -47,6 +47,10 @@ class jawabanKelompokController extends Controller
         // dd($request);
         // Dapatkan email pengguna yang sedang login
         $userEmail = Auth::user()->email;
+        $kelas = Auth::user()->token_kelas;
+
+        $kodeAktif = collect($kelas)
+            ->firstWhere('status', 'aktif')['kode'] ?? null;
 
         // Dapatkan id_kelompok dari tabel kelompok berdasarkan email pengguna
         $kelompok = Kelompok::where('email', $userEmail)->first();
@@ -102,6 +106,7 @@ class jawabanKelompokController extends Controller
                     'kategori' => $kategori,
                     'aspek' => $aspek,
                     'jawaban' => $value, // Nilai kosong jika sebelumnya null
+                    'token_kelas'=>$kodeAktif,
                     'created_at' => now(),
                     'created_by' => $created_by,
                 ]);

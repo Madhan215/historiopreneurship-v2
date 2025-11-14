@@ -67,7 +67,7 @@
     </ol>
 
     @if(
-            !empty($jawabanKelompok->where('kategori', 'aktivitas 3')->where('aspek', 'Hasil analisa kelompok')->first()?->jawaban)
+            !empty($jawabanKelompok->where('kategori', 'aktivitas 3')->where('aspek', 'Hasil analisa kelompok')->first()?->jawaban) && $user->peran ==='guru'
         )
         <div class="card-body mt-3">
             <label for="nilaiIndividu" class="mb-2">Nilai diperoleh</label>

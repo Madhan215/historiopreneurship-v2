@@ -18,6 +18,7 @@ class Analisis_individu_kewirausahaan extends Model
     protected $fillable = [
         'aspek',
         'jawaban',
+        'token_kelas',
         'created_at',
         'created_by',
     ];

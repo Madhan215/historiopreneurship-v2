@@ -39,6 +39,7 @@ class PoinController extends Controller
                 'email' => $user_email,
                 'nilai_akhir' => $request->nilai_akhir,
                 'aspek' => $request->aspek,
+                'tipe'=>'evaluasi',
                 'waktu_selesai' => now(),
             ]);
         }
@@ -76,6 +77,7 @@ class PoinController extends Controller
                 'email' => $user_email,
                 'nilai_akhir' => $request->nilai_akhir,
                 'aspek' => $request->aspek,
+                'tipe'=>'evaluasi',
                 'waktu_selesai' => now(),
             ]);
         }

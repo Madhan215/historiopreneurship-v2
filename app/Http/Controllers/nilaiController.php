@@ -23,7 +23,7 @@ class nilaiController extends Controller
         // Get the aspek value from the request
         $aspek = $request->input('aspek');
         $tipe = $request->input('tipe');
-
+        
         // Check if a record with the same email and aspek exists
         $nilai = Nilai::where('email', $email)->where('aspek', $aspek)->first();
 
@@ -142,6 +142,7 @@ class nilaiController extends Controller
 
         $aspek = $request->aspek;
 
+
         $affected = DB::table('nilai')
             ->where('email', $request->email)
             ->where('aspek', $aspek)
@@ -152,7 +153,8 @@ class nilaiController extends Controller
                 'email' => $request->email,
                 'nilai_akhir' => $request->nilai_akhir,
                 'lama_waktu_pengerjaan' => $request->lama_waktu_pengerjaan,
-                'aspek' => $aspek
+                'aspek' => $aspek,
+                'tipe' => 'evaluasi',
             ]);
         }
         event(new PoinUpdated($request->email));
@@ -184,7 +186,8 @@ class nilaiController extends Controller
                 'email' => $request->email,
                 'nilai_akhir' => $request->nilai_akhir,
                 'lama_waktu_pengerjaan' => $request->lama_waktu_pengerjaan,
-                'aspek' => $aspek
+                'aspek' => $aspek,
+                'tipe' => 'evaluasi',
             ]);
         }
         event(new PoinUpdated($request->email));

@@ -151,13 +151,13 @@ class ContentCController extends Controller
 
     public function analisisKelompok1()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Kuis";
         $nextUrl = "/KWU-dan-Kepariwisataan/Analisis-Kelompok-2";
         $activeMenu = 'menu3';
 
         // Dapatkan id_kelompok dari tabel kelompok berdasarkan email pengguna
-        $kelompok = Kelompok::where('email', $user)->first();
+        $kelompok = Kelompok::where('email', $user->email)->first();
 
         if ($kelompok) {
             $id_kelompok = $kelompok->id_kelompok;
@@ -176,19 +176,19 @@ class ContentCController extends Controller
             $jawabanKelompok = collect(); // Kosongkan jika id_kelompok tidak ditemukan
         }
         ;
-        $nilaiKelompokAktivitas1 = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')->first();
+        $nilaiKelompokAktivitas1 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas1')->first();
         return view('content-C.analisisKelompok1', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'jawabanKelompok', 'id_kelompok', 'anggotaKelompok','nilaiKelompokAktivitas1'));
     }
 
     public function analisisKelompok2()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Analisis-Kelompok-1";
         $nextUrl = "/KWU-dan-Kepariwisataan/Diskusi-Kelompok";
         $activeMenu = 'menu3';
 
         // Dapatkan id_kelompok dari tabel kelompok berdasarkan email pengguna
-        $kelompok = Kelompok::where('email', $user)->first();
+        $kelompok = Kelompok::where('email', $user->email)->first();
 
         if ($kelompok) {
             $id_kelompok = $kelompok->id_kelompok;
@@ -207,19 +207,19 @@ class ContentCController extends Controller
             $jawabanKelompok = collect(); // Kosongkan jika id_kelompok tidak ditemukan
         }
         ;
-        $nilaiKelompokAktivitas2 = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')->first();
+        $nilaiKelompokAktivitas2 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas2')->first();
         return view('content-C.analisisKelompok2', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'jawabanKelompok', 'id_kelompok', 'anggotaKelompok','nilaiKelompokAktivitas2'));
     }
 
     public function diskusiKelompok()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Analisis-Kelompok-2";
         $nextUrl = "/KWU-dan-Kepariwisataan/Proyek-Individu";
         $activeMenu = 'menu3';
 
         // Dapatkan id_kelompok dari tabel kelompok berdasarkan email pengguna
-        $kelompok = Kelompok::where('email', $user)->first();
+        $kelompok = Kelompok::where('email', $user->email)->first();
 
         if ($kelompok) {
             $id_kelompok = $kelompok->id_kelompok;
@@ -239,7 +239,7 @@ class ContentCController extends Controller
         }
         ;
 
-        $nilaiKelompokAktivitas3 = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')->first();
+        $nilaiKelompokAktivitas3 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'analisa_kelompok_kewirausahaan_aktivitas3')->first();
 
         return view('content-C.diskusiKelompok', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'jawabanKelompok', 'id_kelompok', 'anggotaKelompok','nilaiKelompokAktivitas3'));
     }
@@ -247,22 +247,22 @@ class ContentCController extends Controller
     public function proyekIndividu()
     {
         $filename = "PROYEK_INDIVIDU_HISTORIOPRENEURSHIP.docx";
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Diskusi-Kelompok";
         // $prevUrl = "/KWU-dan-Kepariwisataan/KWU-dan-Kepariwisataan"; 
         $nextUrl = "/KWU-dan-Kepariwisataan/Refleksi-1";
         $activeMenu = 'menu3';
 
         // Ambil jawaban individu yang sudah ada
-        $jawabanIndividu = Analisis_individu_kewirausahaan::where('created_by', $user)
+        $jawabanIndividu = Analisis_individu_kewirausahaan::where('created_by', $user->email)
             ->pluck('jawaban', 'aspek')
             ->toArray();
         $uploadedFile = \DB::table('upload_file_tugas')
             ->where('kategori', 'proyek individu')
-            ->where('created_by', $user)
+            ->where('created_by', $user->email)
             ->first();
-        $nilaiAnalisisIndividuKWU = DB::table('nilai')->where('email', $user)->where('aspek', 'analisa_individu_kewirausahaan')->first();
-        $nilaiUploadProyekIndividu = DB::table('nilai')->where('email', $user)->where('aspek', 'upload_file_proyekIndividu')->first();
+        $nilaiAnalisisIndividuKWU = DB::table('nilai')->where('email', $user->email)->where('aspek', 'analisa_individu_kewirausahaan')->first();
+        $nilaiUploadProyekIndividu = DB::table('nilai')->where('email', $user->email)->where('aspek', 'upload_file_proyekIndividu')->first();
         return view('content-C.proyekIndividu', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'filename', 'jawabanIndividu', 'uploadedFile', 'nilaiUploadProyekIndividu','nilaiAnalisisIndividuKWU'));
     }
 
@@ -291,34 +291,34 @@ class ContentCController extends Controller
 
     public function praktikLapangan1()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Refleksi-1";
         $nextUrl = "/KWU-dan-Kepariwisataan/Praktik-Lapangan-2";
         $activeMenu = 'menu3';
 
         $uploadedFile = \DB::table('upload_file_tugas')
             ->where('kategori', 'praktik lapangan 1')
-            ->where('created_by', $user)
+            ->where('created_by', $user->email)
             ->first();
 
         // Tambahkan log untuk debugging
         // dd($uploadedFile); // Menampilkan data di browser untuk memastikan hasil query
-        $nilaiUploadAktivitas1 = DB::table('nilai')->where('email', $user)->where('aspek', 'upload_file_aktivitas1')->first();
+        $nilaiUploadAktivitas1 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'upload_file_aktivitas1')->first();
         return view('content-C.praktikLapangan1', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'uploadedFile', 'nilaiUploadAktivitas1'));
     }
 
 
     public function praktikLapangan2()
     {
-        $user = Auth::user()->email;
+        $user = Auth::user();
         $prevUrl = "/KWU-dan-Kepariwisataan/Praktik-Lapangan-1";
         $nextUrl = "/KWU-dan-Kepariwisataan/Post-Test";
         $activeMenu = 'menu3';
         $uploadedFile = \DB::table('upload_file_tugas')
             ->where('kategori', 'praktik lapangan 2')
-            ->where('created_by', $user)
+            ->where('created_by', $user->email)
             ->first();
-        $nilaiUploadAktivitas2 = DB::table('nilai')->where('email', $user)->where('aspek', 'upload_file_aktivitas2')->first();
+        $nilaiUploadAktivitas2 = DB::table('nilai')->where('email', $user->email)->where('aspek', 'upload_file_aktivitas2')->first();
         return view('content-C.praktikLapangan2', compact('activeMenu', 'prevUrl', 'nextUrl', 'user', 'uploadedFile', 'nilaiUploadAktivitas2'));
     }
 

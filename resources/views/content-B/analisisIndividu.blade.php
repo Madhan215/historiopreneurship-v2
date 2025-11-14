@@ -87,7 +87,7 @@
                                                                         Jawaban</button>
                                                         </div>
                                                 </div>
-                                                @if (!empty($objekWisata && $objekKesejarahan && $urgensiObjekKesejarahan && $urgensiKesejarahan))
+                                                @if (!empty($objekWisata && $objekKesejarahan && $urgensiObjekKesejarahan && $urgensiKesejarahan) && $user->peran ==='guru')
                                                         <div class="card-body mt-3">
                                                                 <label for="nilaiIndividu" class="mb-2">Nilai diperoleh</label>
                                                                 <div class="input-group mb-3">

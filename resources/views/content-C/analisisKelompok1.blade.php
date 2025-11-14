@@ -77,7 +77,8 @@
 @if(
     !empty($jawabanKelompok->where('kategori', 'aktivitas 1')->where('aspek', 'Pengalaman yang didapat')->first()?->jawaban) &&
     !empty($jawabanKelompok->where('kategori', 'aktivitas 1')->where('aspek', 'kelebihan e-commerce')->first()?->jawaban) &&
-    !empty($jawabanKelompok->where('kategori', 'aktivitas 1')->where('aspek', 'kekurangan e-commerce')->first()?->jawaban)
+    !empty($jawabanKelompok->where('kategori', 'aktivitas 1')->where('aspek', 'kekurangan e-commerce')->first()?->jawaban) &&
+    $user->peran === 'guru'
 )
     <div class="card-body mt-3">
         <label for="nilaiIndividu" class="mb-2">Nilai diperoleh</label>
