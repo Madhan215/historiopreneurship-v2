@@ -123,17 +123,27 @@ class DosenController extends Controller
         $evaluasiAktif = EvaluasiDinamis::where('status', 'on')->pluck('nama_evaluasi')->toArray();
         $uploadAktif = UploadDinamis::where('status', 'on')->pluck('nama_upload')->toArray();
 
-        // 🔹 Gabungkan semua aspek aktif (default + dinamis)
-        $aspekAktifFinal = array_merge($defaultIsi, $evaluasiAktif, $uploadAktif);
+        // Ambil email siswa yang berada di kelas aktif
+        $emailSiswaAktif = $Mahasiswas->pluck('email')->toArray();
 
-        // 🔹 Ambil semua nilai berdasarkan aspek aktif
+        // Flatten aspek agar tidak nested
+        $aspekAktifFinal = array_unique(
+            collect($defaultIsi)
+                ->merge($evaluasiAktif)
+                ->merge($uploadAktif)
+                ->flatten()
+                ->toArray()
+        );
+
+        // Ambil nilai hanya dari siswa yang berada pada kelas aktif
         $dataNilai = DB::table('nilai')
             ->join('users', 'users.email', '=', 'nilai.email')
             ->whereIn('nilai.aspek', $aspekAktifFinal)
-            ->whereIn('nilai.email', $Mahasiswas) // ⬅️ filter siswa sesuai kelas
+            ->whereIn('nilai.email', $emailSiswaAktif) // ⬅️ FILTER KELAS
             ->select('users.nama_lengkap', 'nilai.email', 'nilai.aspek', 'nilai.tipe', 'nilai.nilai_akhir')
             ->orderBy('users.nama_lengkap', 'asc')
             ->get();
+
 
 
         return view('lamanDosen.dataNilai', compact(
